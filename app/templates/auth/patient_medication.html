@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="patient-register-container">
+  <h4>Tell us more about you ..</h4>
+  <form class="patient-register-form" action="" method="post">
+
+    <p>
+      {{ form.allergy.label (class_="formLabel") }}
+      <br>
+      {{ form.allergy (class_="formInput") }}
+    </p>
+
+    <p>
+      {{ form.history.label (class_="formLabel") }}
+      <br>
+      {{ form.history (row=6, class_="formInput") }}
+    </p>
+
+    <p>
+      {{ form.create_account (class_="formButton")  }}
+    </p>
+
+  </form>
+</div>
+
+{% endblock %}

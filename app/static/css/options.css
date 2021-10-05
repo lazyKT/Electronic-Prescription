@@ -1,0 +1,28 @@
+.options-title {
+  width: fit-content;
+  margin: auto;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.options-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto;
+  height: 120px;
+  max-width: 400px;
+  min-width: 200px;
+  width: 40%;
+  background: white;
+  border: gainsboro 1px solid;
+  border-radius: 10px;
+  box-shadow: gainsboro 1px 1px;
+  color: #8d8d8d;
+  font-size: 0.9rem;
+  transition: 0.5s;
+}
+
+.options-card:hover {
+  transform: scale(1.1,1.2);
+}

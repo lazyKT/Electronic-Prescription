@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="patient-register-container">
+  <h4>Sign Up as a Patient</h4>
+  <form class="patient-register-form" action="" method="post">
+    {{ form.hidden_tag() }}
+
+    <p>
+      {% for error in form.fullname.errors %}
+      <span class="form-validate-message">{{ error }}</span>
+      {% endfor %}
+      {{ form.fullname.label(class_="formLabel") }}
+      <br>
+      {{ form.fullname (class_="formInput") }}
+    </p>
+
+    <p>
+      {% for error in form.email.errors %}
+      <span class="form-validate-message">{{ error }}</span>
+      {% endfor %}
+      {{ form.email.label(class_="formLabel") }}
+      <br>
+      {{ form.email (class_="formInput") }}
+    </p>
+
+    <p>
+      {% for error in form.mobile.errors %}
+      <span class="form-validate-message">{{ error }}</span>
+      {% endfor %}
+      {{ form.mobile.label(class_="formLabel") }}
+      <br>
+      {{ form.mobile (class_="formInput") }}
+    </p>
+
+    <p>
+      {% for error in form.password.errors %}
+      <span class="form-validate-message">{{ error }}</span>
+      {% endfor %}
+      {{ form.password.label(class_="formLabel") }}
+      <br>
+      {{ form.password (class_="formInput") }}
+    </p>
+
+    <p>
+      {{ form.confirm.label(class_="formLabel") }}
+      <br>
+      {{ form.confirm (class_="formInput") }}
+    </p>
+
+    <p>
+      {{ form.submit (class_="formButton") }}
+    </p>
+
+  </form>
+</div>
+{% endblock %}

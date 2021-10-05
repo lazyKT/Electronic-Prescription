@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<h4 class="options-title">How do you want to use our platform?</h4>
+<div class="options-card" onclick="redirectToChosenOption('doctor')">
+  <span>Doctor</span>
+</div>
+<div class="options-card" onclick="redirectToChosenOption('patient')">
+  <span>Patient</span>
+</div>
+<div class="options-card" onclick="redirectToChosenOption('pharmacist')">
+  <span>Pharmacist</span>
+</div>
+<script type="text/javascript">
+  console.log ("Script Running!!");
+
+  function redirectToChosenOption (option) {
+    switch (option) {
+      case "doctor":
+        window.location.href = '/register/doctor';
+        break;
+      case "patient":
+        window.location.href = '/register/patient';
+        break;
+      case "pharmacist":
+        window.location.href = '/register/pharmacist';
+        break;
+      default:
+        throw new Error ("Unknown Register Options");
+    }
+  }
+
+</script>
+{% endblock %}

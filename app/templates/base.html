@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <title>E Prescription</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/options.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/patient.css') }}">
+    <style media="screen">
+      .active {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div class="right-nav">
+          <h3>E Prescription</h3>
+        </div>
+        <div class="left-nav">
+          <ul class="nav-group">
+            <li>
+              <a href="{{ url_for('home.index') }}">Home</a>
+            </li>
+            <li>
+              <a href="#">Contact</a>
+            </li>
+            <li>
+              <a href="#">Support</a>
+            </li>
+            <li>
+              <a href="{{ url_for('auth.login') }}">Sign In</a>
+            </li>
+          </ul>
+
+          <button class="btn menu"><i class="fa fa-bars" id="menu-icon"></i></button>
+
+        </div>
+      </div>
+    </nav>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="message-box">
+      <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      <button class="btn close-message-box" onclick="closeMessageBox()"><i class="fa fa-times" id="menu-icon"></i></button>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+  </body>
+  <script>
+    const navGroup = document.getElementsByClassName("nav-group")[0];
+    const menuButton = document.getElementsByClassName("menu")[0];
+    const faIcon = document.getElementById ("menu-icon");
+    const messageBox = document.getElementsByClassName("message-box")[0];
+
+    menuButton.addEventListener ("click", () => {
+      navGroup.classList.toggle ("active");
+      if (navGroup.style.display === "flex") {
+        faIcon.classList.toggle ("fa-times");
+        faIcon.classList.toggle ("fa-bars");
+      }
+      else {
+        faIcon.classList.toggle ("fa-times");
+        faIcon.classList.toggle ("fa-bars")
+      }
+    });
+
+    function closeMessageBox () {
+      messageBox.style.display = "none";
+    }
+  </script>
+</html>

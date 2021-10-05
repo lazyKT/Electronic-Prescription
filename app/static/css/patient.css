@@ -1,0 +1,29 @@
+.patient-register-container {
+  width: 50%;
+  margin: auto;
+  max-width: 400px;
+  min-width: 200px;
+}
+
+.patient-register-container h4 {
+  margin: 10px auto;
+  display: block;
+  width: fit-content;
+  font-weight: 500;
+}
+
+.patient-register-form {
+  width: 90%;
+  padding: 5%;
+  border: gainsboro solid 0.6px;
+  border-radius: 10px;
+  background: white;
+}
+
+
+
+@media all and (max-width: 500px) {
+  .patient-register-container {
+    width: 90%;
+  }
+}
