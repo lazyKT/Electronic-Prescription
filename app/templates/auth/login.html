@@ -5,6 +5,11 @@
 <div class="login-container">
   <div class="login-form-container">
     <h3>Sign In</h3>
+    {% if error %}
+    <div class="auth-error">
+      <span>{{ error }}</span>
+    </div>
+    {% endif %}
     <form class="" action="" method="post" novalidate>
       {{ form.hidden_tag() }}
 
