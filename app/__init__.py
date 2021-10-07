@@ -1,7 +1,10 @@
 from flask import Flask
-# from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
-# db = SQLAlchemy ()
+
+db = SQLAlchemy ()
+login = LoginManager ()
 
 
 def init_app ():
@@ -11,7 +14,8 @@ def init_app ():
   app = Flask (__name__, instance_relative_config=False)
   app.config.from_object ("config.Config")
 
-  # db.init_app (app)
+  db.init_app (app)
+  login.init_app (app)
 
   with app.app_context ():
     # import routes
