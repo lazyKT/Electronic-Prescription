@@ -2,6 +2,9 @@
   <head>
     <title>E Prescription</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/options.css') }}">
@@ -14,20 +17,17 @@
   </head>
   <body>
     <nav>
-      <div class="nav-container">
-        <div class="right-nav">
+      <div class="my-nav-container">
+        <div class="my-right-nav">
           <h3>E Prescription</h3>
         </div>
-        <div class="left-nav">
-          <ul class="nav-group">
+        <div class="my-left-nav">
+          <ul class="my-nav-group">
             <li>
               <a href="{{ url_for('home.index') }}">Home</a>
             </li>
             <li>
-              <a href="#">Contact</a>
-            </li>
-            <li>
-              <a href="#">Support</a>
+              <a href="{{ url_for('home.contact') }}">Contact</a>
             </li>
             <li>
               {% if current_user.is_anonymous %}
@@ -38,7 +38,7 @@
             </li>
           </ul>
 
-          <button class="btn menu"><i class="fa fa-bars" id="menu-icon"></i></button>
+          <button class="btn my-menu"><i class="fa fa-bars" id="menu-icon"></i></button>
 
         </div>
       </div>
@@ -46,7 +46,7 @@
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-    <div class="message-box">
+    <div class="my-message-box">
       <ul>
         {% for message in messages %}
         <li>{{ message }}</li>
@@ -61,10 +61,10 @@
     {% endblock %}
   </body>
   <script>
-    const navGroup = document.getElementsByClassName("nav-group")[0];
-    const menuButton = document.getElementsByClassName("menu")[0];
+    const navGroup = document.getElementsByClassName("my-nav-group")[0];
+    const menuButton = document.getElementsByClassName("my-menu")[0];
     const faIcon = document.getElementById ("menu-icon");
-    const messageBox = document.getElementsByClassName("message-box")[0];
+    const messageBox = document.getElementsByClassName("my-message-box")[0];
 
     menuButton.addEventListener ("click", () => {
       navGroup.classList.toggle ("active");

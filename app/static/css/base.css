@@ -8,7 +8,7 @@ textarea {
   height: 150px;
 }
 
-.nav-container {
+.my-nav-container {
   display: flex;
   background-color: #66AAFF;
   width: 100%;
@@ -17,15 +17,15 @@ textarea {
   padding: 0px 10px;
 }
 
-.right-nav {
+.my-right-nav {
   width: 50%;
 }
 
-.left-nav {
+.my-left-nav {
   width: 50%;
 }
 
-.nav-group {
+.my-nav-group {
   list-style: none;
   display: flex;
   justify-content: space-around;
@@ -33,23 +33,23 @@ textarea {
   flex-wrap: wrap;
 }
 
-.left-nav li {
+.my-left-nav li {
   text-align: center;
 }
 
-.left-nav a {
+.my-left-nav a {
   text-decoration: none;
   color: white;
   font-weight: 600;
   font-size: 0.9rem;
 }
 
-.left-nav a:hover {
+.my-left-nav a:hover {
   color: lightskyblue;
 }
 
 
-.menu {
+.my-menu {
   display: none;
   position: absolute;
   top: 10;
@@ -62,12 +62,12 @@ textarea {
 }
 
 
-.menu:hover {
+.my-menu:hover {
   background: cornflowerblue;
   color: wheat;
 }
 
-.message-box {
+.my-message-box {
   position: relative;
   margin: 10px;
   background: lightskyblue;
@@ -86,28 +86,35 @@ textarea {
   background: skyblue;
 }
 
+.flex-box {
+  display: flex;
+  width: 100%;
+  justify-content: 'center';
+  align-items: 'center';
+}
+
 
 @media all and (max-width: 700px) {
 
-  .menu {
+  .my-menu {
     display: block;
   }
 
-  .nav-container {
+  .my-nav-container {
     flex-direction: column;
     justify-content: space-between;
   }
 
-  .right-nav {
+  .my-right-nav {
     width: 100%;
   }
 
-  .nav-group {
+  .my-nav-group {
     flex-flow: column;
     display: none;
   }
 
-  .nav-group li {
+  .my-nav-group li {
     margin: 10px 0px;
   }
 
