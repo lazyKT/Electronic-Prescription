@@ -10,12 +10,24 @@ def login ():
     """
     : Sign In Route
     """
+    if current_user.is_authenticated:
+        """
+        : if user is already logged in, redirect to the protected index page
+        """
+        return redirect(url_for('home.index'))
     form = LoginForm()
     if form.validate_on_submit():
         # Form validation successful
-        flash('Login requested for user {}, remember_me={}'.format(
-            form.username.data, form.remember_me.data))
-        return redirect(url_for('home.index'))
+        user = User.query.filter_by (email=form.email.data).first()
+        if user is None or not user.check_password (form.password.data):
+            # Login Failed
+            error = 'Invalid Credentials!'
+            return render_template ("auth/login.html", form=form, error=error)
+        else:
+            login_user (user, remember=form.remember_me.data)
+            flash('Login requested for user {}, remember_me={}'.format(
+                form.username.data, form.remember_me.data))
+            return redirect(url_for('home.index'))
     return render_template ("auth/login.html", form=form)
 
 

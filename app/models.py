@@ -10,7 +10,8 @@ class User (UserMixin, db.Model):
     """
     : User Database Model and Schema
     """
-    id = db.Column(db.Integer, primary_key=true)
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
     fullname = db.Column(db.String(200), index=True)
     email = db.Column(db.String(100), index=True, unique=True)
     password = db.Column(db.String(128))
