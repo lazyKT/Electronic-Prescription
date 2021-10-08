@@ -26,7 +26,9 @@
 ### For Windows
 - cd E_Prescription
 - venv\bin\activate
-- python3 wsgi.py
+- set FLASK_APP=wsgi.py
+- set FLASK_ENV=development
+- flask run
 ### For Unix Systems
 - cd E_Prescription
 - source venv/bin/activate
