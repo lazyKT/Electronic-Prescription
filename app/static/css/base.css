@@ -120,6 +120,10 @@ textarea {
 
 }
 
+.container-fluid {
+  max-width: 500px;
+}
+
 
 /* end of file */
 

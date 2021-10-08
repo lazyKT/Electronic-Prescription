@@ -35,3 +35,5 @@
 - export FLASK_APP=wsgi.py
 - export FLASK_ENV=development
 - flask run
+
+*Then run, http://127.0.0.1:5000 on browser*
