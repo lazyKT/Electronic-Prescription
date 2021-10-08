@@ -9,10 +9,15 @@ def before_app():
     db.create_all()
 
 
-@bp.route ("/")
-@bp.route ("/index")
+@bp.route ('/')
+@bp.route ('/index')
 def index():
   """
   : Web Site Root/Home Page
   """
   return render_template ('home/index.html')
+
+
+@bp.route('/contact')
+def contact():
+    return render_template ('home/contact.html')
