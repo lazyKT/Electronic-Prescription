@@ -12,7 +12,7 @@
 - cd E_Prescription
 - `git clone https://github.com/lazyKT/Electronic-Prescription.git`
 - python3 -m venv venv
-- .\venv\bin\activate
+- venv\bin\activate
 - pip install -r requirement.txt
 ### Unix
 - mkdir E_Prescription
@@ -25,7 +25,7 @@
 ## How to start development server
 ### For Windows
 - cd E_Prescription
-- .\venv\bin\activate
+- venv\bin\activate
 - python3 wsgi.py
 ### For Unix Systems
 - cd E_Prescription
