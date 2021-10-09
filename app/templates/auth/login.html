@@ -2,47 +2,46 @@
 
 {% block content %}
 
-<div class="login-container">
-  <div class="login-form-container">
-    <h3>Sign In</h3>
-    <form class="" action="" method="post" novalidate>
-      {{ form.hidden_tag() }}
-
-      <p>
-        {% for error in form.email.errors %}
-        <span class="form-validate-message">{{ error }}</span>
-        {% endfor %}
-        {{ form.email.label(class_="formLabel") }}
-        <br>
-        {{ form.email(size=32, class_="formInput") }}
-      </p>
-
-      <p>
-        {% for error in form.password.errors %}
-        <span class="form-validate-message">{{ error }}</span>
-        {% endfor %}
-        {{ form.password.label(class_="formLabel") }}
-        <br>
-        {{ form.password(size=32, class_="formInput") }}
-      </p>
-
-      <p>{{ form.remember_me() }} {{ form.remember_me.label(class_="formLabel") }}</p>
-
-      <a href="#" class="form-link">Forget password?</a>
-
-      <p>
-        {{ form.submit(class_="formButton") }}
-      </p>
-    </form>
-
-    <div class="signup">
-      <div class="">
-        <span>Don't Have an Account?</span>&nbsp;
-        <a href="{{ url_for('auth.options') }}">Sign up.</a>
+  <div class="container-fluid mt-5">
+    <p class="lead text-center">Sign In</p>
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+    {% endif %}
+    <div class="card bg-light mx-1">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {% for error in form.email.errors %}
+            <span class="form-validate-message">{{ error }}</span>
+            {% endfor %}
+            {{ form.email.label(class_="form-label") }}
+            {{ form.email(size=32, class_="form-control") }}
+          </div>
+          <div class="mb-3">
+            {% for error in form.password.errors %}
+            <span class="form-validate-message">{{ error }}</span>
+            {% endfor %}
+            {{ form.password.label(class_="form-label") }}
+            {{ form.password(size=32, class_="form-control") }}
+          </div>
+          <div class="mb-3 form-check">
+            {{ form.remember_me(class_="form-check-input") }}
+            {{ form.remember_me.label(class_="form-check-label") }}
+          </div>
+          <a href="#" class="form-link">Forget password?</a>
+          {{ form.submit(class_="btn btn-primary w-100 mt-3") }}
+        </form>
       </div>
     </div>
-
+    <div class="card mx-1 mt-3">
+      <div class="card-body">
+        <small>Don't have an account?</small>
+        <a href="{{ url_for('auth.options') }}">Create one</a>
+      </div>
+    </div>
   </div>
-</div>
 
 {% endblock %}

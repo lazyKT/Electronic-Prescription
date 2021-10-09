@@ -1,57 +1,61 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="patient-register-container">
-  <h4>Sign Up as a Patient</h4>
-  <form class="patient-register-form" action="" method="post">
-    {{ form.hidden_tag() }}
-
-    <p>
-      {% for error in form.fullname.errors %}
-      <span class="form-validate-message">{{ error }}</span>
-      {% endfor %}
-      {{ form.fullname.label(class_="formLabel") }}
-      <br>
-      {{ form.fullname (class_="formInput") }}
-    </p>
-
-    <p>
-      {% for error in form.email.errors %}
-      <span class="form-validate-message">{{ error }}</span>
-      {% endfor %}
-      {{ form.email.label(class_="formLabel") }}
-      <br>
-      {{ form.email (class_="formInput") }}
-    </p>
-
-    <p>
-      {% for error in form.mobile.errors %}
-      <span class="form-validate-message">{{ error }}</span>
-      {% endfor %}
-      {{ form.mobile.label(class_="formLabel") }}
-      <br>
-      {{ form.mobile (class_="formInput") }}
-    </p>
-
-    <p>
-      {% for error in form.password.errors %}
-      <span class="form-validate-message">{{ error }}</span>
-      {% endfor %}
-      {{ form.password.label(class_="formLabel") }}
-      <br>
-      {{ form.password (class_="formInput") }}
-    </p>
-
-    <p>
-      {{ form.confirm.label(class_="formLabel") }}
-      <br>
-      {{ form.confirm (class_="formInput") }}
-    </p>
-
-    <p>
-      {{ form.submit (class_="formButton") }}
-    </p>
-
-  </form>
+<div class="container-fluid mt-5">
+  <p class="lead text-center">Sign Up</p>
+  {% if error %}
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
+  <div class="card bg-light mx-1">
+    <div class="card-body">
+      <form method="post">
+        {{ form.hidden_tag() }}
+        <!-- Full Name -->
+        <div class="mb-3">
+          {{ form.fullname.label(class_="form-label") }}
+          {% for error in form.fullname.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.fullname (class_="form-control") }}
+        </div>
+        <!-- Email Address -->
+        <div class="mb-3">
+          {{ form.email.label(class_="form-label") }}
+          {% for error in form.email.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.email (class_="form-control") }}
+        </div>
+        <!-- Phone Number -->
+        <div class="mb-3">
+          {{ form.mobile.label(class_="form-label") }}
+          {% for error in form.mobile.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.mobile (class_="form-control") }}
+        </div>
+        <!-- password -->
+        <div class="mb-3">
+          {{ form.password.label(class_="form-label") }}
+          {% for error in form.password.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.password (class_="form-control") }}
+        </div>
+        <!-- confirm password -->
+        <div class="mb-3">
+          {{ form.confirm.label(class_="form-label") }}
+          {{ form.confirm (class_="form-control") }}
+        </div>
+        {{ form.submit(class_="btn btn-primary w-100 mt-3") }}
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

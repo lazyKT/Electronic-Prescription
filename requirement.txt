@@ -1,3 +1,6 @@
 flask
 flask-sqlalchemy
 flask-wtf
+flask-login
+email-validator
+flask-bootstrap
