@@ -19,7 +19,7 @@ def login ():
     form = LoginForm()
     if form.validate_on_submit():
         # Form validation successful
-        user = User.query.filter_by (email=form.email.data).first()
+        user = User.query.filter_by (username=form.username.data).first()
         if user is None or not user.check_password (form.password.data):
             # Login Failed
             error = 'Invalid Credentials!'

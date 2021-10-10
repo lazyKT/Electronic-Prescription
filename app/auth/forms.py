@@ -9,9 +9,9 @@ class LoginForm (FlaskForm):
     """
     : User Login Form
     """
-    email = StringField ("Email Address", validators=[
+    username = StringField ("Username", validators=[
         validators.DataRequired(),
-        validators.Length(min=4, max=50)
+        validators.Length(max=20)
     ])
     password = PasswordField ("Password", validators=[validators.DataRequired()])
     remember_me = BooleanField ("Remember Me")
