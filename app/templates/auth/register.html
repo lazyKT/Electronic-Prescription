@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+  <p class="lead text-center">Patient Sign Up</p>
+  {% if error %}
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
+  <div class="card bg-light mx-1">
+    <div class="card-body">
+      <form method="post">
+        {{ form.hidden_tag() }}
+        <!-- username -->
+        <div class="mb-3">
+          {{ form.username.label(class_="form-label") }}
+          {% for error in form.username.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.username (class_="form-control") }}
+        </div>
+        <!-- First Name -->
+        <div class="mb-3">
+          {{ form.fName.label(class_="form-label") }}
+          {% for error in form.fName.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.fName (class_="form-control") }}
+        </div>
+        <!-- Last Name -->
+        <div class="mb-3">
+          {{ form.lName.label(class_="form-label") }}
+          {% for error in form.lName.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.lName (class_="form-control") }}
+        </div>
+        <!-- Email Address -->
+        <div class="mb-3">
+          {{ form.email.label(class_="form-label") }}
+          {% for error in form.email.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.email (class_="form-control") }}
+        </div>
+        <!-- Phone Number -->
+        <div class="mb-3">
+          {{ form.mobile.label(class_="form-label") }}
+          {% for error in form.mobile.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.mobile (class_="form-control") }}
+        </div>
+        <!-- date of birth -->
+        <div class="mb-3">
+          {{ form.dob.label(class_="form-label") }}
+          {% for error in form.dob.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.dob (class_="form-control") }}
+        </div>
+        <!-- gender -->
+        <div class="mb-3">
+          {{ form.gender.label(class_="form-label") }}
+          {% for error in form.gender.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.gender (class_="form-select")}}
+        </div>
+        <!-- password -->
+        <div class="mb-3">
+          {{ form.password.label(class_="form-label") }}
+          {% for error in form.password.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.password (class_="form-control") }}
+        </div>
+        <!-- confirm password -->
+        <div class="mb-3">
+          {{ form.confirm.label(class_="form-label") }}
+          {{ form.confirm (class_="form-control") }}
+        </div>
+        {{ form.submit(class_="btn btn-primary w-100 mt-3") }}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

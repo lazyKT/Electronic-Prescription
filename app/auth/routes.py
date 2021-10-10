@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user
 from app import db
 from app.auth import bp
-from app.models import User
+from app.models import User, Patient
 from app.auth.forms import LoginForm, PatientRegisterForm, PatientMedicationProfileForm
 
 
@@ -27,12 +27,12 @@ def login ():
         else:
             login_user (user, remember=form.remember_me.data)
             flash('Login requested for user {}, remember_me={}'.format(
-                form.email.data, form.remember_me.data))
+                form.username.data, form.remember_me.data))
             return redirect(url_for('home.index'))
     return render_template ("auth/login.html", form=form)
 
 
-@bp.route ("/register")
+@bp.route ("/register/options")
 def options ():
     """
     : Registration Options-> Doctor, Patients or Phamarcists
@@ -44,7 +44,7 @@ def options ():
 
 
 @bp.route ("/register/patient", methods=["GET", "POST"])
-def patient_register ():
+def register ():
     """
     : Patient Registration
     """
@@ -53,13 +53,27 @@ def patient_register ():
     form = PatientRegisterForm()
     if form.validate_on_submit():
         # return redirect(url_for('auth.patient_register_info'))
-        user = User (fullname=form.fullname.data, email=form.email.data, mobile=form.mobile.data, type='patient')
+        _user = User.query.filter_by(username=form.username.data).first()
+        print ('user', _user)
+        if _user:
+            print ('User Already Exists!')
+            error = 'Username has already taken. Please choose another.'
+            return render_template ("auth/register.html", form=form, error=error)
+        _patient = Patient.query.filter_by(email=form.email.data).first()
+        if _patient:
+            print ('Patient Already Exists')
+            error = 'User already exists with email'
+            return render_template ('auth/register.html', form=form, error=error)
+        print ('successful register!')
+        user = User (username=form.username.data, role='patient')
         user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash ('Welcome, {}. Please log in.'.format(form.fullname.data))
+        user.save()
+        patient = Patient (fName=form.fName.data, lName=form.lName.data, mobile=form.mobile.data, account=user)
+        patient.save()
+        flash ('Welcome, {}. Please log in.'.format(form.lName.data))
         return redirect(url_for('auth.login'))
-    return render_template ("auth/patient.html", form=form)
+    print ('Form validation Failed!')
+    return render_template ("auth/register.html", form=form)
 
 
 @bp.route ("/register/patient/more", methods=["GET", "POST"])

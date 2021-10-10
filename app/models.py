@@ -13,6 +13,9 @@ class User (UserMixin, db.Model):
     role = db.Column (db.String(10))
     activated = db.Column (db.Boolean, default=False)
 
+    def __repr__(self):
+        return '<User> id: {}, username: {}'.format(self.id, self.username)
+
     def set_password(self, pwd: str):
         """
         : Hash Password and Store in DB
@@ -26,6 +29,20 @@ class User (UserMixin, db.Model):
         : pwd will be compared against the hash password stored in database
         """
         return check_password_hash(self.password, pwd)
+
+    def save (self):
+        """
+        : Add user to database
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_user_by_username (cls, username: str) -> object:
+        """
+        : Get User Object by username
+        """
+        return cls.query.filter_by(username=username).frist()
 
 
 @login.user_loader
@@ -41,15 +58,30 @@ class Patient (User, db.Model):
     pat_id = db.Column (db.Integer, primary_key=True)
     fName = db.Column (db.String(100))
     lName = db.Column (db.String(100))
+    mobile = db.Column (db.String(16), nullable=False)
     # gender = db.Column (db.String(8))
-    # email = db.Column (db.String(100), unique=True)
+    email = db.Column (db.String(100), unique=True)
     # dob = db.Column (db.DateTime, nullable=False)
     account = db.relationship (User, backref=db.backref('patient_account'), uselist=False)
     acc_id = db.Column(db.ForeignKey(User.id))
 
-
     def __repr__(self):
         return 'Patient: {}'.format(self.lName)
+
+    def save(self):
+        """
+        : Save Patient to database
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_patient_by_email (cls, email: str) -> object:
+        """
+        : Get Patient by email address
+        """
+        return Patient.query.filter_by (email=email)
+
 
 
 class Allergy (db.Model):
@@ -65,6 +97,7 @@ class Doctor (User, db.Model):
     doc_id = db.Column (db.Integer, primary_key=True)
     fName = db.Column (db.String(100), nullable=False)
     lName = db.Column (db.String(100), nullable=False)
+    mobile = db.Column (db.String(16), nullable=False)
     # gender = db.Column (db.String(8))
     # email = db.Column (db.String(100), unique=True)
     account = db.relationship (User, backref=db.backref('doctor_account'), uselist=False)
@@ -79,6 +112,7 @@ class Pharmacist (User, db.Model):
     phar_id = db.Column (db.Integer, primary_key=True)
     fName = db.Column (db.String(100), nullable=False)
     lName = db.Column (db.String(100), nullable=False)
+    mobile = db.Column (db.String(16), nullable=False)
     # gender = db.Column (db.String(8))
     # email = db.Column (db.String(100), unique=True)
     account = db.relationship (User, backref=db.backref('pharmacist_account'), uselist=False)

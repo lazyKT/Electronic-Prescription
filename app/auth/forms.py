@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, validators
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, DateField, SelectField, validators
 from wtforms.fields.html5 import TelField
 
 from app.models import User
@@ -22,9 +22,15 @@ class PatientRegisterForm (FlaskForm):
     """
     : User Registration Form
     """
-    fullname = StringField ("Full Name as in NRIC", validators=[
+    username = StringField ("Username", validators=[
         validators.DataRequired(),
-        validators.Length(min=5)
+        validators.Length(min=4)
+    ])
+    fName = StringField ("First Name", validators=[
+        validators.DataRequired()
+    ])
+    lName = StringField ("Last Name", validators=[
+        validators.DataRequired()
     ])
     email = StringField ("Email Address", validators=[
         validators.DataRequired(),
@@ -34,6 +40,14 @@ class PatientRegisterForm (FlaskForm):
         validators.DataRequired(),
         validators.Length(min=8, max=8)
     ])
+    gender = SelectField ("Gender", choices=[
+        ('Male'),
+        ('Female')
+    ])
+    dob = DateField(
+        "Date of Birth",
+        render_kw={'placeholder': 'YYYY-MM-DD'},
+        format='%Y-%m-%d')
     password = PasswordField ("Password", validators=[
         validators.DataRequired(),
         validators.Length(min=8),
