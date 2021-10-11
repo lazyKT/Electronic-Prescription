@@ -74,3 +74,11 @@ class PatientMedicationProfileForm (FlaskForm):
     history = TextAreaField ("Do you have anything special to tell us about your medication history?")
     accept_tc = BooleanField ("I accept and agree on Terms and Conditions")
     create_account = SubmitField ("Create an Account")
+
+
+class LogOutConfirmationForm (FlaskForm):
+    """
+    : Simple Form which consists of 2 buttons
+    """
+    submit = SubmitField ("Yes, Sign Out.")
+    cancel = SubmitField ("No")

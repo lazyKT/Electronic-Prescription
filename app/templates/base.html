@@ -64,7 +64,9 @@
               </a>
               <div class="dropdown-menu dropdown-menu-end">
                 <a href="#" class="dropdown-item">Profile</a>
-                <a href="{{ url_for('auth.logout') }}" class="dropdown-item">Sign Out</a>
+                <a type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  Sign Out
+                </a>
               </div>
             </div>
 
@@ -86,6 +88,21 @@
     </div>
     {% endif %}
     {% endwith %}
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to sign out?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            <a href="{{url_for('auth.logout')}}" type="button" class="btn btn-primary">Yes, Sign Out.</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {% block content %}
     {% endblock %}
