@@ -2,3 +2,5 @@ __pycache__
 venv
 test.db
 *.db
+db_V1.jpeg
+dev_db
