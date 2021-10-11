@@ -65,10 +65,17 @@ def register ():
             error = 'User already exists with email'
             return render_template ('auth/register.html', form=form, error=error)
         print ('successful register!')
-        user = User (username=form.username.data, role='patient')
-        user.set_password(form.password.data)
-        user.save()
-        patient = Patient (fName=form.fName.data, lName=form.lName.data, mobile=form.mobile.data, account=user)
+        patient = Patient (
+            username=form.username.data,
+            role='patient',
+            fName=form.fName.data,
+            lName=form.lName.data,
+            mobile=form.mobile.data,
+            email = form.email.data,
+            dob=form.dob.data,
+            gender=form.gender.data
+        )
+        patient.set_password(form.password.data)
         patient.save()
         flash ('Welcome, {}. Please log in.'.format(form.lName.data))
         return redirect(url_for('auth.login'))
