@@ -14,11 +14,11 @@
         <form method="post" novalidate>
           {{ form.hidden_tag() }}
           <div class="mb-3">
-            {% for error in form.email.errors %}
+            {% for error in form.username.errors %}
             <span class="form-validate-message">{{ error }}</span>
             {% endfor %}
-            {{ form.email.label(class_="form-label") }}
-            {{ form.email(size=32, class_="form-control") }}
+            {{ form.username.label(class_="form-label") }}
+            {{ form.username(size=32, class_="form-control") }}
           </div>
           <div class="mb-3">
             {% for error in form.password.errors %}
@@ -39,7 +39,7 @@
     <div class="card mx-1 mt-3">
       <div class="card-body">
         <small>Don't have an account?</small>
-        <a href="{{ url_for('auth.options') }}">Create one</a>
+        <a href="{{ url_for('auth.register') }}">Create one</a>
       </div>
     </div>
   </div>
