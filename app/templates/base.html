@@ -24,7 +24,9 @@
   <body>
     <nav class="navbar navbar-expand-xl navbar-dark bg-primary bg-gradient">
       <div class="container">
-        <a href="/" class="navbar-brand">Logo</a>
+        <a href="/" class="navbar-brand">
+          <img src="{{url_for('static', filename='images/medicine.png')}}" height="40" alt="">
+        </a>
         <button
           type="button"
           class="navbar-toggler"
@@ -38,7 +40,7 @@
             <div class="nav-item dropdown">
               <a
                 href="/"
-                class="dropdown-toggle nav-link"
+                class="dropdown-toggle nav-link nav-link-text"
                 data-bs-toggle="dropdown"
               >
                 About
@@ -49,11 +51,11 @@
                 <a href="#" class="dropdown-item">For Pharmacists</a>
               </div>
             </div>
-            <a href="/contact" class="nav-item nav-link">Contact</a>
+            <a href="/contact" class="nav-item nav-link nav-link-text">Contact</a>
           </div>
           <div class="navbar-nav ms-auto">
             {% if current_user.is_anonymous %}
-            <a href="/login" class="nav-item nav-link">Login</a>
+            <a href="/login" class="nav-item nav-link nav-link-text">Login</a>
             {% else %}
             <div class="nav-item dropdown">
               <a
@@ -63,7 +65,7 @@
                 <i class="fas fa-user-alt"></i>
               </a>
               <div class="dropdown-menu dropdown-menu-end">
-                <a href="#" class="dropdown-item">Profile</a>
+                <a href="{{url_for('home.profile')}}" class="dropdown-item">Profile</a>
                 <a type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal">
                   Sign Out
                 </a>
