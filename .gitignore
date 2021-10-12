@@ -4,3 +4,6 @@ test.db
 *.db
 db_V1.jpeg
 dev_db
+.DS_Store
+app/templates/.DS_Store
+app/.DS_Store

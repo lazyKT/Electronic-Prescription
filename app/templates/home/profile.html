@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-4 sticky-sm-top">
+        <div class="my-3">
+          <h4>Profile</h4>
+        </div>
+        <div class="">
+          <a href="#aboutme" class="side-nav-link">About Me</a>
+          {% if current_user.get_role() == 'patient' %}
+            <a href="#prescription" class="side-nav-link">My Prescriptions</a>
+          {% else %}
+            <a href="#prescription" class="side-nav-link">Issued Prescription</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-8">
+        <!-- about me -->
+        <div class="my-3" id="aboutme">
+          <h4>About Me</h4>
+        </div>
+        <hr class="horizontal-line"><br>
+        <!-- username -->
+        <div class="mb-1">
+          <h6>Username</h6>
+          {{ current_user.username }}
+        </div>
+        <hr class="horizontal-line"><br>
+        <div class="mb-1">
+          <h6>Email</h6>
+          {{ current_user.email }}
+        </div>
+        <hr class="horizontal-line"><br>
+        <div class="mb-1">
+          <h6>First Name</h6>
+          {{ current_user.fName }}
+        </div>
+        <hr class="horizontal-line"><br>
+        <div class="mb-1">
+          <h6>Last Name</h6>
+          {{ current_user.lName }}
+        </div>
+        <hr class="horizontal-line"><br>
+        <div class="mb-1">
+          <h6>Phone Number</h6>
+          {{ current_user.mobile }}
+        </div>
+        <hr class="horizontal-line"><br>
+        <div class="mb-1">
+          <h6>Date of Birth</h6>
+          {{ current_user.dob }}
+        </div>
+        <hr class="horizontal-line"><br>
+        <div class="mb-1">
+          <h6>Gender</h6>
+          {{ current_user.gender }}
+        </div>
+        <hr class="horizontal-line"><br>
+        <!-- end of about me -->
+        <div class="my-3" id="prescription">
+          {% if current_user.get_role() == 'patient' %}
+            <h4>My Prescriptions</h4>
+          {% else %}
+            <h4>Issued Prescription</h4>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

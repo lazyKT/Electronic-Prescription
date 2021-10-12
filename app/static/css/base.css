@@ -8,6 +8,18 @@ textarea {
   height: 150px;
 }
 
+.horizontal-line {
+  color: silver;
+}
+
+.side-nav-link {
+  display: block;
+  text-decoration: none;
+  font-size: 1.1rem;
+  color: gray;
+  margin: 10px 0px;
+}
+
 .my-nav-container {
   display: flex;
   background-color: #66AAFF;
@@ -122,6 +134,10 @@ textarea {
 
 .container-fluid {
   max-width: 500px;
+}
+
+.nav-link-text {
+  font-size: 1.1rem;
 }
 
 

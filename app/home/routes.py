@@ -1,6 +1,7 @@
 from app.home import bp
 from app import db
 from flask import render_template
+from flask_login import login_required
 
 
 @bp.before_app_first_request
@@ -21,3 +22,9 @@ def index():
 @bp.route('/contact')
 def contact():
     return render_template ('home/contact.html')
+
+
+@bp.route('/profile')
+@login_required
+def profile():
+    return render_template ('home/profile.html')
