@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_admin import Admin
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
@@ -6,6 +7,7 @@ from flask_login import LoginManager
 db = SQLAlchemy ()
 login = LoginManager ()
 login.login_view = 'auth.login'
+admin = Admin(name='e_prescription', template_mode='bootstrap5')
 
 
 def init_db():
@@ -26,6 +28,7 @@ def init_app ():
 
     db.init_app (app)
     login.init_app (app)
+    admin.init_app(app)
 
     with app.app_context ():
         # import routes
