@@ -1,5 +1,5 @@
 from flask_admin.contrib.sqla import ModelView
-from flask_admin import expose
+from flask_admin import expose, BaseView
 from flask_login import current_user
 
 
@@ -14,7 +14,11 @@ class MyAdminView(ModelView):
         return 'Admin'
 
     def is_accessible(self):
-        return True
+        print(current_user.is_authenticated)
+        if current_user.is_authenticated:
+            return current_user.get_role() == 'admin'
+        return False
+
 
 
 class AdminUserView(MyAdminView):
@@ -31,5 +35,6 @@ class AdminPatientView(MyAdminView):
         return 'Patient'
 
 
+# admin.add_view(AdminIndexView(name="E Prescription", endpoint="index"))
 admin.add_view(AdminUserView(User, db.session))
 admin.add_view(AdminPatientView(Patient, db.session))
