@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
@@ -7,7 +8,7 @@ from flask_login import LoginManager
 db = SQLAlchemy ()
 login = LoginManager ()
 login.login_view = 'auth.login'
-admin = Admin(name='e_prescription', template_mode='bootstrap5')
+admin = Admin(name='e_prescription')
 
 
 def init_db():
@@ -34,9 +35,11 @@ def init_app ():
         # import routes
         from app.home import bp as home_bp
         from app.auth import bp as auth_bp
+        from app.admin import bp as admin_bp
 
         # register blueprints
         app.register_blueprint (home_bp)
         app.register_blueprint (auth_bp)
+        app.register_blueprint (admin_bp)
 
         return app
