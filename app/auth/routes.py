@@ -26,6 +26,9 @@ def login ():
             return render_template ("auth/login.html", form=form, error=error)
         else:
             login_user (user, remember=form.remember_me.data)
+            print(user.get_role())
+            if user.get_role() == 'admin':
+                return redirect(url_for('admin.index'))
             flash('Login requested for user {}, remember_me={}'.format(
                 form.username.data, form.remember_me.data))
             return redirect(url_for('home.index'))
