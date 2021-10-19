@@ -37,11 +37,11 @@
           <tbody>
             {% for user in users %}
             <tr>
-              <td><span data-key="id" data-field-type="pk">{{ user.id }}</span></td>
-              <td><span data-key="username" data-field-type="input">{{ user.username }}</span></td>
-              <td><span data-key="email" data-field-type="input">{{ user.email }}</span></td>
-              <td><span data-key="role" data-field-type="select">{{ user.role }}</span></td>
-              <td><span data-key="status" data-field-type="select">{{ user.get_account_status() }}</span></td>
+              <td data-user-key="{{ user.id }}"><span data-key="id" data-field-type="pk">{{ user.id }}</span></td>
+              <td data-user-key="{{ user.id }}"><span data-key="username" data-field-type="input">{{ user.username }}</span></td>
+              <td data-user-key="{{ user.id }}"><span data-key="email" data-field-type="input">{{ user.email }}</span></td>
+              <td data-user-key="{{ user.id }}"><span data-key="role" data-field-type="select">{{ user.role }}</span></td>
+              <td data-user-key="{{ user.id }}"><span data-key="status" data-field-type="select">{{ user.get_account_status() }}</span></td>
               <td>
                 <div class="d-flex justify-content-start">
                   <!-- view more info button -->

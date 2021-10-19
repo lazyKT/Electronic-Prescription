@@ -61,7 +61,7 @@ function createModalContents(parent, data, mode) {
     }
   }
   if (mode === "edit")
-    container.appendChild(modalButton("save"), { data: "data" });
+    container.appendChild(modalButton("save"));
   container.appendChild(modalButton("cancel"));
   parent.appendChild(container);
 }
@@ -77,7 +77,7 @@ function editUserRoleSelector(selector, data) {
   });
 }
 
-function modalButton(btnType, data = null) {
+function modalButton(btnType) {
   const btn = document.createElement("button");
   btn.innerHTML = btnType.charAt(0).toUpperCase() + btnType.slice(1);
   if (btnType === "cancel") {
@@ -85,7 +85,7 @@ function modalButton(btnType, data = null) {
     btn.setAttribute("onclick", "dismissModal()");
   } else if (btnType === "save") {
     btn.setAttribute("class", "btn btn-primary modal-save-btn");
-    btn.setAttribute("onclick", "updateData(data)");
+    btn.setAttribute("onclick", "updateData(this)");
     // btn.addEventListener("click", updateData(data));
     // btn.onclick = updateData(data);
   }
@@ -99,6 +99,78 @@ function dismissModal() {
   if (modal) modal.innerHTML = null; // remove all the modal contents on Cancel Button Press
 }
 
-function updateData() {
-  console.log("update field", document.getElementById("update-username"));
+// edit/update User
+function updateData(dom) {
+  console.log(dom, dom.innerHTML);
+  dom.innerHTML = 'Loading ...';
+  const id = document.getElementById("update-id").value;
+  const username = document.getElementById("update-username").value;
+  const role = document.getElementById("update-role").value;
+  const email = document.getElementById("update-email").value;
+  const status = document.getElementById("update-status").value;
+  console.log (username, role, email, status);
+  updateUserRequest({id, username, role, email, status})
+    .then(res => {
+      console.log(res);
+      dom.innerHTML = 'Save';
+      updateDOM(res);
+      dismissModal();
+    })
+    .catch(err => console.log("Update Erorr", err));
 }
+
+// update dom after the successful user update network request
+function updateDOM(updatedData) {
+  const { id, username, email, role, status } = updatedData;
+
+  const updatedTd = document.querySelectorAll(`[data-user-key~="${id}"]`);
+  updatedTd[1].childNodes[0].innerHTML = username;
+  updatedTd[2].childNodes[0].innerHTML = email;
+  updatedTd[3].childNodes[0].innerHTML = role;
+  updatedTd[4].childNodes[0].innerHTML = status ? 'active' : 'inactive';
+  // // updatedTd.forEach( (cell, idx) => {
+  // //   console.log(cell.childNodes[0].innerHTML, idx);
+  // //   cell.childNodes[0].innerHTML =
+  // // });
+  // // console.log(updatedTd);
+  // let i = 0;
+  // for (const [k,v] of Object.entries(updatedData)) {
+  //   console.log(updatedTd[i].childNodes[0].innerHTML, k, v);
+  //   i++;
+  // }
+}
+
+
+// making network requset to server for user update/edit
+async function updateUserRequest(user) {
+  const {id} = user;
+  try {
+    const response = await fetch(`/admin/user/${id}`, {
+      method: 'PUT',
+      headers : {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify(user)
+    });
+
+    const json = await response.json();
+
+    return json;
+  }
+  catch(error ) {
+    console.log(error);
+  }
+}
+
+//
+
+//
+
+//
+///
+
+
+
+
+/// Extra spcaes

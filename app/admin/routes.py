@@ -1,3 +1,4 @@
+from flask import request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import expose, BaseView
 from flask_login import current_user
@@ -30,6 +31,26 @@ class AdminUserView(MyAdminView):
         """
         users = User.get_all_users()
         return self.render('admin/user.html', users=users)
+
+    @expose('/<id>', methods=['PUT', 'GET'])
+    def updateUser(self, id):
+        print('request method', request.method)
+        if request.method == 'PUT':
+            try:
+                user = User.get_user_by_id(id)
+                if user is None:
+                    return "User not found!", 404
+                json_data = request.get_json();
+                user.update_user(json_data)
+                return user(), 200
+            except KeyError as ke:
+                return ke, 500
+            except AttributeError as ae:
+                return ae, 500
+            except:
+                return "Update Failed. Internal Serve Error", 500
+        elif request.method == 'GET':
+            return "Updating user"
 
 
 class AdminPatientView(MyAdminView):
