@@ -24,7 +24,7 @@ class User (UserMixin, db.Model):
     }
 
     def __repr__(self):
-        return '<User> id: {}, username: {}'.format(self.id, self.username)
+        return '[User] id: {}, username: {}'.format(self.id, self.username)
 
     def __call__(self):
         return {

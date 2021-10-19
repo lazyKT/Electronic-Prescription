@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, flash
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import expose, BaseView
 from flask_login import current_user
@@ -24,7 +24,7 @@ class MyAdminView(ModelView):
 
 class AdminUserView(MyAdminView):
 
-    @expose('/', methods=['POST'])
+    @expose('/', methods=['GET', 'POST'])
     def index(self):
         """
         # Admin User Pannel or Create new User by admin
@@ -82,15 +82,20 @@ class AdminUserView(MyAdminView):
         if request.method == 'PUT':
             try:
                 user = User.get_user_by_id(id)
+                print(user)
                 if user is None:
                     return "User not found!", 404
                 json_data = request.get_json();
+                print(json_data)
                 user.update_user(json_data)
+                flash('Successfully Updated for {}'.format(user))
                 return user(), 200
             except KeyError as ke:
-                return ke, 500
+                print(ke)
+                return "KeyError", 500
             except AttributeError as ae:
-                return ae, 500
+                print(ae)
+                return "AttributeError", 500
             except:
                 return "Update Failed. Internal Serve Error", 500
         elif request.method == 'GET':
