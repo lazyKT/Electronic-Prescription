@@ -5,7 +5,7 @@ from flask_login import current_user
 
 
 from app import db, admin
-from app.models import User, Patient
+from app.models import User, Patient, Doctor, Pharmacist
 
 
 class MyAdminView(ModelView):
@@ -24,13 +24,57 @@ class MyAdminView(ModelView):
 
 class AdminUserView(MyAdminView):
 
-    @expose('/')
+    @expose('/', methods=['POST'])
     def index(self):
         """
-        # Admin User Pannel
+        # Admin User Pannel or Create new User by admin
         """
+        if request.method == 'POST':
+            """
+            # Create New User
+            """
+            try:
+                json_data = requset.get_json();
+                if json_data['role'] == 'doctor':
+                    # Create new doctor
+                    new_doctor = Doctor(
+                        username = json_data['username'],
+                        email = json_data['email'],
+                        role = json_data['role'],
+                        fName = json_data['fName'],
+                        lName = json_data['lName'],
+                        mobile = json_data['mobile'],
+                        gender = json_data['gender']
+                    )
+                    new_doctor.set_password(json_data['password'])
+                    new_doctor.save()
+                    return new_doctor(), 201
+                elif json_data['role'] == 'pharmacist':
+                    # Create new doctor
+                    new_pharmacist = Pharmacist(
+                        username = json_data['username'],
+                        email = json_data['email'],
+                        role = json_data['role'],
+                        fName = json_data['fName'],
+                        lName = json_data['lName'],
+                        mobile = json_data['mobile'],
+                        gender = json_data['gender']
+                    )
+                    new_pharmacist.set_password(json_data['password'])
+                    new_pharmacist.save()
+                    return new_pharmacist(), 201
+            except ValueError as ve:
+                return ve, 500
+            except KeyError as ke:
+                return ke, 500
+            except AttributeError as ae:
+                return ae, 500
+            except:
+                return "Error Creating New User.", 500
+
         users = User.get_all_users()
         return self.render('admin/user.html', users=users)
+
 
     @expose('/<id>', methods=['PUT', 'GET'])
     def updateUser(self, id):

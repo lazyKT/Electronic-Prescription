@@ -5,7 +5,7 @@
   <div class="container">
     <div class="d-flex justify-content-between">
       <h4>User</h4>
-      <button class="btn btn-danger" type="button" name="button">
+      <button class="btn btn-danger" type="button" name="button" onclick="openCreateNewUserModal()">
         <i class="fas fa-user-plus"></i>&nbsp;Add User
       </button>
     </div>
@@ -48,7 +48,7 @@
                   <button
                     type="button" data-mode="view"
                     class="btn btn-info mx-1"
-                    onclick="openModal(this)"
+                    onclick="openEditViewModal(this)"
                     >
                     <i class="fas fa-eye text-white"></i>
                   </button>
