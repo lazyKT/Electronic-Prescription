@@ -1,0 +1,74 @@
+.thead-dark {
+  background: dodgerblue;
+  color: white;
+}
+
+.my-modal-container {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+}
+
+.my-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 15px;
+  width: 70%;
+  max-width: 500px;
+  background: white;
+  border-radius: 5px;
+  border: lightgray solid 0.6px;
+  box-shadow: 2px 2px 2px rgb(0 0 0 / 30%);
+}
+
+.modal-contents {
+  background: white;
+  width: 80%;
+  padding: 0px 15px;
+  border: solid lightgray 0.2px;
+  border-radius: 5px;
+}
+
+.modal-input-field {
+  width: 100%;
+  padding: 5px 10px;
+  border: solid lightgray 0.4px;
+  border-radius: 5px;
+  color: #323232;
+  font-weight: 500;
+}
+
+.modal-cancel-btn {
+  display: block;
+  width: 100%;
+  margin: 10px 0px;
+  padding: 10px 0px;
+  background: lightgrey;
+  font-weight: 600;
+}
+
+.modal-cancel-btn:hover {
+  background: gainsboro;
+}
+
+.modal-save-btn {
+  display: block;
+  width: 100%;
+  margin: 40px 0px 10px 0px;
+  padding: 10px 0px;
+  background: dodgerblue;
+  font-weight: 600;
+  color: white;
+}
+
+.modal-save-btn:hover {
+  background: gainsboro;
+  color: dodgerblue;
+}

@@ -11,7 +11,7 @@ class MyAdminView(ModelView):
 
     @expose('/')
     def index(self):
-        return 'Admin'
+        return self.render('admin/index.html')
 
     def is_accessible(self):
         print(current_user.is_authenticated)
@@ -25,7 +25,11 @@ class AdminUserView(MyAdminView):
 
     @expose('/')
     def index(self):
-        return 'User'
+        """
+        # Admin User Pannel
+        """
+        users = User.get_all_users()
+        return self.render('admin/user.html', users=users)
 
 
 class AdminPatientView(MyAdminView):

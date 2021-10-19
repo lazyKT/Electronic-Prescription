@@ -1,0 +1,83 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<div class="pt-3 w-100 h-100" style="background: #f9f9f9;">
+  <div class="container">
+    <div class="d-flex justify-content-between">
+      <h4>User</h4>
+      <button class="btn btn-danger" type="button" name="button">
+        <i class="fas fa-user-plus"></i>&nbsp;Add User
+      </button>
+    </div>
+    <!-- search bar -->
+    <div class="card mt-4">
+      <div class="card-body py-3 d-flex justify-content-center">
+        <input class="px-2 w-75" type="text" name="" value="" placeholder="Search user">
+        <div class="w-25 d-flex justify-content-center">
+          <button class="btn btn-primary">Search</button>
+        </div>
+      </div>
+    </div>
+    <!-- end of search bar -->
+
+    <!-- table -->
+    <div class="card mt-4">
+      <div class="card-body mx-1">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Username</th>
+              <th scope="col">Email</th>
+              <th scope="col">Role</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td><span data-key="id" data-field-type="pk">{{ user.id }}</span></td>
+              <td><span data-key="username" data-field-type="input">{{ user.username }}</span></td>
+              <td><span data-key="email" data-field-type="input">{{ user.email }}</span></td>
+              <td><span data-key="role" data-field-type="select">{{ user.role }}</span></td>
+              <td><span data-key="status" data-field-type="select">{{ user.get_account_status() }}</span></td>
+              <td>
+                <div class="d-flex justify-content-start">
+                  <!-- view more info button -->
+                  <button
+                    type="button" data-mode="view"
+                    class="btn btn-info mx-1"
+                    onclick="openModal(this)"
+                    >
+                    <i class="fas fa-eye text-white"></i>
+                  </button>
+                  <!-- edit button -->
+                  <button
+                    type="button" data-mode="edit"
+                    class="btn btn-primary mx-1"
+                    onclick="openModal(this)">
+                    <i class="fas fa-pen"></i>
+                  </button>
+                  <!-- delete button -->
+                  <button class="btn btn-danger mx-1">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- end of table -->
+  </div>
+  <!-- Modal -->
+  <div class="my-modal-container" id="my-modal-container">
+    <div id="my-modal" class="my-modal">
+      <!-- modal contents -->
+    </div>
+  </div>
+</div>
+{% endblock %}

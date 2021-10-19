@@ -51,12 +51,22 @@ class User (UserMixin, db.Model):
     def get_role (self):
         return self.role
 
+
+    def get_account_status(self):
+        return 'active' if self.activated else 'inactive'
+
+
     @classmethod
     def get_user_by_username (cls, username: str) -> object:
         """
         : Get User Object by username
         """
         return cls.query.filter_by(username=username).frist()
+
+
+    @classmethod
+    def get_all_users (cls):
+        return cls.query.all()
 
 
 @login.user_loader
