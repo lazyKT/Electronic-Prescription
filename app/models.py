@@ -24,7 +24,16 @@ class User (UserMixin, db.Model):
     }
 
     def __repr__(self):
-        return '<User> id: {}, username: {}'.format(self.id, self.username)
+        return '[User] id: {}, username: {}'.format(self.id, self.username)
+
+    def __call__(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'role': self.role,
+            'status': self.activated
+        }
 
     def set_password(self, pwd: str):
         """
@@ -51,12 +60,37 @@ class User (UserMixin, db.Model):
     def get_role (self):
         return self.role
 
+
+    def update_user(self, updated_user):
+        self.username = updated_user['username']
+        self.email = updated_user['email']
+        self.role = updated_user['role']
+        self.activated = True if updated_user['status'] == 'active' else False
+        db.session.commit()
+
+
+    def get_account_status(self):
+        return 'active' if self.activated else 'inactive'
+
+
     @classmethod
     def get_user_by_username (cls, username: str) -> object:
         """
-        : Get User Object by username
+        # Get User Object by username
         """
         return cls.query.filter_by(username=username).frist()
+
+
+    @classmethod
+    def get_user_by_id (cls, id):
+        """
+        # Get user by id
+        """
+        return cls.query.filter_by(id=id).first()
+
+    @classmethod
+    def get_all_users (cls):
+        return cls.query.all()
 
 
 @login.user_loader
