@@ -40,7 +40,7 @@ class AdminUserView(MyAdminView):
     @expose('/add', methods=['GET', 'POST'])
     def create_user(self):
         form = AdminCreateUserForm()
-        
+
         if form.validate_on_submit():
             """
             # Create New User
@@ -62,6 +62,7 @@ class AdminUserView(MyAdminView):
 
                     flash ('New User Created. [info] {}'.format(new_doctor))
                     return redirect(url_for('user.index'))
+
                 elif form.user_role.data == 'Pharmacist':
                     # Create new doctor
                     new_pharmacist = Pharmacist(
@@ -78,6 +79,18 @@ class AdminUserView(MyAdminView):
 
                     flash ('New User Created. [info] {}'.format(new_pharmacist))
                     return redirect(url_for('user.index'))
+
+                elif form.user_role.data == 'Admin':
+                    # create new admin
+                    new_admin = Admin(
+                        username = form.username.data,
+                        email = form.email.data,
+                        role = 'admin',
+                        fName = form.fName.data,
+                        lName = form.lName.data,
+                        mobile = form.mobile.data,
+                        gender = form.gender.data
+                    )
 
             except ValueError as ve:
                 return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error: [ValueError] {}'.format(str(ve)))
