@@ -63,7 +63,9 @@
                     <i class="fas fa-pen"></i>
                   </button>
                   <!-- delete button -->
-                  <button class="btn btn-danger mx-1">
+                  <button
+                    class="btn btn-danger mx-1"
+                    onclick="openDeleteUserModal(this)">
                     <i class="fas fa-trash"></i>
                   </button>
                 </div>
@@ -80,6 +82,20 @@
   <div class="my-modal-container" id="my-modal-container">
     <div id="my-modal" class="my-modal">
       <!-- modal contents -->
+    </div>
+  </div>
+  <!-- delete confirmation modal -->
+  <div class="my-modal-container" id="delete-confirmation-modal">
+    <div id="delete-modal" class="my-modal">
+      <div class="alert alert-danger w-100" role="alert" id="delete-user-error">
+        <!-- error message -->
+      </div>
+      <h6 id="delete-confirmation-title">Are you sure you want to delete User?</h6>
+      <small class="text-danger">Upon confirmation, the selected user will be removed permanently.</small>
+      <div class="d-flex justify-content-center my-2">
+        <button onclick="dismissDeleteModal()" class="btn btn-light mx-2">Cancel</button>
+        <button id="delete-user-confirm" onclick="deleteUser(this)" class="btn btn-danger mx-2">Delete</button>
+      </div>
     </div>
   </div>
 </div>
