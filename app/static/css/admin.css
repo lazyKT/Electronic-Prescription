@@ -72,3 +72,9 @@
   background: gainsboro;
   color: dodgerblue;
 }
+
+
+.validation-message {
+  color: red;
+  font-size: 0.8rem;
+}

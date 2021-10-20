@@ -1,11 +1,13 @@
 // console.log("User Admin scripts running ...");
 
 window.onload = () => {
-  document.getElementById('admin-user-alert').style.display = 'none';
+  const alertMessage = document.getElementById('admin-user-alert');
+  if (alertMessage !== null) alertMessage.style.display = 'none';
 }
 
+// create new User
 function openCreateNewUserModal() {
-  const modalContainer = document.getElementById("my-modal-container");
+  const modalContainer = document.getElementById("create-new-user-modal");
   modalContainer.style.display = "flex";
 }
 

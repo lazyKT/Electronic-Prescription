@@ -4,13 +4,13 @@
 <div class="pt-2 w-100 h-100" style="background: #f9f9f9;">
   <div class="container">
     <div class="alert alert-primary" role="alert" id="admin-user-alert">
-
+      <!-- alert notification -->
     </div>
     <div class="d-flex justify-content-between pt-2">
       <h4 >User</h4>
-      <button class="btn btn-danger" type="button" name="button" onclick="openCreateNewUserModal()">
+      <a class="btn btn-danger" type="button" name="button" href="{{ url_for('user.create_user') }}">
         <i class="fas fa-user-plus"></i>&nbsp;Add User
-      </button>
+      </a>
     </div>
     <!-- search bar -->
     <div class="card mt-4">

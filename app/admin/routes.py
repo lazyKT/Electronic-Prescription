@@ -1,4 +1,4 @@
-from flask import request, flash
+from flask import request, flash, redirect, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import expose, BaseView
 from flask_login import current_user
@@ -6,6 +6,8 @@ from flask_login import current_user
 
 from app import db, admin
 from app.models import User, Patient, Doctor, Pharmacist
+from app.auth.forms import AdminCreateUserForm
+
 
 
 class MyAdminView(ModelView):
@@ -24,58 +26,69 @@ class MyAdminView(ModelView):
 
 class AdminUserView(MyAdminView):
 
-    @expose('/', methods=['GET', 'POST'])
+    @expose('/')
     def index(self):
         """
-        # Admin User Pannel or Create new User by admin
+        # Admin User Pannel to manage users
         """
-        if request.method == 'POST':
-            """
-            # Create New User
-            """
-            try:
-                json_data = requset.get_json();
-                if json_data['role'] == 'doctor':
-                    # Create new doctor
-                    new_doctor = Doctor(
-                        username = json_data['username'],
-                        email = json_data['email'],
-                        role = json_data['role'],
-                        fName = json_data['fName'],
-                        lName = json_data['lName'],
-                        mobile = json_data['mobile'],
-                        gender = json_data['gender']
-                    )
-                    new_doctor.set_password(json_data['password'])
-                    new_doctor.save()
-                    return new_doctor(), 201
-                elif json_data['role'] == 'pharmacist':
-                    # Create new doctor
-                    new_pharmacist = Pharmacist(
-                        username = json_data['username'],
-                        email = json_data['email'],
-                        role = json_data['role'],
-                        fName = json_data['fName'],
-                        lName = json_data['lName'],
-                        mobile = json_data['mobile'],
-                        gender = json_data['gender']
-                    )
-                    new_pharmacist.set_password(json_data['password'])
-                    new_pharmacist.save()
-                    return new_pharmacist(), 201
-            except ValueError as ve:
-                return ve, 500
-            except KeyError as ke:
-                return ke, 500
-            except AttributeError as ae:
-                return ae, 500
-            except:
-                return "Error Creating New User.", 500
-
         users = User.get_all_users()
         # return "users"
         # return {'users': [user() for user in users]}
         return self.render('admin/user.html', users=users)
+
+
+    @expose('/add', methods=['GET', 'POST'])
+    def create_user(self):
+        form = AdminCreateUserForm()
+        
+        if form.validate_on_submit():
+            """
+            # Create New User
+            """
+            try:
+                if form.user_role.data == 'Doctor':
+                    # Create new doctor
+                    new_doctor = Doctor(
+                        username = form.username.data,
+                        email = form.email.data,
+                        role = 'doctor',
+                        fName = form.fName.data,
+                        lName = form.lName.data,
+                        mobile = form.mobile.data,
+                        gender = form.gender.data
+                    )
+                    new_doctor.set_password(form.password.data)
+                    new_doctor.save()
+
+                    flash ('New User Created. [info] {}'.format(new_doctor))
+                    return redirect(url_for('user.index'))
+                elif form.user_role.data == 'Pharmacist':
+                    # Create new doctor
+                    new_pharmacist = Pharmacist(
+                        username = form.username.data,
+                        email = form.email.data,
+                        role = 'pharmacist',
+                        fName = form.fName.data,
+                        lName = form.lName.data,
+                        mobile = form.mobile.data,
+                        gender = form.gender.data
+                    )
+                    new_pharmacist.set_password(form.password.data)
+                    new_pharmacist.save()
+
+                    flash ('New User Created. [info] {}'.format(new_pharmacist))
+                    return redirect(url_for('user.index'))
+
+            except ValueError as ve:
+                return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error: [ValueError] {}'.format(str(ve)))
+            except KeyError as ke:
+                return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error: [KeyError] {}'.format(str(ke)))
+            except AttributeError as ae:
+                return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error: [AttrubuteError] {}'.format(str(ae)))
+            except Exception as e:
+                return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error. Please try again')
+
+        return self.render('admin/user_regis_form.html', form=form)
 
 
     @expose('/<id>', methods=['PUT', 'GET'])
@@ -90,7 +103,6 @@ class AdminUserView(MyAdminView):
                 json_data = request.get_json();
                 print(json_data)
                 user.update_user(json_data)
-                flash('Successfully Updated for {}'.format(user))
                 return user(), 200
             except KeyError as ke:
                 print(ke)
@@ -112,5 +124,5 @@ class AdminPatientView(MyAdminView):
 
 
 # admin.add_view(AdminIndexView(name="E Prescription", endpoint="index"))
-admin.add_view(AdminUserView(User, db.session))
+admin.add_view(AdminUserView(User, db.session, endpoint='user'))
 admin.add_view(AdminPatientView(Patient, db.session))
