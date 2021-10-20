@@ -69,6 +69,21 @@ class User (UserMixin, db.Model):
         db.session.commit()
 
 
+    @classmethod
+    def delete_user_by_id(cls, id):
+        try:
+            cls.query.filter_by(id=id).delete()
+            # db.session.delete(user)
+            db.session.commit()
+        except Exception as e:
+            raise(e)
+
+
+    def delete_user(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
     def get_account_status(self):
         return 'active' if self.activated else 'inactive'
 
@@ -110,8 +125,10 @@ class Patient (User):
     gender = db.Column (db.String(8))
     email = db.Column (db.String(100), unique=True)
     dob = db.Column (db.DateTime, nullable=False)
-    account = db.relationship (User, backref=db.backref('patient_account'), uselist=False)
-    acc_id = db.Column(db.ForeignKey(User.id))
+    # on deletion, cascade="all,delete" is executed when we use db.session.delete()
+    # account = db.relationship (User, backref=db.backref('patient_account', cascade="all,delete"), uselist=False)
+    # on deletion, ondelete='CASCADE' is executed when we use query.filter_by('').delete()
+    acc_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'))
 
     __mapper_args__ = {
         'polymorphic_identity': 'patient'
@@ -119,6 +136,15 @@ class Patient (User):
 
     def __repr__(self):
         return 'Patient: {}'.format(self.lName)
+
+    @classmethod
+    def delete_patient(cls, acc_id):
+        try:
+            patient = cls.query.filter_by(acc_id=acc_id).delete()
+            db.session.delete(patient)
+            db.session.commit()
+        except Exception as e:
+            raise(e)
 
     def save(self):
         """
@@ -167,8 +193,8 @@ class Admin (User):
     fName = db.Column (db.String(100), nullable=False)
     lName = db.Column (db.String(100), nullable=False)
     email = db.Column (db.String(100), unique=True)
-    account = db.relationship (User, backref=db.backref('admin_account'), uselist=False)
-    acc_id = db.Column (db.ForeignKey(User.id))
+    # account = db.relationship (User, backref=db.backref('admin_account', cascade="all,delete"), uselist=False)
+    acc_id = db.Column (db.ForeignKey(User.id, ondelete='CASCADE'))
 
     __mapper_args__ = {
         'polymorphic_identity': 'admin'
@@ -176,6 +202,16 @@ class Admin (User):
 
     def __repr__(self):
         return 'Admin: {}'.format(self.lName)
+
+
+    @classmethod
+    def delete_admin(cls, acc_id):
+        try:
+            admin = cls.query.filter_by(acc_id=acc_id).first()
+            db.session.delete(admin)
+            db.session.commit()
+        except Exception as e:
+            raise(e)
 
 
 class Doctor (User):
@@ -189,8 +225,8 @@ class Doctor (User):
     mobile = db.Column (db.String(16), nullable=False)
     gender = db.Column (db.String(8))
     email = db.Column (db.String(100), unique=True)
-    account = db.relationship (User, backref=db.backref('doctor_account'), uselist=False)
-    acc_id = db.Column(db.ForeignKey(User.id))
+    # account = db.relationship (User, backref=db.backref('doctor_account', cascade="all,delete"), uselist=False)
+    acc_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'))
 
     __mapper_args__ = {
         'polymorphic_identity': 'doctor'
@@ -198,6 +234,16 @@ class Doctor (User):
 
     def __repr__(self):
         return 'Doctor: {}'.format(self.lName)
+
+    @classmethod
+    def delete_doctor(cls, acc_id):
+        try:
+            doc = cls.query.filter_by(acc_id=acc_id).first()
+            db.session.delete(doc)
+            db.session.commit()
+        except Exception as e:
+            raise(e)
+
 
 
 class Pharmacist (User):
@@ -211,8 +257,8 @@ class Pharmacist (User):
     mobile = db.Column (db.String(16), nullable=False)
     gender = db.Column (db.String(8))
     email = db.Column (db.String(100), unique=True)
-    account = db.relationship (User, backref=db.backref('pharmacist_account'), uselist=False)
-    acc_id = db.Column(db.ForeignKey(User.id))
+    # account = db.relationship (User, backref=db.backref('pharmacist_account', cascade="all,delete"), uselist=False)
+    acc_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'))
 
     __mapper_args__ = {
         'polymorphic_identity': 'pharmacist'
@@ -220,6 +266,21 @@ class Pharmacist (User):
 
     def __repr__(self):
         return 'Pharmacist: {}'.format(self.lName)
+
+
+    @classmethod
+    def get_pharmacist_by_id(cls, id):
+        return cls.query.filter_by(phar_id=id).first()
+
+
+    @classmethod
+    def delete_pharmacist(cls, acc_id):
+        try:
+            phar = cls.query.filter_by(acc_id=acc_id).first()
+            db.session.delete(phar)
+            db.session.commit()
+        except Exception as e:
+            raise(e)
 
 
 class Medicine (db.Model):

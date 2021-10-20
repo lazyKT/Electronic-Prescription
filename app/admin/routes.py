@@ -1,4 +1,4 @@
-from flask import request, flash, redirect, url_for
+from flask import request, flash, redirect, url_for, jsonify
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import expose, BaseView
 from flask_login import current_user
@@ -32,6 +32,7 @@ class AdminUserView(MyAdminView):
         # Admin User Pannel to manage users
         """
         users = User.get_all_users()
+        print('users', users)
         # return "users"
         # return {'users': [user() for user in users]}
         return self.render('admin/user.html', users=users)
@@ -111,13 +112,13 @@ class AdminUserView(MyAdminView):
         return self.render('admin/user_regis_form.html', form=form)
 
 
-    @expose('/<id>', methods=['PUT', 'GET'])
+    @expose('/<id>', methods=['PUT', 'GET', 'DELETE'])
     def updateUser(self, id):
         print('request method', request.method)
         if request.method == 'PUT':
             try:
                 user = User.get_user_by_id(id)
-                print(user)
+                # print(user)
                 if user is None:
                     return "User not found!", 404
                 json_data = request.get_json();
@@ -131,7 +132,42 @@ class AdminUserView(MyAdminView):
                 print(ae)
                 return "AttributeError", 500
             except:
-                return "Update Failed. Internal Serve Error", 500
+                return "Update Failed. Internal Serve Error",
+
+        elif request.method == 'DELETE':
+            try:
+                user = User.get_user_by_id(id)
+                if user is None:
+                    return jsonify("User Not Found!"), 200
+                if user.activated:
+                    return jsonify("Cannot delete active user"), 200
+                print('Ok to delete user', id, user.role)
+
+                if user.role == 'patient':
+                    print('deleting patient')
+                    Patient.delete_patient(id)
+                elif user.role == 'admin':
+                    print('deleting admin')
+                    Admin.delete_admin(id)
+                elif user.role == 'doctor':
+                    print('deleting doctor')
+                    Doctor.delete_doctor(id)
+                elif user.role == 'pharmacist':
+                    print('deleting pharmacist')
+                    Pharmacist.delete_pharmacist(id)
+
+                flash('User Deleted. ID: {}, Username: {}'.format(id, user.username))
+                return '', 204
+
+            except KeyError as ke:
+                print(ke)
+                return jsonify(str(ke)), 500
+            except AttributeError as ae:
+                print(ae)
+                return jsonify(str(ae)), 500
+            except Exception as e:
+                print(e)
+                return jsonify(str(e)), 500
         elif request.method == 'GET':
             return "Updating user"
 

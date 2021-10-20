@@ -3,12 +3,56 @@
 window.onload = () => {
   const alertMessage = document.getElementById('admin-user-alert');
   if (alertMessage !== null) alertMessage.style.display = 'none';
+  const deleteUserError = document.getElementById('delete-user-error');
+  if (deleteUserError !== null) deleteUserError.style.display = 'none';
 }
 
 // create new User
-function openCreateNewUserModal() {
-  const modalContainer = document.getElementById("create-new-user-modal");
-  modalContainer.style.display = "flex";
+function openDeleteUserModal(dom) {
+  const deleteConfirmationModal = document.getElementById("delete-confirmation-modal");
+  deleteConfirmationModal.style.display = 'flex';
+
+  // to get the parent node of 'tr' type, we will transverse upwards until we get it
+  // In this function, the parameter dom represents <button>
+  // In our html hiearchy, tr -> td -> div -> button
+  const tr = dom.parentNode.parentNode.parentNode; // button.div.td.tr
+  const username = tr.cells[1].childNodes[0].innerHTML; // get username from selected table row
+  const userId = tr.cells[0].childNodes[0].innerHTML; // get user Id from selected table row
+  // delete confirmation title
+  (document.getElementById("delete-confirmation-title")).innerHTML = `Do you want to delete User ${username}?`
+
+  const deleteButton = document.getElementById("delete-user-confirm");
+  deleteButton.setAttribute('data-id', userId);
+}
+
+// dismiss delete user confirmation modal
+function dismissDeleteModal() {
+  const deleteConfirmationModal = document.getElementById("delete-confirmation-modal");
+  deleteConfirmationModal.style.display = 'none';
+  const deleteUserError = document.getElementById('delete-user-error');
+  if (deleteUserError !== null) deleteUserError.style.display = 'none';
+}
+
+// delete user
+function deleteUser(dom) {
+  const userId = dom.dataset.id;
+
+  deleteUserRequest(userId)
+    .then(res => {
+      const { status } = res;
+      if (status === 204)
+        window.location.reload();
+      else if (status !== 204) {
+        // show error message
+        const errorMessage = res.json ? `Error: ${res.json}` : 'Error Deleting User';
+        const deleteUserError = document.getElementById('delete-user-error');
+        deleteUserError.style.display = 'block';
+        deleteUserError.innerHTML = errorMessage;
+      }
+    })
+    .catch(error => {
+      console.log("Error Deleting User", error);
+    })
 }
 
 // open modal for Edit User or View User
@@ -175,25 +219,31 @@ async function updateUserRequest(user) {
   }
 }
 
-
-// add new user request
-async function addNewUserRequest(user) {
+// network request to delete user
+async function deleteUserRequest(id) {
   try {
-    const response = await fetch(`/admin/user`, {
-      method: 'POST',
+    const response = await fetch(`/admin/user/${id}`, {
+      method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(user)
+      body: null
     });
 
-    const json = await response.json();
+    console.log(response);
+    if (response.ok && response.status === 204) {
+      // successful delete
+      return {status: 204}
+    }
 
-    return json;
+    // const staus = await response.status
+    const json = await response.json();
+    const status = response.status
+
+    return {json, status}
   }
   catch(error) {
-    console.log("Create New User Error", error);
+    console.log(error);
   }
 }
 
