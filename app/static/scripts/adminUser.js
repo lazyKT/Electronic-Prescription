@@ -1,7 +1,13 @@
 // console.log("User Admin scripts running ...");
 
+window.onload = () => {
+  const alertMessage = document.getElementById('admin-user-alert');
+  if (alertMessage !== null) alertMessage.style.display = 'none';
+}
+
+// create new User
 function openCreateNewUserModal() {
-  const modalContainer = document.getElementById("my-modal-container");
+  const modalContainer = document.getElementById("create-new-user-modal");
   modalContainer.style.display = "flex";
 }
 
@@ -98,8 +104,6 @@ function modalButton(btnType) {
   } else if (btnType === "save") {
     btn.setAttribute("class", "btn btn-primary modal-save-btn");
     btn.setAttribute("onclick", "updateData(this)");
-    // btn.addEventListener("click", updateData(data));
-    // btn.onclick = updateData(data);
   }
   return btn;
 }
@@ -128,7 +132,6 @@ function updateData(dom) {
       // update successful
       dom.innerHTML = 'Save';
       updateDOM(res);
-      dismissModal();
     })
     .catch(err => console.log("Update Erorr", err));
 }
@@ -143,6 +146,10 @@ function updateDOM(updatedData) {
   updatedTd[2].childNodes[0].innerHTML = email;
   updatedTd[3].childNodes[0].innerHTML = role;
   updatedTd[4].childNodes[0].innerHTML = status ? 'active' : 'inactive';
+  dismissModal();
+  const alertMessage = document.getElementById('admin-user-alert');
+  alertMessage.style.display = 'block';
+  alertMessage.innerHTML = `Successfully Updated. [User] id: ${id}, username: ${username}`;
 }
 
 
