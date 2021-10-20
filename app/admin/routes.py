@@ -73,6 +73,8 @@ class AdminUserView(MyAdminView):
                 return "Error Creating New User.", 500
 
         users = User.get_all_users()
+        # return "users"
+        # return {'users': [user() for user in users]}
         return self.render('admin/user.html', users=users)
 
 
