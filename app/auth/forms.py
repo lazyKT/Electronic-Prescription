@@ -12,7 +12,6 @@ class AdminCreateUserForm (FlaskForm):
     user_role = SelectField("User Role", choices=[
         "Admin",
         "Doctor",
-        "Patient",
         "Pharmacist"
     ])
     username = StringField ("Username", validators=[

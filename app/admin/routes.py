@@ -5,7 +5,7 @@ from flask_login import current_user
 
 
 from app import db, admin
-from app.models import User, Patient, Doctor, Pharmacist
+from app.models import User, Patient, Doctor, Pharmacist, Admin
 from app.auth.forms import AdminCreateUserForm
 
 
@@ -87,18 +87,25 @@ class AdminUserView(MyAdminView):
                         email = form.email.data,
                         role = 'admin',
                         fName = form.fName.data,
-                        lName = form.lName.data,
-                        mobile = form.mobile.data,
-                        gender = form.gender.data
+                        lName = form.lName.data
                     )
+                    new_admin.set_password(form.password.data)
+                    new_admin.save()
+
+                    flash ('New User Created. [info] {}'.format(new_admin))
+                    return redirect(url_for('user.index'))
 
             except ValueError as ve:
+                print(str(ve))
                 return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error: [ValueError] {}'.format(str(ve)))
             except KeyError as ke:
+                print(str(ke))
                 return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error: [KeyError] {}'.format(str(ke)))
             except AttributeError as ae:
+                print(str(ae))
                 return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error: [AttrubuteError] {}'.format(str(ae)))
             except Exception as e:
+                print(str(e))
                 return self.render('admin/user_regis_form.html', form=form, error='Internal Server Error. Please try again')
 
         return self.render('admin/user_regis_form.html', form=form)

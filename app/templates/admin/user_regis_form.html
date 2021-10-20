@@ -1,7 +1,7 @@
 {% extends 'admin_base.html' %}
 
 {% block content %}
-<div class="container-fluid mt-5">
+<div class="container-fluid my-5">
   <p class="lead text-center">Create New User</p>
   {% if error %}
   <div class="alert alert-danger" role="alert">
@@ -99,6 +99,7 @@
           {{ form.confirm (class_="form-control") }}
         </div>
         {{ form.submit(class_="btn btn-primary w-100 mt-3") }}
+        <a href="{{ url_for('user.index') }}" class="btn btn-secondary w-100 my-1">Cancel</a>
       </form>
     </div>
   </div>
