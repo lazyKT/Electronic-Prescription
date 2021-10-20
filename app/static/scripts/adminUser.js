@@ -232,14 +232,14 @@ async function deleteUserRequest(id) {
 
     console.log(response);
     if (response.ok && response.status === 204) {
-      console.log('Response OK!')
+      // successful delete
       return {status: 204}
     }
 
     // const staus = await response.status
     const json = await response.json();
     const status = response.status
-    console.log(response.status, json)
+
     return {json, status}
   }
   catch(error) {

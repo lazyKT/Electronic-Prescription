@@ -155,7 +155,7 @@ class AdminUserView(MyAdminView):
                 elif user.role == 'pharmacist':
                     print('deleting pharmacist')
                     Pharmacist.delete_pharmacist(id)
-                # User.delete_user_by_id(id)
+
                 flash('User Deleted. ID: {}, Username: {}'.format(id, user.username))
                 return '', 204
 
