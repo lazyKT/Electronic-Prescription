@@ -25,7 +25,7 @@
 ## How to start development server
 ### For Windows
 - cd E_Prescription
-- venv\bin\activate
+- ./venv/Scripts/activate.exxe
 - set FLASK_APP=wsgi.py
 - set FLASK_ENV=development
 - flask run
