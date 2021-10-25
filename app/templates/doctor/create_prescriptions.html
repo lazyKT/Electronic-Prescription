@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container pt-3">
+  <div class="card">
+    <div class="card-body">
+      <form>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">
+            From Doctor:
+          </label>
+          <input
+            type="text"
+            class="form-control-plaintext"
+            value="Dr.{{ current_user.fName }}"
+            id="doctor"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">
+            To Patient:
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="patient"
+            placeholder="Choose Patient"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">
+            To Pharmacy:
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="pharmacy"
+            placeholder="Choose Pharmacist"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">
+            Medicine:
+          </label>
+          <br>
+          <textarea class="w-100 p-2" name="name" rows="8" cols="80" placeholder="Medicine List" readonly></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >Start Date:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="pharmacy"
+            placeholder="Prescription Start Date"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >End Date:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="pharmacy"
+            placeholder="Prescription End Date"
+            readonly
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Create Prescription</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal-container">
+  <div class="modal"></div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+# activate venv first
+export FLASK_APP=wsgi.py
+export FLASK_ENV=development
+flask shell
+
+from app import db
+from app.models import Admin
+
+admin = Admin(username='admin', email='admin@site.com', fName='admin', lName='admin', role='admin')
+admin.set_password('admin')
+db.create_all()
+db.session.add(admin)
+db.session.commit()

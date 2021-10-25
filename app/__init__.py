@@ -58,10 +58,12 @@ def init_app ():
         from app.home import bp as home_bp
         from app.auth import bp as auth_bp
         from app.admin import bp as admin_bp
+        from app.doctor import bp as doctor_bp
 
         # register blueprints
         app.register_blueprint (home_bp)
         app.register_blueprint (auth_bp)
         app.register_blueprint (admin_bp)
+        app.register_blueprint (doctor_bp)
 
         return app
