@@ -235,6 +235,67 @@ class Doctor (User):
     def __repr__(self):
         return 'Doctor: {}'.format(self.lName)
 
+
+    def getIssuedPrescriptions(self):
+        return [
+                  {
+                    'id': 1,
+                    'doctor': "OG King",
+                    'patient': "Susan",
+                    'pharmacist': "Guardians",
+                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen"],
+                    'meds': 4,
+                    'from_date': "2021-10-14",
+                    'to_date': "2021-11-14",
+                    'status': "active"
+                  },
+                  {
+                    'id': 2,
+                    'doctor': "OG King",
+                    'patient': "David",
+                    'pharmacist': "Watsons",
+                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen"],
+                    'meds': 4,
+                    'from_date': "2021-09-21",
+                    'to_date': "2021-12-14",
+                    'status': "active"
+                  },
+                  {
+                    'id': 3,
+                    'doctor': "OG King",
+                    'patient': "Guzman",
+                    'pharmacist': "NTUC",
+                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen", "Fluza"],
+                    'meds': 5,
+                    'from_date': "2021-08-14",
+                    'to_date': "2021-11-14",
+                    'status': "expired"
+                  },
+                  {
+                    'id': 4,
+                    'doctor': "OG King",
+                    'patient': "Salmon",
+                    'pharmacist': "NTUC",
+                    'medicine': ["Panadol", "Fluza"],
+                    'meds': 2,
+                    'from_date': "2021-08-14",
+                    'to_date': "2021-11-14",
+                    'status': "active"
+                  },
+                  {
+                    'id': 5,
+                    'doctor': "OG King",
+                    'patient': "Serah",
+                    'pharmacist': "NTUC",
+                    'medicine': ["Panadol", "Dicogen", "Fluza"],
+                    'meds': 3,
+                    'from_date': "2021-10-14",
+                    'to_date': "2021-10-24",
+                    'status': "expired"
+                  }
+                ]
+
+
     @classmethod
     def delete_doctor(cls, acc_id):
         try:

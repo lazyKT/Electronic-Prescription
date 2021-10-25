@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+<div class="container pt-3">
+  <div class="card">
+    <div class="card-body">
+      <form>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label"
+            >From Doctor:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            value="OG King"
+            id="doctor"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >To Patient:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="patient"
+            placeholder="Choose Patient"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >To Pharmacy:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="pharmacy"
+            placeholder="Choose Pharmacist"
+            readonly
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal-container">
+  <div class="modal"></div>
+</div>
+
+{% endblock %}
