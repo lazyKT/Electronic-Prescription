@@ -15,8 +15,8 @@
           <div class="card m-1">
             <div class="card-body" id="total-presc">
               <!-- Total Prescriptions -->
-              <h6>12</h6>
-              <small>prescriptions issued</small>
+              <h5 class="text-primary">12</h5>
+              <small class="text-secondary">prescriptions issued</small>
             </div>
           </div>
         </div>
@@ -25,8 +25,8 @@
           <div class="card m-1">
             <div class="card-body" id="monthly-presc">
               <!-- Monthly Prescriptions -->
-              <h6>7</h6>
-              <small>prescriptions this month</small>
+              <h5 class="text-primary">7</h5>
+              <small class="text-secondary">prescriptions this month</small>
             </div>
           </div>
         </div>
@@ -35,8 +35,8 @@
           <div class="card m-1">
             <div class="card-body" id="active-presc">
               <!-- active prescription -->
-              <h6>3</h6>
-              <small>active prescriptions currently</small>
+              <h5 class="text-primary">3</h5>
+              <small class="text-secondary">active prescriptions currently</small>
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@
       <div class="card my-2">
         <div class="card-body d-flex justify-content-between align-items-center">
           <div>
-            <strong>{{ p['patient'] }}</strong><br>
+            <strong class="text-secondary">{{ p['patient'] }}</strong><br>
             <small>prescribed from {{ p['from_date'] }}</small>
           </div>
           <div>
