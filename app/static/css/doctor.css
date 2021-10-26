@@ -1,0 +1,60 @@
+.modal-container {
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.my-modal {
+  width: 700px;
+  background: #f9f9f9;
+  padding: 20px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: -20px;
+  margin-right: -20px;
+  padding: 0;
+  border: 0.5px solid red;
+  border-radius: 50%;
+  text-align: center;
+  width: 50px;
+  height: 50px;
+  background: indianred;
+}
+
+.close-button i {
+  color: white;
+  font-size: 20px;
+  margin: 0;
+}
+
+.close-button :hover {
+  background: red;
+}
+
+.result-container {
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.result-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.result-container::-webkit-scrollbar-track {
+  background-color: #f9f9f9;
+}
+
+.result-container::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: cornflowerblue;
+}
