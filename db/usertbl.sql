@@ -13,8 +13,10 @@ CREATE TABLE pharmacist (
 phar_id INTEGER PRIMARY KEY AUTOINCREMENT,
 fName TEXT,
 lName TEXT,
-gender varchar(1),
+gender TEXT,
 email TEXT,
+mobile TEXT,
+dob TEXT,
 user_id INTEGER NOT NULL,
 FOREIGN KEY (user_id)
     REFERENCES user (user_id)
@@ -24,8 +26,10 @@ CREATE TABLE doctor (
 doc_id INTEGER PRIMARY KEY AUTOINCREMENT,
 fName TEXT,
 lName TEXT,
-gender varchar(1),
+gender TEXT,
 email TEXT,
+mobile TEXT,
+dob TEXT,
 user_id INTEGER NOT NULL,
 FOREIGN KEY (user_id)
     REFERENCES user (user_id)
@@ -35,7 +39,10 @@ CREATE TABLE admin (
 adm_id INTEGER PRIMARY KEY AUTOINCREMENT,
 fName TEXT,
 lName TEXT,
+gender TEXT,
 email TEXT,
+mobile TEXT,
+dob TEXT,
 user_id INTEGER NOT NULL,
 FOREIGN KEY (user_id)
     REFERENCES user (user_id)
@@ -45,7 +52,7 @@ CREATE TABLE patient (
 pat_id INTEGER PRIMARY KEY AUTOINCREMENT,
 fName TEXT,
 lName TEXT,
-gender varchar(1),
+gender TEXT,
 email TEXT,
 dob TEXT,
 user_id INTEGER NOT NULL,

@@ -1,9 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="container">
+  <div class="index-container">
     {% if current_user.is_anonymous %}
-      <h4>This is Home Page.</h4>
+    <h1 align=center>Electronic Prescription System</h1>
+      <div class="index-intro">
+        <div class="index-image">
+          <img src="{{url_for('static', filename='images/mainpage.png')}}">
+        </div>
+      </div>
+      <div class="index-text">
+        <p>Welcome to our prescription system.<br>
+          To minimize physical interaction, our doctors will diagnose and prescribe medication to you virtually.<br>
+          Your prescription will be sent to you via email and you can head down to any pharmacy to collect it.</p>
+      </div>
     {% elif current_user.is_authenticated %}
       {% set template=current_user.get_role() + '/dashboard.html' %} {% include template %}
     {% endif %}
