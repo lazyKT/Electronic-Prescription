@@ -1,7 +1,7 @@
 from app.home import bp
 from app import db
-from flask import render_template
-from flask_login import login_required
+from flask import render_template, redirect, url_for
+from flask_login import login_required, current_user
 
 
 @bp.before_app_first_request
@@ -16,6 +16,10 @@ def index():
   """
   : Web Site Root/Home Page
   """
+  if current_user.is_authenticated:
+      if current_user.get_role() == 'doctor':
+          return redirect(url_for('doctor.index'))
+
   return render_template ('home/index.html')
 
 

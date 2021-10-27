@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="{{ url_for('static', filename='scripts/createPrescription.js') }}">
+
+</script>
+<div class="container pt-3">
+  <h4 class="text-muted">Issue Prescription</h4>
+  <div class="card">
+    <div class="card-body">
+      <form>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label"
+            >From Doctor:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            value="Dr.{{ current_user.fName }}"
+            id="doctor"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >To Patient:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="patient"
+            placeholder="Choose Patient"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >To Pharmacy:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="pharmacist"
+            placeholder="Choose Pharmacist"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <div
+            class="d-flex justify-content-between align-items-center mr-2 mb-1"
+          >
+            <label for="medication" class="form-label">
+              Medication:
+            </label>
+            <a class="btn btn-danger" id="add-med-button">
+              Add Medication&nbsp;
+              <iclass="fas fa-prescription-bottle-alt"></i>
+            </a>
+          </div>
+          <div class="form-control p-1 bg-light" id="medication">
+            Medication
+          </div>
+        </div>
+        <button class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- select patient -->
+<div class="modal-container" id="modal-container">
+  <div class="my-modal">
+    <button class="close-button" id="dismiss-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h4 class="text-muted mb-4" id="modal-title"></h4>
+    <div class="d-flex justify-content-between px-2 mb-3">
+      <input
+        class="w-75 form-control"
+        placeholder="Search Patients"
+        type="text"
+        id="search-input"
+      />
+      <div class="d-flex justify-content-end mr-2">
+        <button class="btn btn-primary" id="search-btn">Search</button>
+      </div>
+    </div>
+    <h5 class="text-muted">Search Result(s)</h5>
+    <div class="card my-2">
+      <div class="card-body result-container" id="result-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- medication modal -->
+<div class="modal-container" id="med-modal-container">
+  <div class="my-modal">
+    <button class="close-button" id="dismiss-med-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h4 class="text-muted mb-4">Medication Form</h4>
+    <input
+      class="form-control"
+      list="meds-list"
+      id="med-input"
+      placeholder="Type to search..."
+      required
+    />
+    <datalist id="meds-list"> </datalist>
+
+    <!-- dosage -->
+    <h5 class="text-muted my-2">Dosage Options</h5>
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="med-frequency" class="form-label">Frequency:</label>
+          <select
+            class="form-select"
+            aria-label="Default select example"
+            id="med-freq"
+            required
+          >
+            <option selected>Choose medication frequency per day</option>
+            <option value="1">One time a day</option>
+            <option value="2">Two times a day</option>
+            <option value="3">Three times a day</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="extra-note" class="form-label">Extra Note:</label>
+          <textarea
+            class="form-control"
+            id="extra-note-meds"
+            rows="3"
+            placeholder="Notes"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <button id="add-med" class="btn btn-primary mt-2 w-25">
+      Add
+    </button>
+  </div>
+</div>
+{% endblock %}

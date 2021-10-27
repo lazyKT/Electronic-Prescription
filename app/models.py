@@ -4,6 +4,7 @@
 from datetime import datetime
 from app import db, login
 from flask_login import UserMixin
+from sqlalchemy import extract
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -137,6 +138,20 @@ class Patient (User):
     def __repr__(self):
         return 'Patient: {}'.format(self.lName)
 
+
+    @classmethod
+    def get_all_patients(cls):
+        return cls.query.all()
+
+
+    @classmethod
+    def filter_patient(cls, q):
+        """
+        # Filter Users by search query
+        """
+        return cls.query.filter(cls.fName.contains(q)).all()
+
+
     @classmethod
     def delete_patient(cls, acc_id):
         try:
@@ -236,64 +251,33 @@ class Doctor (User):
         return 'Doctor: {}'.format(self.lName)
 
 
-    def getIssuedPrescriptions(self):
-        return [
-                  {
-                    'id': 1,
-                    'doctor': "OG King",
-                    'patient': "Susan",
-                    'pharmacist': "Guardians",
-                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen"],
-                    'meds': 4,
-                    'from_date': "2021-10-14",
-                    'to_date': "2021-11-14",
-                    'status': "active"
-                  },
-                  {
-                    'id': 2,
-                    'doctor': "OG King",
-                    'patient': "David",
-                    'pharmacist': "Watsons",
-                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen"],
-                    'meds': 4,
-                    'from_date': "2021-09-21",
-                    'to_date': "2021-12-14",
-                    'status': "active"
-                  },
-                  {
-                    'id': 3,
-                    'doctor': "OG King",
-                    'patient': "Guzman",
-                    'pharmacist': "NTUC",
-                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen", "Fluza"],
-                    'meds': 5,
-                    'from_date': "2021-08-14",
-                    'to_date': "2021-11-14",
-                    'status': "expired"
-                  },
-                  {
-                    'id': 4,
-                    'doctor': "OG King",
-                    'patient': "Salmon",
-                    'pharmacist': "NTUC",
-                    'medicine': ["Panadol", "Fluza"],
-                    'meds': 2,
-                    'from_date': "2021-08-14",
-                    'to_date': "2021-11-14",
-                    'status': "active"
-                  },
-                  {
-                    'id': 5,
-                    'doctor': "OG King",
-                    'patient': "Serah",
-                    'pharmacist': "NTUC",
-                    'medicine': ["Panadol", "Dicogen", "Fluza"],
-                    'meds': 3,
-                    'from_date': "2021-10-14",
-                    'to_date': "2021-10-24",
-                    'status': "expired"
-                  }
-                ]
+    def get_issued_prescriptions(self):
+        return Prescription.get_prescriptions_by_doctor(self.id)
+
+
+    def get_patient_name(self, pat_id):
+        patient = Patient.query.filter_by(pat_id=pat_id)
+        return patient.fName
+
+    @staticmethod
+    def get_monthly_issued_presc(doc_id, month=1, year=2021):
+        """
+        # get prescriptions issued by month, year
+        """
+        return db.session.query(Prescription).filter(extract('month', Prescription.from_date)==month).filter_by(doc_id=doc_id).all()
+
+
+    @classmethod
+    def get_active_prescriptions(cls, doc_id):
+        """
+        # get all active Prescriptions by doctor id
+        """
+        return db.session.query(Prescription).filter_by(doc_id=doc_id).filter(Prescription.to_date > datetime.now()).all()
+
+
+    @classmethod
+    def get_all_doctors(cls):
+        return cls.query.all()
 
 
     @classmethod
@@ -327,6 +311,16 @@ class Pharmacist (User):
 
     def __repr__(self):
         return 'Pharmacist: {}'.format(self.lName)
+
+
+    @classmethod
+    def filter_pharmacist(cls, q):
+        return cls.query.filter(cls.fName.contains(q))
+
+
+    @classmethod
+    def get_all_pharmacists(cls):
+        return cls.query.all()
 
 
     @classmethod
@@ -365,13 +359,42 @@ class Prescription (db.Model):
     __tablename__ = 'prescription'
     pres_id = db.Column (db.Integer, primary_key=True)
     identifier = db.Column (db.String(16))
-    date = db.Column (db.DateTime, default=datetime.now())
-    quantity = db.Column (db.Integer, default=0)
-    patient = db.relationship (Patient, backref=db.backref('patient_prescription'), uselist=False)
-    doctor = db.relationship (Doctor, backref=db.backref('doctor'), uselist=False)
-    pharmacist = db.relationship (Pharmacist, backref=db.backref('pharmacist'), uselist=False)
-    medicine = db.relationship (Medicine, backref=db.backref('medcine'), uselist=True)
+    medication = db.Column (db.String(256))
+    from_date = db.Column (db.DateTime, default=datetime.now())
+    to_date = db.Column (db.DateTime, default=datetime.now())
     doc_id = db.Column (db.ForeignKey(Doctor.doc_id))
     pat_id = db.Column (db.ForeignKey(Patient.pat_id))
     phar_id = db.Column (db.ForeignKey(Pharmacist.phar_id))
-    med_id = db.Column (db.ForeignKey(Medicine.med_id))
+
+
+    def __call__ (self):
+        meds_count = len( self.medication.split(',') )
+        status = 'active' if datetime.now() < self.to_date else 'expired'
+        patient_name = Patient.get_user_by_id(self.pat_id).fName
+        return {
+            'pres_id' : self.pres_id,
+            'id' : self.identifier,
+            'medication': self.medication,
+            'meds_count': meds_count,
+            'doctor': self.doc_id,
+            'patient': self.pat_id,
+            'p_name': patient_name,
+            'phar_id': self.phar_id,
+            'from_data': self.from_date,
+            'to_date': self.to_date,
+            'status': status
+        }
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+    @classmethod
+    def get_prescriptions_by_doctor(cls, doc_id):
+        return cls.query.filter_by(doc_id=doc_id).all()
+
+
+    @classmethod
+    def get_all_prescriptions(cls):
+        return cls.query.all()
