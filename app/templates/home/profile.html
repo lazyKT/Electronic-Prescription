@@ -9,7 +9,8 @@
         </div>
         <div class="">
           <a href="#aboutme" class="side-nav-link">About Me</a>
-          {% if current_user.get_role() == 'patient' %}
+          {% if current_user.get_role() == 'admin' %}  
+          {% elif current_user.get_role() == 'patient' %}
             <a href="#prescription" class="side-nav-link">My Prescriptions</a>
           {% else %}
             <a href="#prescription" class="side-nav-link">Issued Prescription</a>
