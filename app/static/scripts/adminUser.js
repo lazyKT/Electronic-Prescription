@@ -64,9 +64,9 @@ function openEditViewModal(dom) {
   // const modalContainer = document.getElementById("my-modal-container");
   // modalContainer.style.display = "flex";
   // const modal = document.getElementById("my-modal");
-  // const modalMode = dom.dataset.mode;
+  const mode = dom.dataset.mode;
   const userId = dom.dataset.id;
-  window.location = `/admin/user/edit/${userId}`;
+  window.location = mode === 'edit' ? `/admin/user/edit/${userId}` : `/admin/user/view/${userId}`;
   // create Modal Child Nodes based on the modalMode: edit will be inputs and view will be just texts
   // createModalContents(modal, tr.cells, modalMode);
   // console.log(tr, tr.cells[0]);

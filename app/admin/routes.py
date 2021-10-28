@@ -193,6 +193,34 @@ class AdminUserView(MyAdminView):
                 return self.render('admin/edit_user.html', form=form, user=user_with_role, error='Internal Server Error: {}'.format(str(e)))
 
 
+    @expose('view/<id>')
+    def view_user(self, id):
+        """
+        # View user information
+        """
+        try:
+            user = User.get_user_by_id(id)
+            if user is None:
+                return "User Not Found", 404
+
+            role = user.get_role()
+            if role == 'admin':
+                form = EditAdminForm()
+            else:
+                # I am using the edit form but in this page, all the fields are readonly
+                form = AdminEditUserForm()
+                # get user type instance based on user role --> doctor, patient, pharmacist
+                user_with_role = self.get_user_type_instance(role, id)
+                status = 'Active' if user.activated else 'Inactive'
+                return self.render('admin/view_user.html', form=form, user=user_with_role, status=status)
+
+        except Exception as e:
+            print('Exception occured during edit user. Error: {}'.format(str(e)))
+            flash ('Internal Server Error [Error], {}'.format(str(e)))
+            return redirect(url_for('user.index'))
+
+
+
     def to_user_dict (self, username, email, fName, lName, mobile, activated):
         """
         # Converts form data to python dictionary
