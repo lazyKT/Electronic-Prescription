@@ -58,9 +58,66 @@ class AdminCreateUserForm (FlaskForm):
             raise ValidationError('User already exists. Please use different email')
 
 
+
+class EditAdminForm (FlaskForm):
+    """
+    # Edit Admin Profile Form
+    """
+    username = StringField ("Username", validators=[
+        validators.DataRequired(),
+        validators.Length(min=4)
+    ])
+    fName = StringField ("First Name", validators=[
+        validators.DataRequired()
+    ])
+    lName = StringField ("Last Name", validators=[
+        validators.DataRequired()
+    ])
+    email = StringField ("Email Address", validators=[
+        validators.DataRequired(),
+        validators.Length(min=4, max=50)
+    ])
+    activated = SelectField ("Status", choices=[
+        ('Active'),
+        ('Inactive')
+    ])
+    submit = SubmitField ("Save Changes")
+
+
+
+class AdminEditUserForm (FlaskForm):
+    """
+    # Admin Edit User Form
+    """
+    username = StringField ("Username", validators=[
+        validators.DataRequired(),
+        validators.Length(min=4)
+    ])
+    fName = StringField ("First Name", validators=[
+        validators.DataRequired()
+    ])
+    lName = StringField ("Last Name", validators=[
+        validators.DataRequired()
+    ])
+    email = StringField ("Email Address", validators=[
+        validators.DataRequired(),
+        validators.Length(min=4, max=50)
+    ])
+    mobile = TelField ("Phone Number (8-digits without country code)", validators=[
+        validators.DataRequired(),
+        validators.Length(min=8, max=8)
+    ])
+    activated = SelectField ("Status", choices=[
+        ('Active'),
+        ('Inactive')
+    ])
+    submit = SubmitField ("Save Changes")
+
+
+
 class LoginForm (FlaskForm):
     """
-    : User Login Form
+    # User Login Form
     """
     username = StringField ("Username", validators=[
         validators.DataRequired(),

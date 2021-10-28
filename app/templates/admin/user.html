@@ -50,6 +50,7 @@
                   <!-- view more info button -->
                   <button
                     type="button" data-mode="view"
+                    data-id="{{ user.id }}"
                     class="btn btn-info mx-1"
                     onclick="openEditViewModal(this)"
                     >
@@ -58,6 +59,7 @@
                   <!-- edit button -->
                   <button
                     type="button" data-mode="edit"
+                    data-id="{{ user.id }}"
                     class="btn btn-primary mx-1"
                     onclick="openEditViewModal(this)">
                     <i class="fas fa-pen"></i>

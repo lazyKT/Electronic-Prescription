@@ -2,8 +2,9 @@
 # Prescriptions Routes
 # CREATE, RETERIVE, UPDATE, DELETE
 # -----
+from datetime import datetime
 from flask import render_template, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from app.prescription import bp
 from app.models import Doctor, Patient, Pharmacist, Prescription
@@ -18,12 +19,10 @@ def create_get_prescriptions():
             medication=data['medication'],
             doc_id=data['doctor'],
             pat_id=data['patient'],
-            phar_id=data['pharmacist']
+            phar_id=data['pharmacist'],
+            from_date=datetime.now() if 'from_date' not in data else datetime.strptime(data['from_date'], '%Y-%m-%d'),
+            to_date=datetime.now() if 'to_date' not in data else datetime.strptime(data['to_date'], '%Y-%m-%d')
         )
-        if 'from_date' in data:
-            prescription.from_date = data['from_date']
-        if 'to_date' in data:
-            prescription.to_date = data['to_date']
         prescription.save()
         return jsonify(prescription()), 201
 
@@ -39,4 +38,4 @@ def get_all_prescriptions():
 @bp.route('/prescription/<id>')
 def get_prescription_by_id(id):
     p = Prescription.query.filter_by(pres_id=id).first()
-    return jsonify(p()), 200
+    return render_template('prescription/view_prescription.html', pres=p)

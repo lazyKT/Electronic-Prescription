@@ -61,6 +61,7 @@ def init_app ():
         from app.doctor import bp as doctor_bp
         from app.patient import bp as patient_bp
         from app.prescription import bp as pres_bp
+        from app.pharmacist import bp as phar_bp
 
         # register blueprints
         app.register_blueprint (home_bp)
@@ -69,5 +70,6 @@ def init_app ():
         app.register_blueprint (doctor_bp)
         app.register_blueprint (patient_bp)
         app.register_blueprint (pres_bp)
+        app.register_blueprint (phar_bp)
 
         return app

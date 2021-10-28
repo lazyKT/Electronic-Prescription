@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, jsonify
 from flask_login import login_required
 
 from app.models import Patient, User
@@ -11,7 +11,7 @@ def filter_user(q):
     patients = Patient.filter_patient(q)
     if len(patients) == 0:
         return "Not Found", 404
-    return {'data': [patient() for patient in patients]}, 200
+    return jsonify([patient() for patient in patients]), 200
 
 
 @bp.route('/patient/all')

@@ -65,7 +65,6 @@ class User (UserMixin, db.Model):
     def update_user(self, updated_user):
         self.username = updated_user['username']
         self.email = updated_user['email']
-        self.role = updated_user['role']
         self.activated = True if updated_user['status'] == 'active' else False
         db.session.commit()
 
@@ -137,6 +136,39 @@ class Patient (User):
 
     def __repr__(self):
         return 'Patient: {}'.format(self.lName)
+
+
+    def __call__(self):
+        return {
+            'id': self.acc_id,
+            'fName': self.fName,
+            'lName': self.lName,
+            'email': self.email,
+            'username': self.username
+        }
+
+
+    @classmethod
+    def get_patient_by_acc_id(cls, acc_id):
+        return cls.query.filter_by(acc_id=acc_id).first()
+
+
+    @classmethod
+    def update_patient(cls, acc_id, data):
+        try:
+            patient = cls.query.filter_by(acc_id=acc_id).first()
+            print(data)
+            patient.username = data['username']
+            patient.email = data['email']
+            patient.fName = data['fName']
+            patient.lName = data['lName']
+            patient.mobile = data['mobile']
+            patient.activated = True if data['activated'] == 'Active' else False
+            db.session.commit()
+            return patient
+        except Exception as e:
+            print('Exception occured during update_patient', str(e))
+            raise e
 
 
     @classmethod
@@ -220,6 +252,23 @@ class Admin (User):
 
 
     @classmethod
+    def get_admin_by_acc_id(cls, acc_id):
+        return cls.query.filter_by(acc_id=acc_id).first()
+
+
+    @classmethod
+    def update_admin(cls, acc_id, data):
+        admin = cls.query.filter_by(acc_id=acc_id).first()
+        admin.username = data['username']
+        admin.email = data['email']
+        admin.fName = data['fName']
+        admin.lName = data['lName']
+        admin.activated = True if data['activated'] == 'Active' else False
+        db.session.commit()
+        return admin
+
+
+    @classmethod
     def delete_admin(cls, acc_id):
         try:
             admin = cls.query.filter_by(acc_id=acc_id).first()
@@ -259,6 +308,12 @@ class Doctor (User):
         patient = Patient.query.filter_by(pat_id=pat_id)
         return patient.fName
 
+
+    @classmethod
+    def get_doctor_by_acc_id(cls, acc_id):
+        return cls.query.filter_by(acc_id=acc_id).first()
+
+
     @staticmethod
     def get_monthly_issued_presc(doc_id, month=1, year=2021):
         """
@@ -278,6 +333,19 @@ class Doctor (User):
     @classmethod
     def get_all_doctors(cls):
         return cls.query.all()
+
+
+    @classmethod
+    def update_doctor(cls, acc_id, data):
+        doctor = cls.query.filter_by(acc_id=acc_id).first()
+        doctor.username = data['username']
+        doctor.email = data['email']
+        doctor.fName = data['fName']
+        doctor.lName = data['lName']
+        doctor.mobile = data['mobile']
+        doctor.activated = True if data['activated'] == 'Active' else False
+        db.session.commit()
+        return doctor
 
 
     @classmethod
@@ -313,6 +381,21 @@ class Pharmacist (User):
         return 'Pharmacist: {}'.format(self.lName)
 
 
+    def __call__(self):
+        return {
+            'id': self.acc_id,
+            'fName': self.fName,
+            'lName': self.lName,
+            'email': self.email,
+            'username': self.username
+        }
+
+
+    @classmethod
+    def get_pharmacist_by_acc_id(cls, acc_id):
+        return cls.query.filter_by(acc_id=acc_id).first()
+
+
     @classmethod
     def filter_pharmacist(cls, q):
         return cls.query.filter(cls.fName.contains(q))
@@ -326,6 +409,19 @@ class Pharmacist (User):
     @classmethod
     def get_pharmacist_by_id(cls, id):
         return cls.query.filter_by(phar_id=id).first()
+
+
+    @classmethod
+    def update_pharmacist(cls, acc_id, data):
+        pharmacist = cls.query.filter_by(acc_id=acc_id).first()
+        pharmacist.username = data['username']
+        pharmacist.email = data['email']
+        pharmacist.fName = data['fName']
+        pharmacist.lName = data['lName']
+        pharmacist.mobile = data['mobile']
+        pharmacist.activated = True if data['activated'] == 'Active' else False
+        db.session.commit()
+        return pharmacist
 
 
     @classmethod
@@ -392,7 +488,7 @@ class Prescription (db.Model):
 
     @classmethod
     def get_prescriptions_by_doctor(cls, doc_id):
-        return cls.query.filter_by(doc_id=doc_id).all()
+        return cls.query.filter_by(doc_id=doc_id).order_by(cls.pres_id.desc()).all()
 
 
     @classmethod

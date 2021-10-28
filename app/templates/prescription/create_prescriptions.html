@@ -5,6 +5,9 @@
 
 </script>
 <div class="container pt-3">
+  <div id="error-message-presc" class="alert alert-danger mb-2" role="alert">
+
+  </div>
   <h4 class="text-muted">Issue Prescription</h4>
   <div class="card">
     <div class="card-body">
@@ -54,14 +57,26 @@
             </label>
             <a class="btn btn-danger" id="add-med-button">
               Add Medication&nbsp;
-              <iclass="fas fa-prescription-bottle-alt"></i>
+              <i class="fas fa-prescription-bottle-alt"></i>
             </a>
           </div>
           <div class="form-control p-1 bg-light" id="medication">
             Medication
           </div>
         </div>
-        <button class="btn btn-primary">Submit</button>
+        <div class="mb-3">
+          <label for="from_date" class="form-label">
+            Start Date:
+          </label>
+          <input type="date" class="form-control" id="from_date">
+        </div>
+        <div class="mb-3">
+          <label for="to_date" class="form-label">
+            End Date:
+          </label>
+          <input type="date" class="form-control" id="to_date">
+        </div>
+        <a class="btn btn-primary" id="create-prescription">Submit</a>
       </form>
     </div>
   </div>

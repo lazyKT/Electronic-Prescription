@@ -1,53 +1,3 @@
-const patients = [
-  { name: "lwin" },
-  { name: "jack" },
-  { name: "susan" },
-  { name: "suzana" },
-  { name: "jake" },
-  { name: "amy" },
-  { name: "holt" },
-  { name: "kevin" },
-  { name: "terry" },
-  { name: "guzman" },
-  { name: "searah" },
-  { name: "joe" },
-  { name: "john" },
-  { name: "jason" },
-  { name: "david" },
-  { name: "mike" },
-  { name: "paul" },
-  { name: "kyaw" },
-  { name: "liz" },
-  { name: "eliot" },
-  { name: "sam" },
-  { name: "kate" }
-];
-
-const pharmacists = [
-  { name: "lwin" },
-  { name: "jack" },
-  { name: "susan" },
-  { name: "suzana" },
-  { name: "jake" },
-  { name: "amy" },
-  { name: "holt" },
-  { name: "kevin" },
-  { name: "terry" },
-  { name: "guzman" },
-  { name: "searah" },
-  { name: "joe" },
-  { name: "john" },
-  { name: "jason" },
-  { name: "david" },
-  { name: "mike" },
-  { name: "paul" },
-  { name: "kyaw" },
-  { name: "liz" },
-  { name: "eliot" },
-  { name: "sam" },
-  { name: "kate" }
-];
-
 const medicines = [
   "Panadol",
   "Dicogin",
@@ -90,6 +40,7 @@ let searchData
 
 window.onload = () => {
   // DOM Nodes
+  const errorMessageBoxPresc = document.getElementById('error-message-presc');
   const modalContainer = document.getElementById("modal-container");
   const patientInput = document.getElementById("patient");
   const pharmacistInput = document.getElementById("pharmacist");
@@ -101,9 +52,11 @@ window.onload = () => {
   const addMedtoList = document.getElementById("add-med");
   const addMedicineButton = document.getElementById("add-med-button");
   const medicationList = document.getElementById("medication");
+  const createPrescriptionButton = document.getElementById("create-prescription"); // submit
 
   // add medicines in medicine list
   populateMedsList(medsList);
+  errorMessageBoxPresc.style.display = 'none';
 
   // choose patient
   patientInput.addEventListener("focus", () => {
@@ -123,28 +76,33 @@ window.onload = () => {
   });
 
   // search patient
-  searchBtn.addEventListener("click", (e) => {
-    const searchKeyWord = document.getElementById("search-input").value;
+  searchBtn.addEventListener("click", async (e) => {
+    try {
+      const searchKeyWord = document.getElementById("search-input").value;
 
-    if (!searchKeyWord || searchKeyWord === "") return;
+      if (!searchKeyWord || searchKeyWord === "") return;
 
-    clearResults();
+      clearResults();
 
-    const results = searchData === 'patient'
-                      ? patients.filter((p) => p.name.includes(searchKeyWord))
-                      : pharmacists.filter((p) => p.name.includes(searchKeyWord))
+      const results = await filterRequest(searchKeyWord);
 
-    appendResults(results);
+      appendResults(results);
+    }
+    catch (error) {
+      console.log(`Error fetching ${searchData} filtered request`, error);
+    }
   });
 
   // add medicine
   addMedicineButton.addEventListener("click", (e) => openModal(medModal));
 
-  // close modals
+  // close patient/pharmacy modals
   closeModalBtn.addEventListener("click", (e) => closeModal(modalContainer));
 
+  // close medication modal
   closeMedicationModal.addEventListener("click", (e) => closeModal(medModal));
 
+  /* add medication to the medication list */
   addMedtoList.addEventListener("click", (e) => {
     const medName = document.getElementById("med-input")?.value;
     const medFreq = document.getElementById("med-freq")?.value;
@@ -160,6 +118,55 @@ window.onload = () => {
 
     closeModal(medModal);
   });
+
+  /* create prescription | submit button click event */
+  createPrescriptionButton.addEventListener('click', async e => {
+    try {
+      const patient = patientInput.dataset.patientId;
+      const pharmacist = pharmacistInput.dataset.pharmacistId;
+      const fromDate = document.getElementById('from_date').value;
+      const toDate = document.getElementById('to_date').value;
+
+      console.log(fromDate, toDate);
+
+      if (!pharmacist || pharmacist === '' || !patient || patient === '' || !fromDate || fromDate === '' || !toDate || toDate === '')
+        return;
+
+      if (medicationList.childNodes.length <= 1)
+        return;
+
+      /* formated medication string: seperate each by comma */
+      let medStr = "";
+      medicationList.childNodes.forEach( (node, idx) => {
+        if (idx !== 0) {
+          const medName = `med-name-${idx}`;
+          const medFreq = `med-freq-${idx}`;
+          const delimeter = idx === 1 ? '' : ', ';
+          medStr += `${document.getElementById(medName).innerHTML} ${document.getElementById(medFreq).innerHTML} ${delimeter}`;
+        }
+      });
+
+      const response = await createPrescriptionRequest({ patient, pharmacist, medStr, fromDate, toDate});
+
+      if (response.ok) {
+        window.location = '/doctor/dashboard';
+      }
+      else {
+        const json = await response.json();
+        console.log(json); //DEBUG
+      }
+
+    }
+    catch (error) {
+      console.log('Error fetching create prescriptions request', error);
+      errorMessageBoxPresc.style.display = 'block';
+      if (error)
+        errorMessageBoxPresc.innerHTML = error;
+      else
+        errorMessageBoxPresc.innerHTML = "Internal Server Error!";
+    }
+  });
+
 };
 
 function openModal(modal) {
@@ -171,15 +178,18 @@ function closeModal(modal) {
 }
 
 function appendResults(results) {
+
   const resultContainer = document.getElementById("result-container");
 
   results.forEach((res) => {
+    const { fName, lName, username, id } = res;
+
     const div = document.createElement("div");
     div.setAttribute("class", "d-flex justify-content-between my-2 result");
 
     const name = document.createElement("h6");
     name.setAttribute("class", "text-muted");
-    name.innerHTML = res.name;
+    name.innerHTML = `${fName} ${lName} @${username}`;
 
     const btn = document.createElement("button");
     btn.setAttribute("class", "btn btn-success");
@@ -194,7 +204,7 @@ function appendResults(results) {
     // chose patient/pharmacist
     btn.addEventListener("click", () => {
       const modalContainer = document.getElementById("modal-container");
-      
+
       modalContainer.style.display = "none"; // hide modal
       clearResults(); // clear results
       (document.getElementById('search-input')).value = ''; // clear the search input
@@ -202,7 +212,9 @@ function appendResults(results) {
       const input = searchData === 'patient'
           ? document.getElementById("patient")
           : document.getElementById('pharmacist');
-      input.value = name.innerHTML;
+      input.value = `${fName} ${lName}`; // show Full Name
+      input.setAttribute(`data-${searchData}-id`, id); // set id of patient/pharmacist in dataset attribute
+      closeModal(modalContainer); // close the modal
     });
   });
 }
@@ -230,10 +242,12 @@ function addMedToMedicationList(medication, parent) {
 
   const medNameDOM = document.createElement("h6");
   medNameDOM.setAttribute("class", "text-muted");
+  medNameDOM.setAttribute("id", `med-name-${parent.childNodes.length}`);
   medNameDOM.innerHTML = medName;
 
   const medFreqDOM = document.createElement("span");
   medFreqDOM.setAttribute("class", "text-secondary");
+  medFreqDOM.setAttribute("id", `med-freq-${parent.childNodes.length}`);
   medFreqDOM.innerHTML = `@${medFreq}x time(s) a day`;
 
   row.appendChild(medNameDOM);
@@ -247,4 +261,60 @@ function addMedToMedicationList(medication, parent) {
   div.appendChild(note);
   div.appendChild(document.createElement("hr"));
   parent.appendChild(div);
+}
+
+
+/*
+ Search patients/pharmacist request
+ */
+async function filterRequest(q) {
+  try {
+    const response = await fetch(`/${searchData}/filter/${q}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+
+    const results = await response.json()
+
+    return results;
+  }
+  catch (error) {
+    console.log(`Error filtering ${searchData}`, error);
+  }
+}
+
+
+/*
+ Create New Prescription Request
+ */
+async function createPrescriptionRequest(pres) {
+  try {
+
+    const { patient, pharmacist, medStr, fromDate, toDate } = pres;
+
+    const data = {
+      identifier : new Date().getTime(),
+      medication : medStr,
+      from_date: fromDate,
+      to_date: toDate,
+      patient, pharmacist
+    }
+
+    const response = await fetch('/create-prescriptions', {
+      method: 'POST',
+      headers: {
+        'Content-Type' : 'application/json',
+        'Accept' : 'application/json',
+      },
+      body: JSON.stringify(data)
+    });
+
+    return response;
+  }
+  catch (error) {
+    console.log("Error Creating Prescriptions", error);
+  }
 }
