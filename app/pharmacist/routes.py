@@ -23,3 +23,9 @@ def get_pharmacist(id):
     """
     pharmacist = Pharmacist.get_pharmacist_by_acc_id(id)
     return jsonify(pharmacist()), 200
+
+
+@bp.route ('/dispense-prescription', methods=['GET', 'POST'])
+@login_required
+def create_prescriptions():
+    return render_template('pharmacist/dispense_prescriptions.html')

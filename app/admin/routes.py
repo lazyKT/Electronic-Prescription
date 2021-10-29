@@ -22,8 +22,6 @@ class MyAdminView(ModelView):
             return current_user.get_role() == 'admin'
         return False
 
-
-
 class AdminUserView(MyAdminView):
 
     @expose('/')

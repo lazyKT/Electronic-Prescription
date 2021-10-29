@@ -8,26 +8,51 @@ from flask_login import login_required, current_user
 
 from app.prescription import bp
 from app.models import Doctor, Patient, Pharmacist, Prescription
+from app.utilities import validate_prescription
 
 
 @bp.route('/create-prescriptions', methods=['GET', 'POST'])
 @login_required
 def create_get_prescriptions():
-    if request.method == 'POST':
-        data = request.get_json()
-        prescription = Prescription(
-            identifier=data['identifier'],
-            medication=data['medication'],
-            doc_id=data['doctor'],
-            pat_id=data['patient'],
-            phar_id=data['pharmacist'],
-            from_date=datetime.now() if 'from_date' not in data else datetime.strptime(data['from_date'], '%Y-%m-%d'),
-            to_date=datetime.now() if 'to_date' not in data else datetime.strptime(data['to_date'], '%Y-%m-%d')
-        )
-        prescription.save()
-        return jsonify(prescription()), 201
+    try:
+        if request.method == 'POST':
+            data = request.get_json()
+            
+            if not validate_prescription(data):
+                flash ('Missing Required Data')
+                return render_template('prescription/create_prescriptions.html')
 
-    return render_template('prescription/create_prescriptions.html')
+            prescription = Prescription(
+                identifier=data['identifier'],
+                medication=data['medication'],
+                doc_id=current_user.id,
+                pat_id=data['patient'],
+                phar_id=data['pharmacist'],
+                from_date=datetime.now() if 'from_date' not in data else datetime.strptime(data['from_date'], '%Y-%m-%d'),
+                to_date=datetime.now() if 'to_date' not in data else datetime.strptime(data['to_date'], '%Y-%m-%d')
+            )
+            prescription.save()
+            flash ('New Prescription Created!')
+            return redirect(url_for('doctor.index'))
+
+        return render_template('prescription/create_prescriptions.html')
+
+    except ValueError as ke:
+        print(ke)
+        flash ('Internal Server Error [ValueErorr], {}'.format(str(ve)))
+        return render_template('prescription/create_prescriptions.html')
+    except KeyError as ke:
+        print(ke)
+        flash ('Internal Server Error [KeyErorr], {}'.format(str(ke)))
+        return render_template('prescription/create_prescriptions.html')
+    except AttributeError as ae:
+        print(ae)
+        flash ('Internal Server Error [AttributeErorr], {}'.format(str(ae)))
+        return render_template('prescription/create_prescriptions.html')
+    except Exception as e:
+        print(e)
+        flash ('Internal Server Error [Error], {}'.format(str(e)))
+        return render_template('prescription/create_prescriptions.html')
 
 
 @bp.route('/prescriptions')

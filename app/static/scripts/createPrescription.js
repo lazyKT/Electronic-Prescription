@@ -110,10 +110,6 @@ window.onload = () => {
 
     if (!medName || medName === "" || !medFreq || medFreq === "") return;
 
-    console.log(medName);
-    console.log(medFreq);
-    console.log(extraNote);
-
     addMedToMedicationList({ medName, medFreq, extraNote }, medicationList);
 
     closeModal(medModal);
@@ -126,30 +122,39 @@ window.onload = () => {
       const pharmacist = pharmacistInput.dataset.pharmacistId;
       const fromDate = document.getElementById('from_date').value;
       const toDate = document.getElementById('to_date').value;
-
+      e.preventDefault();
+      e.target.innerHTML = 'Loading..'
+      e.target.setAttribute('disabled', true); // Disable the button, so that the user don't press again while loading
       console.log(fromDate, toDate);
 
       if (!pharmacist || pharmacist === '' || !patient || patient === '' || !fromDate || fromDate === '' || !toDate || toDate === '')
+      {
+        e.target.innerHTML = 'Create Prescription';
+        e.target.removeAttribute('disabled');
+        throw new Error('Missing Required Data')
         return;
+      }
 
       if (medicationList.childNodes.length <= 1)
         return;
 
       /* formated medication string: seperate each by comma */
       let medStr = "";
-      medicationList.childNodes.forEach( (node, idx) => {
-        if (idx !== 0) {
-          const medName = `med-name-${idx}`;
-          const medFreq = `med-freq-${idx}`;
-          const delimeter = idx === 1 ? '' : ', ';
-          medStr += `${document.getElementById(medName).innerHTML} ${document.getElementById(medFreq).innerHTML} ${delimeter}`;
-        }
-      });
+      for (let i = 0; i < medicationList.childElementCount; i++) {
+        const medName = `med-name-${i+1}`;
+        const medFreq = `med-freq-${i+1}`;
+        const delimeter = i === 0 ? '' : ', ';
+        // console.log(medName, medFreq);
+        medStr += `${delimeter} ${document.getElementById(medName).innerHTML} ${document.getElementById(medFreq).innerHTML}`;
+      }
 
+      // console.log(medStr)
       const response = await createPrescriptionRequest({ patient, pharmacist, medStr, fromDate, toDate});
 
       if (response.ok) {
         window.location = '/doctor/dashboard';
+        // const json = await response.json();
+        // console.log(json); //DEBUG
       }
       else {
         const json = await response.json();
@@ -247,6 +252,7 @@ function addMedToMedicationList(medication, parent) {
 
   const medNameDOM = document.createElement("h6");
   medNameDOM.setAttribute("class", "text-muted");
+  console.log(parent.childNodes.length);
   medNameDOM.setAttribute("id", `med-name-${parent.childNodes.length}`);
   medNameDOM.innerHTML = medName;
 

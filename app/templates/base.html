@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/options.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/patient.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/doctor.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -26,7 +27,7 @@
     <nav class="navbar navbar-expand-xl navbar-dark bg-primary bg-gradient">
       <div class="container">
         <a href="/" class="navbar-brand">
-          <img src="{{url_for('static', filename='images/medicine.png')}}" height="40" alt="">
+          <img src="{{url_for('static', filename='images/medicine.png')}}" height="40" alt=""> E-Prescription
         </a>
         <button
           type="button"
@@ -37,26 +38,9 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
-          <div class="navbar-nav">
-            <div class="nav-item dropdown">
-              <a
-                href="/"
-                class="dropdown-toggle nav-link nav-link-text"
-                data-bs-toggle="dropdown"
-              >
-                About
-              </a>
-              <div class="dropdown-menu">
-                <a href="#" class="dropdown-item">For Patients</a>
-                <a href="#" class="dropdown-item">For Doctors</a>
-                <a href="#" class="dropdown-item">For Pharmacists</a>
-              </div>
-            </div>
-            <a href="/contact" class="nav-item nav-link nav-link-text">Contact</a>
-          </div>
           <div class="navbar-nav ms-auto">
             {% if current_user.is_anonymous %}
-            <a href="/login" class="nav-item nav-link nav-link-text">Login</a>
+            <a href="/login" class="nav-item nav-link nav-link-text">Login/Register</a>
             {% else %}
             <div class="nav-item dropdown">
               <a
