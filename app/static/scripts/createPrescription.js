@@ -252,7 +252,7 @@ function addMedToMedicationList(medication, parent) {
 
   const medNameDOM = document.createElement("h6");
   medNameDOM.setAttribute("class", "text-muted");
-  console.log(parent.childNodes.length);
+  
   medNameDOM.setAttribute("id", `med-name-${parent.childNodes.length}`);
   medNameDOM.innerHTML = medName;
 
