@@ -219,6 +219,8 @@ function appendResults(results) {
   });
 }
 
+
+/* clear search results */
 function clearResults() {
   const resultContainer = document.getElementById("result-container");
   while (resultContainer.lastChild) {
@@ -226,6 +228,8 @@ function clearResults() {
   }
 }
 
+
+/* add medicine list in search category */
 function populateMedsList(medsList) {
   medicines.forEach((f) => {
     const option = document.createElement("option");
@@ -234,6 +238,7 @@ function populateMedsList(medsList) {
   });
 }
 
+/* add medicines to medications list */
 function addMedToMedicationList(medication, parent) {
   const div = document.createElement("div");
   const row = document.createElement("div");

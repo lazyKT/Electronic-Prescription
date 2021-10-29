@@ -486,6 +486,11 @@ class Prescription (db.Model):
         db.session.commit()
 
 
+    def get_medication_list(self):
+        medications = self.medication.split(',')
+        return medications
+
+
     @classmethod
     def get_prescriptions_by_doctor(cls, doc_id):
         return cls.query.filter_by(doc_id=doc_id).order_by(cls.pres_id.desc()).all()
