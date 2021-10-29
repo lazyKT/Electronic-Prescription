@@ -4,6 +4,7 @@
 from datetime import datetime
 from app import db, login
 from flask_login import UserMixin
+from sqlalchemy import extract
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -64,7 +65,6 @@ class User (UserMixin, db.Model):
     def update_user(self, updated_user):
         self.username = updated_user['username']
         self.email = updated_user['email']
-        self.role = updated_user['role']
         self.activated = True if updated_user['status'] == 'active' else False
         db.session.commit()
 
@@ -137,6 +137,53 @@ class Patient (User):
     def __repr__(self):
         return 'Patient: {}'.format(self.lName)
 
+
+    def __call__(self):
+        return {
+            'id': self.acc_id,
+            'fName': self.fName,
+            'lName': self.lName,
+            'email': self.email,
+            'username': self.username
+        }
+
+
+    @classmethod
+    def get_patient_by_acc_id(cls, acc_id):
+        return cls.query.filter_by(acc_id=acc_id).first()
+
+
+    @classmethod
+    def update_patient(cls, acc_id, data):
+        try:
+            patient = cls.query.filter_by(acc_id=acc_id).first()
+            print(data)
+            patient.username = data['username']
+            patient.email = data['email']
+            patient.fName = data['fName']
+            patient.lName = data['lName']
+            patient.mobile = data['mobile']
+            patient.activated = True if data['activated'] == 'Active' else False
+            db.session.commit()
+            return patient
+        except Exception as e:
+            print('Exception occured during update_patient', str(e))
+            raise e
+
+
+    @classmethod
+    def get_all_patients(cls):
+        return cls.query.all()
+
+
+    @classmethod
+    def filter_patient(cls, q):
+        """
+        # Filter Users by search query
+        """
+        return cls.query.filter(cls.fName.contains(q)).all()
+
+
     @classmethod
     def delete_patient(cls, acc_id):
         try:
@@ -205,6 +252,23 @@ class Admin (User):
 
 
     @classmethod
+    def get_admin_by_acc_id(cls, acc_id):
+        return cls.query.filter_by(acc_id=acc_id).first()
+
+
+    @classmethod
+    def update_admin(cls, acc_id, data):
+        admin = cls.query.filter_by(acc_id=acc_id).first()
+        admin.username = data['username']
+        admin.email = data['email']
+        admin.fName = data['fName']
+        admin.lName = data['lName']
+        admin.activated = True if data['activated'] == 'Active' else False
+        db.session.commit()
+        return admin
+
+
+    @classmethod
     def delete_admin(cls, acc_id):
         try:
             admin = cls.query.filter_by(acc_id=acc_id).first()
@@ -236,64 +300,52 @@ class Doctor (User):
         return 'Doctor: {}'.format(self.lName)
 
 
-    def getIssuedPrescriptions(self):
-        return [
-                  {
-                    'id': 1,
-                    'doctor': "OG King",
-                    'patient': "Susan",
-                    'pharmacist': "Guardians",
-                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen"],
-                    'meds': 4,
-                    'from_date': "2021-10-14",
-                    'to_date': "2021-11-14",
-                    'status': "active"
-                  },
-                  {
-                    'id': 2,
-                    'doctor': "OG King",
-                    'patient': "David",
-                    'pharmacist': "Watsons",
-                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen"],
-                    'meds': 4,
-                    'from_date': "2021-09-21",
-                    'to_date': "2021-12-14",
-                    'status': "active"
-                  },
-                  {
-                    'id': 3,
-                    'doctor': "OG King",
-                    'patient': "Guzman",
-                    'pharmacist': "NTUC",
-                    'medicine': ["Panadol", "Biogesic", "Number 1", "Dicogen", "Fluza"],
-                    'meds': 5,
-                    'from_date': "2021-08-14",
-                    'to_date': "2021-11-14",
-                    'status': "expired"
-                  },
-                  {
-                    'id': 4,
-                    'doctor': "OG King",
-                    'patient': "Salmon",
-                    'pharmacist': "NTUC",
-                    'medicine': ["Panadol", "Fluza"],
-                    'meds': 2,
-                    'from_date': "2021-08-14",
-                    'to_date': "2021-11-14",
-                    'status': "active"
-                  },
-                  {
-                    'id': 5,
-                    'doctor': "OG King",
-                    'patient': "Serah",
-                    'pharmacist': "NTUC",
-                    'medicine': ["Panadol", "Dicogen", "Fluza"],
-                    'meds': 3,
-                    'from_date': "2021-10-14",
-                    'to_date': "2021-10-24",
-                    'status': "expired"
-                  }
-                ]
+    def get_issued_prescriptions(self):
+        return Prescription.get_prescriptions_by_doctor(self.id)
+
+
+    def get_patient_name(self, pat_id):
+        patient = Patient.query.filter_by(pat_id=pat_id)
+        return patient.fName
+
+
+    @classmethod
+    def get_doctor_by_acc_id(cls, acc_id):
+        return cls.query.filter_by(acc_id=acc_id).first()
+
+
+    @staticmethod
+    def get_monthly_issued_presc(doc_id, month=1, year=2021):
+        """
+        # get prescriptions issued by month, year
+        """
+        return db.session.query(Prescription).filter(extract('month', Prescription.from_date)==month).filter_by(doc_id=doc_id).all()
+
+
+    @classmethod
+    def get_active_prescriptions(cls, doc_id):
+        """
+        # get all active Prescriptions by doctor id
+        """
+        return db.session.query(Prescription).filter_by(doc_id=doc_id).filter(Prescription.to_date > datetime.now()).all()
+
+
+    @classmethod
+    def get_all_doctors(cls):
+        return cls.query.all()
+
+
+    @classmethod
+    def update_doctor(cls, acc_id, data):
+        doctor = cls.query.filter_by(acc_id=acc_id).first()
+        doctor.username = data['username']
+        doctor.email = data['email']
+        doctor.fName = data['fName']
+        doctor.lName = data['lName']
+        doctor.mobile = data['mobile']
+        doctor.activated = True if data['activated'] == 'Active' else False
+        db.session.commit()
+        return doctor
 
 
     @classmethod
@@ -329,9 +381,47 @@ class Pharmacist (User):
         return 'Pharmacist: {}'.format(self.lName)
 
 
+    def __call__(self):
+        return {
+            'id': self.acc_id,
+            'fName': self.fName,
+            'lName': self.lName,
+            'email': self.email,
+            'username': self.username
+        }
+
+
+    @classmethod
+    def get_pharmacist_by_acc_id(cls, acc_id):
+        return cls.query.filter_by(acc_id=acc_id).first()
+
+
+    @classmethod
+    def filter_pharmacist(cls, q):
+        return cls.query.filter(cls.fName.contains(q))
+
+
+    @classmethod
+    def get_all_pharmacists(cls):
+        return cls.query.all()
+
+
     @classmethod
     def get_pharmacist_by_id(cls, id):
         return cls.query.filter_by(phar_id=id).first()
+
+
+    @classmethod
+    def update_pharmacist(cls, acc_id, data):
+        pharmacist = cls.query.filter_by(acc_id=acc_id).first()
+        pharmacist.username = data['username']
+        pharmacist.email = data['email']
+        pharmacist.fName = data['fName']
+        pharmacist.lName = data['lName']
+        pharmacist.mobile = data['mobile']
+        pharmacist.activated = True if data['activated'] == 'Active' else False
+        db.session.commit()
+        return pharmacist
 
 
     @classmethod
@@ -365,13 +455,47 @@ class Prescription (db.Model):
     __tablename__ = 'prescription'
     pres_id = db.Column (db.Integer, primary_key=True)
     identifier = db.Column (db.String(16))
-    date = db.Column (db.DateTime, default=datetime.now())
-    quantity = db.Column (db.Integer, default=0)
-    patient = db.relationship (Patient, backref=db.backref('patient_prescription'), uselist=False)
-    doctor = db.relationship (Doctor, backref=db.backref('doctor'), uselist=False)
-    pharmacist = db.relationship (Pharmacist, backref=db.backref('pharmacist'), uselist=False)
-    medicine = db.relationship (Medicine, backref=db.backref('medcine'), uselist=True)
+    medication = db.Column (db.String(256))
+    from_date = db.Column (db.DateTime, default=datetime.now())
+    to_date = db.Column (db.DateTime, default=datetime.now())
     doc_id = db.Column (db.ForeignKey(Doctor.doc_id))
     pat_id = db.Column (db.ForeignKey(Patient.pat_id))
     phar_id = db.Column (db.ForeignKey(Pharmacist.phar_id))
-    med_id = db.Column (db.ForeignKey(Medicine.med_id))
+
+
+    def __call__ (self):
+        meds_count = len( self.medication.split(',') )
+        status = 'active' if datetime.now() < self.to_date else 'expired'
+        patient_name = Patient.get_user_by_id(self.pat_id).fName
+        return {
+            'pres_id' : self.pres_id,
+            'id' : self.identifier,
+            'medication': self.medication,
+            'meds_count': meds_count,
+            'doctor': self.doc_id,
+            'patient': self.pat_id,
+            'p_name': patient_name,
+            'phar_id': self.phar_id,
+            'from_data': self.from_date,
+            'to_date': self.to_date,
+            'status': status
+        }
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+    def get_medication_list(self):
+        medications = self.medication.split(',')
+        return medications
+
+
+    @classmethod
+    def get_prescriptions_by_doctor(cls, doc_id):
+        return cls.query.filter_by(doc_id=doc_id).order_by(cls.pres_id.desc()).all()
+
+
+    @classmethod
+    def get_all_prescriptions(cls):
+        return cls.query.all()

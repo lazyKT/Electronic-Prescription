@@ -29,6 +29,8 @@ def login ():
             print(user.get_role())
             if user.get_role() == 'admin':
                 return redirect(url_for('admin.index'))
+            if user.get_role() == 'doctor':
+                return redirect(url_for('doctor.index'))
             flash('Login requested for user {}, remember_me={}'.format(
                 form.username.data, form.remember_me.data))
             return redirect(url_for('home.index'))

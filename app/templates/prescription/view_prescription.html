@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="d-flex justify-content-between mx-2 my-3">
+    <div class="">
+      <h5 class="text-muted">Prescription</h5>
+      <small>Prescription ID : {{ prescription['id'] }}</small>
+    </div>
+    <img src="{{ qrcode(qr_link) }}" style="height: 100px; width: 100px;">
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <form>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label"
+            >From Doctor:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            value="Dr.{{ doctor }}"
+            id="doctor"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >To Patient:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            value="{{ prescription['p_name'] }}"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >Via Pharmacy:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Choose Pharmacist"
+            value="{{ pharmacist }}"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="medication" class="form-label">
+            Medication:
+          </label>
+          <div class="form-control p-1 bg-light" id="medication">
+            <ul>
+              {% for m in medications %}
+                <li><small>{{ m }}&nbsp; time(s) a day</small></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="from_date" class="form-label">
+            Start Date:
+          </label>
+          <input type="date" class="form-control" id="from_date" value="{{ from_date }}" readonly>
+        </div>
+        <div class="mb-3">
+          <label for="to_date" class="form-label">
+            End Date:
+          </label>
+          <input type="date" class="form-control" id="to_date" value="{{ to_date }}" readonly>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

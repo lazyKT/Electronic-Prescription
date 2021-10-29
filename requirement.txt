@@ -4,3 +4,4 @@ flask-wtf
 flask-login
 email-validator
 flask-admin
+flask-qrcode

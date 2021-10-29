@@ -60,13 +60,15 @@ function openEditViewModal(dom) {
   // to get the parent node of 'tr' type, we will transverse upwards until we get it
   // In this function, the parameter dom represents <button>
   // In our html hiearchy, tr -> td -> div -> button
-  const tr = dom.parentNode.parentNode.parentNode; // button.div.td.tr
-  const modalContainer = document.getElementById("my-modal-container");
-  modalContainer.style.display = "flex";
-  const modal = document.getElementById("my-modal");
-  const modalMode = dom.dataset.mode;
+  // const tr = dom.parentNode.parentNode.parentNode; // button.div.td.tr
+  // const modalContainer = document.getElementById("my-modal-container");
+  // modalContainer.style.display = "flex";
+  // const modal = document.getElementById("my-modal");
+  const mode = dom.dataset.mode;
+  const userId = dom.dataset.id;
+  window.location = mode === 'edit' ? `/admin/user/edit/${userId}` : `/admin/user/view/${userId}`;
   // create Modal Child Nodes based on the modalMode: edit will be inputs and view will be just texts
-  createModalContents(modal, tr.cells, modalMode);
+  // createModalContents(modal, tr.cells, modalMode);
   // console.log(tr, tr.cells[0]);
 }
 
