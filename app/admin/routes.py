@@ -8,13 +8,11 @@ from app import db, admin
 from app.models import User, Patient, Doctor, Pharmacist, Admin
 from app.auth.forms import AdminCreateUserForm, AdminEditUserForm, EditAdminForm
 
-
-
 class MyAdminView(ModelView):
 
     @expose('/')
     def index(self):
-        return self.render('admin/index.html')
+        return self.render('admin/user.html')
 
     def is_accessible(self):
         print(current_user.is_authenticated)
