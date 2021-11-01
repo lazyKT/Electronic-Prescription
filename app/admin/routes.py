@@ -270,4 +270,3 @@ class AdminPatientView(MyAdminView):
 
 # admin.add_view(AdminIndexView(name="E Prescription", endpoint="index"))
 admin.add_view(AdminUserView(User, db.session, endpoint='user'))
-admin.add_view(AdminPatientView(Patient, db.session))
