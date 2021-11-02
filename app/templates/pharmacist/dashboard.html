@@ -1,6 +1,65 @@
-{% block app_content %}
-  <div class="container-fluid">
-    <h3>Pharmacist Dashboard</h3>
-    
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mb-4">
+  <div class="row">
+    <div>
+      <div id="greeting" class="alert alert-primary my-2" role="alert">
+        <p>
+          <big>
+            Welcome, {{ current_user.fName }} {{ current_user.lName }}
+          </big>
+        </p>
+      </div>
+    </div>
+    <div class="row" align="center">
+      <div class="col" align="right">
+        <a class="btn btn-primary mx-auto my-2 w-50" data-bs-toggle="modal" data-bs-target="#dispenseModal">
+          Dispense Prescription
+        </a>
+      </div>
+      <div class="col" align="left">
+        <a href="{{url_for('pharmacist.view_stock')}}" class="btn btn-primary mx-auto my-2 w-50">
+          Manage medical stock
+        </a>
+      </div>
+    </div>
   </div>
+</div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="my-message-box">
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  <button class="btn close-message-box" onclick="closeMessageBox()"><i class="fa fa-times" id="menu-icon"></i></button>
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="modal fade" id="dispenseModal" tabindex="-1" aria-labelledby="dispenseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dispenseModalLabel">Please Enter Prescription Token ID</h5>
+      </div>
+      <div class="modal-footer">
+        {{ form.tokenid(size=32, class_="form-control") }}
+        {{ form.submit(class_="btn btn-primary w-100 mt-3") }}
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+  const messageBox = document.getElementsByClassName("my-message-box")[0];
+
+  function closeMessageBox() {
+    messageBox.style.display = "none";
+  }
+</script>
 {% endblock %}

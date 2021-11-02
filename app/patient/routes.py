@@ -4,6 +4,10 @@ from flask_login import login_required
 from app.models import Patient, User
 from app.patient import bp
 
+@bp.route('/patient/dashboard')
+@login_required
+def index():
+    return render_template('patient/dashboard.html')
 
 @bp.route('/patient/filter/<q>')
 def filter_user(q):
