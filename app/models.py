@@ -456,6 +456,7 @@ class Prescription (db.Model):
     pres_id = db.Column (db.Integer, primary_key=True)
     identifier = db.Column (db.String(16))
     medication = db.Column (db.String(256))
+    status = db.Column (db.String(20))
     from_date = db.Column (db.DateTime, default=datetime.now())
     to_date = db.Column (db.DateTime, default=datetime.now())
     doc_id = db.Column (db.ForeignKey(Doctor.doc_id))
@@ -465,7 +466,7 @@ class Prescription (db.Model):
 
     def __call__ (self):
         meds_count = len( self.medication.split(',') )
-        status = 'active' if datetime.now() < self.to_date else 'expired'
+        status = 'pending' if datetime.now() < self.to_date else 'expired'
         patient_name = Patient.get_user_by_id(self.pat_id).fName
         return {
             'pres_id' : self.pres_id,

@@ -16,8 +16,10 @@ from app.utilities import validate_prescription
 def create_get_prescriptions():
     try:
         if request.method == 'POST':
-            data = request.get_json()
-            
+            if request.form.get('return') == 'return':
+                return redirect(url_for('doctor.index'))
+            else:
+                data = request.get_json()
             if not validate_prescription(data):
                 flash ('Missing Required Data')
                 return render_template('prescription/create_prescriptions.html')
@@ -26,6 +28,7 @@ def create_get_prescriptions():
                 identifier=data['identifier'],
                 medication=data['medication'],
                 doc_id=current_user.id,
+                status=data['status'],
                 pat_id=data['patient'],
                 phar_id=data['pharmacist'],
                 from_date=datetime.now() if 'from_date' not in data else datetime.strptime(data['from_date'], '%Y-%m-%d'),
@@ -34,7 +37,6 @@ def create_get_prescriptions():
             prescription.save()
             flash ('New Prescription Created!')
             return redirect(url_for('doctor.index'))
-
         return render_template('prescription/create_prescriptions.html')
 
     except ValueError as ke:

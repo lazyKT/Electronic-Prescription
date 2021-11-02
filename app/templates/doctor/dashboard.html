@@ -63,9 +63,11 @@
           </div>
           <div class="">
             {% if p['status'] == 'active' %}
-            <span class="badge bg-success">{{ p['status'] }}</span>
-            {% else %}
+            <span class="badge bg-success">{{ p['status'] }}</span>\
+            {% elif p['status'] == 'pending' %}
             <span class="badge bg-secondary">{{ p['status'] }}</span>
+            {% else %}
+            <span class="badge bg-danger">{{ p['status'] }}</span>
             {% endif %}
           </div>
         </div>

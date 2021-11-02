@@ -72,6 +72,11 @@
           <input type="date" class="form-control" id="to_date" value="{{ to_date }}" readonly>
         </div>
       </form>
+      {% if current_user.get_role() == 'pharmacist' %}
+      <button name="dispense" value="dispense" class="btn btn-primary">
+        Dispense
+      </button>
+      {% endif %}
     </div>
   </div>
 </div>

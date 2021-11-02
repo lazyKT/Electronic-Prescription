@@ -34,7 +34,7 @@ def login ():
             if user.get_role() == 'pharmacist':
                 return redirect(url_for('pharmacist.index'))
             if user.get_role() == 'patient':
-                return redirect(url_for('patient.index'))
+                return redirect(url_for('patient_bp.index'))
             flash('Login requested for user {}, remember_me={}'.format(
                 form.username.data, form.remember_me.data))
             return redirect(url_for('home.index'))
