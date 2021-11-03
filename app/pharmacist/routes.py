@@ -2,13 +2,13 @@ from app.pharmacist import bp
 from flask import render_template, request, jsonify, flash, redirect, url_for
 from flask_login import login_required
 
-from app.models import Prescription, Doctor, Patient, Pharmacist, User
-from app.auth.forms import DispenseForm
+from app.models import Prescription, Pharmacist
+from app.auth.forms import TokenIDForm
 
 @bp.route('/pharmacist/dashboard', methods=['GET', 'POST'])
 @login_required
 def index():
-    form = DispenseForm()
+    form = TokenIDForm()
     if form.validate_on_submit():
         tokenid = Prescription.query.filter_by (identifier=form.tokenid.data).first()
         return redirect(url_for('prescription.get_prescription_by_id', id=tokenid.pres_id))
@@ -35,3 +35,4 @@ def get_pharmacist(id):
     """
     pharmacist = Pharmacist.get_pharmacist_by_acc_id(id)
     return jsonify(pharmacist()), 200
+

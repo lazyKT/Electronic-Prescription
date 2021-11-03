@@ -193,7 +193,7 @@ class LogOutConfirmationForm (FlaskForm):
     submit = SubmitField ("Yes, Sign Out.")
     cancel = SubmitField ("No")
 
-class DispenseForm (FlaskForm):
+class TokenIDForm (FlaskForm):
     """
     # Form to enter token id for prescription
     """
@@ -201,4 +201,4 @@ class DispenseForm (FlaskForm):
         validators.DataRequired(),
         validators.Length(max=20)
     ])
-    submit = SubmitField ("Dispense")
+    submit = SubmitField ("Search Prescription")
