@@ -47,19 +47,24 @@
       <div class="modal-header">
         <h5 class="modal-title" id="dispenseModalLabel">Please Enter Prescription Token ID</h5>
       </div>
-      <div class="modal-footer">
+      <div class="modal-body">
+        <form method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
         {{ form.tokenid(size=32, class_="form-control") }}
+        </div>
+        <div class="mb-3">
+        {% for error in form.tokenid.errors %}
+            <span class="form-validate-message">{{ error }}</span>
+        {% endfor %}
+        </div>
+        <div class="mb-3">
         {{ form.submit(class_="btn btn-primary w-100 mt-3") }}
+        </div>
+      </form>
       </div>
     </div>
   </div>
 </div>
 </body>
-<script>
-  const messageBox = document.getElementsByClassName("my-message-box")[0];
-
-  function closeMessageBox() {
-    messageBox.style.display = "none";
-  }
-</script>
 {% endblock %}

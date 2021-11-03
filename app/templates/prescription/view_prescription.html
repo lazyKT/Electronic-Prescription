@@ -11,7 +11,6 @@
   </div>
   <div class="card">
     <div class="card-body">
-      <form>
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label"
             >From Doctor:</label
@@ -71,7 +70,11 @@
           </label>
           <input type="date" class="form-control" id="to_date" value="{{ to_date }}" readonly>
         </div>
+      {% if current_user.get_role() == 'pharmacist' %}
+      <form action="/prescription/{{pres_id}}" method="post">
+        <input type="submit" value="Dispense" class="btn btn-primary">
       </form>
+      {% endif %}
     </div>
   </div>
 </div>

@@ -260,13 +260,5 @@ class AdminUserView(MyAdminView):
             return Pharmacist.update_pharmacist(id, data)
         raise Exception('Unkown User Role')
 
-
-class AdminPatientView(MyAdminView):
-
-    @expose('/')
-    def index(self):
-        return 'Patient'
-
-
 # admin.add_view(AdminIndexView(name="E Prescription", endpoint="index"))
 admin.add_view(AdminUserView(User, db.session, endpoint='user'))
