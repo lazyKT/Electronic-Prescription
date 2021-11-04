@@ -466,7 +466,11 @@ class Prescription (db.Model):
 
     def __call__ (self):
         meds_count = len( self.medication.split(',') )
-        status = self.status if datetime.now() < self.to_date else 'Expired'
+        if datetime.now() < self.to_date:
+            status = self.status 
+        else:
+            status='Expired'
+            db.session.commit()
         patient_name = Patient.get_user_by_id(self.pat_id).fName
         return {
             'pres_id' : self.pres_id,
@@ -497,6 +501,13 @@ class Prescription (db.Model):
     def get_prescriptions_by_doctor(cls, doc_id):
         return cls.query.filter_by(doc_id=doc_id).order_by(cls.pres_id.desc()).all()
 
+    @classmethod
+    def get_active_prescriptions_by_patient(cls, pat_id):
+        return cls.query.filter_by(pat_id=pat_id,status='Active',collected='Y').order_by(cls.pres_id.desc()).all()
+
+    @classmethod
+    def get_expired_prescriptions_by_patient(cls, pat_id):
+        return cls.query.filter_by(pat_id=pat_id,status='Expired',collected='Y').order_by(cls.pres_id.desc()).all()
 
     @classmethod
     def get_all_prescriptions(cls):

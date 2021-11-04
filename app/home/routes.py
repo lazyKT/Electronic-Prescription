@@ -26,7 +26,7 @@ def index():
       if current_user.get_role() == 'pharmacist':
           return redirect(url_for('pharmacist.index'))
       if current_user.get_role() == 'patient':
-          return redirect(url_for('patient.index'))
+          return redirect(url_for('patient_bp.index'))
   return render_template ('home/index.html')
 
 @bp.route('/profile')
