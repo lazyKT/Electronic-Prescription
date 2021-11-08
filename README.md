@@ -12,7 +12,7 @@
 - cd E_Prescription
 - `git clone https://github.com/lazyKT/Electronic-Prescription.git`
 - python3 -m venv venv
-- venv\bin\activate
+- .\venv\Scripts\activate.exe
 - pip install -r requirement.txt
 ### Unix
 - mkdir E_Prescription
@@ -25,7 +25,7 @@
 ## How to start development server
 ### For Windows
 - cd E_Prescription
-- ./venv/Scripts/activate.exxe
+- .\venv\Scripts\activate.exxe
 - set FLASK_APP=wsgi.py
 - set FLASK_ENV=development
 - flask run
