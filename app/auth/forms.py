@@ -103,10 +103,7 @@ class AdminEditUserForm (FlaskForm):
         validators.DataRequired(),
         validators.Length(min=4, max=50)
     ])
-    mobile = TelField ("Phone Number (8-digits without country code)", validators=[
-        validators.DataRequired(),
-        validators.Length(min=8, max=8)
-    ])
+    mobile = TelField ("Phone Number (8-digits without country code)")
     activated = SelectField ("Status", choices=[
         ('Active'),
         ('Inactive')

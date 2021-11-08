@@ -10,6 +10,9 @@
         <div class="">
           <a href="#aboutme" class="side-nav-link">About Me</a>
         </div>
+        <div class="">
+          <a href="/edit-profile" class="side-nav-link">Edit Profile</a>
+        </div>
       </div>
       <div class="col-8">
         <!-- about me -->
@@ -36,6 +39,15 @@
         <div class="mb-1">
           <h6>Last Name</h6>
           {{ current_user.lName }}
+        </div>
+        <hr class="horizontal-line"><br>
+        <div class="mb-1">
+          <h6>Account Status</h6>
+          {% if current_user.activated %}
+          Activated
+          {% else %}
+          Inactive
+          {% endif %}
         </div>
         <hr class="horizontal-line"><br>
         <div class="mb-1">
