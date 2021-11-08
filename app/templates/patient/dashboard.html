@@ -1,5 +1,75 @@
-{% block app_content %}
-  <div class="container-fluid">
-    <h3>Patient Dashboard</h3>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mb-4">
+ 
+    <div id="greeting" class="alert alert-primary my-2" role="alert">
+      <p>
+        <big>
+          Welcome, {{ current_user.fName }} {{ current_user.lName }}
+        </big>
+      </p>
+    </div>
+    <h5 class="my-2">
+      <small class="text-muted">Active Prescriptions</small>
+    </h5>
+    {% for p in active_prescriptions %}
+    <div class="card my-2">
+      <div class="card-body card-btn d-flex justify-content-between align-items-center"
+        onclick="viewPrescription(this)"
+        data-pres-id="{{ p['pres_id'] }}">
+        <div>
+          <strong class="text-secondary">{{ p["p_name"] }}</strong><br>
+          <small>prescribed from {{ p["from_date"] }}</small>
+        </div>
+        <div>
+          <small class="text-muted">{{ p['meds_count'] }} medicines</small>
+        </div>
+        <div class="">
+          {% if p['status'] == 'Active' %}
+            <span class="badge bg-success">{{ p['status'] }}</span>
+          {% elif p['status'] == 'Pending' %}
+            <span class="badge bg-secondary">{{ p['status'] }}</span>
+          {% elif p['status'] == 'Expired' %}
+            <span class="badge bg-danger">{{ p['status'] }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <h5 class="my-2">
+      <small class="text-muted">Expired Prescriptions</small>
+    </h5>
+    {% for p in expired_prescriptions %}
+    <div class="card my-2">
+      <div class="card-body card-btn d-flex justify-content-between align-items-center"
+        onclick="viewPrescription(this)"
+        data-pres-id="{{ p['pres_id'] }}">
+        <div>
+          <strong class="text-secondary">{{ p["p_name"] }}</strong><br>
+          <small>prescribed from {{ p["from_date"] }}</small>
+        </div>
+        <div>
+          <small class="text-muted">{{ p['meds_count'] }} medicines</small>
+        </div>
+        <div class="">
+          {% if p['status'] == 'Active' %}
+            <span class="badge bg-success">{{ p['status'] }}</span>
+          {% elif p['status'] == 'Pending' %}
+            <span class="badge bg-secondary">{{ p['status'] }}</span>
+          {% elif p['status'] == 'Expired' %}
+            <span class="badge bg-danger">{{ p['status'] }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <script type="text/javascript">
+      function viewPrescription(node) {
+        const pres_id = node.dataset.presId;
+        window.location = `/prescription/${pres_id}`
+      }
+    </script>
   </div>
+</div>
 {% endblock %}

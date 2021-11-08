@@ -23,20 +23,16 @@ def index():
           return redirect(url_for('doctor.index'))
       if current_user.get_role() == 'admin':
           return redirect(url_for('admin.index'))
+      if current_user.get_role() == 'pharmacist':
+          return redirect(url_for('pharmacist.index'))
+      if current_user.get_role() == 'patient':
+          return redirect(url_for('patient_bp.index'))
   return render_template ('home/index.html')
-
-
-@bp.route('/contact')
-def contact():
-    return render_template ('home/contact.html')
-
 
 @bp.route('/profile')
 @login_required
 def profile():
     return render_template ('home/profile.html')
-
-
 
 @bp.route('/edit/<id>', methods=['GET', 'PUT'])
 def edit_user(id):

@@ -9,12 +9,6 @@
         </div>
         <div class="">
           <a href="#aboutme" class="side-nav-link">About Me</a>
-          {% if current_user.get_role() == 'admin' %}  
-          {% elif current_user.get_role() == 'patient' %}
-            <a href="#prescription" class="side-nav-link">My Prescriptions</a>
-          {% else %}
-            <a href="#prescription" class="side-nav-link">Issued Prescription</a>
-          {% endif %}
         </div>
       </div>
       <div class="col-8">
@@ -60,13 +54,6 @@
         </div>
         <hr class="horizontal-line"><br>
         <!-- end of about me -->
-        <div class="my-3" id="prescription">
-          {% if current_user.get_role() == 'patient' %}
-            <h4>My Prescriptions</h4>
-          {% else %}
-            <h4>Issued Prescription</h4>
-          {% endif %}
-        </div>
       </div>
     </div>
   </div>

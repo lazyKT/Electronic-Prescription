@@ -41,7 +41,7 @@ class User (UserMixin, db.Model):
         : Hash Password and Store in DB
         """
         self.password = generate_password_hash (pwd)
-
+    
     def check_password(self, pwd: str) -> bool:
         """
         : check and compare passwords
@@ -67,7 +67,6 @@ class User (UserMixin, db.Model):
         self.email = updated_user['email']
         self.activated = True if updated_user['status'] == 'active' else False
         db.session.commit()
-
 
     @classmethod
     def delete_user_by_id(cls, id):
@@ -456,6 +455,8 @@ class Prescription (db.Model):
     pres_id = db.Column (db.Integer, primary_key=True)
     identifier = db.Column (db.String(16))
     medication = db.Column (db.String(256))
+    status = db.Column (db.String(20))
+    collected = db.Column (db.String(1))
     from_date = db.Column (db.DateTime, default=datetime.now())
     to_date = db.Column (db.DateTime, default=datetime.now())
     doc_id = db.Column (db.ForeignKey(Doctor.doc_id))
@@ -465,7 +466,11 @@ class Prescription (db.Model):
 
     def __call__ (self):
         meds_count = len( self.medication.split(',') )
-        status = 'active' if datetime.now() < self.to_date else 'expired'
+        if datetime.now() < self.to_date:
+            status = self.status 
+        else:
+            status='Expired'
+            db.session.commit()
         patient_name = Patient.get_user_by_id(self.pat_id).fName
         return {
             'pres_id' : self.pres_id,
@@ -478,7 +483,8 @@ class Prescription (db.Model):
             'phar_id': self.phar_id,
             'from_data': self.from_date,
             'to_date': self.to_date,
-            'status': status
+            'status': status,
+            'collected': self.collected
         }
 
     def save(self):
@@ -495,6 +501,13 @@ class Prescription (db.Model):
     def get_prescriptions_by_doctor(cls, doc_id):
         return cls.query.filter_by(doc_id=doc_id).order_by(cls.pres_id.desc()).all()
 
+    @classmethod
+    def get_active_prescriptions_by_patient(cls, pat_id):
+        return cls.query.filter_by(pat_id=pat_id,status='Active',collected='Y').order_by(cls.pres_id.desc()).all()
+
+    @classmethod
+    def get_expired_prescriptions_by_patient(cls, pat_id):
+        return cls.query.filter_by(pat_id=pat_id,status='Expired',collected='Y').order_by(cls.pres_id.desc()).all()
 
     @classmethod
     def get_all_prescriptions(cls):
