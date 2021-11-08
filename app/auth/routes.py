@@ -24,6 +24,9 @@ def login ():
             # Login Failed
             error = 'Invalid Credentials!'
             return render_template ("auth/login.html", form=form, error=error)
+        elif not user.activated:
+            error = 'Inactive Account. Please contact admin.'
+            return render_template ("auth/login.html", form=form, error=error)
         else:
             login_user (user, remember=form.remember_me.data)
             print(user.get_role())
@@ -63,7 +66,7 @@ def register ():
     if form.validate_on_submit():
         # return redirect(url_for('auth.patient_register_info'))
         _user = User.query.filter_by(username=form.username.data).first()
-        print ('user', _user)
+
         if _user:
             print ('User Already Exists!')
             error = 'Username has already taken. Please choose another.'

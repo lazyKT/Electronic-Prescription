@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid my-5">
+  <p class="lead text-center">Edit User</p>
+  {% if error %}
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
+  <div class="card bg-light mx-1">
+    <div class="card-body">
+      <form method="post">
+        {{ form.hidden_tag() }}
+        <!-- username -->
+        <div class="mb-3">
+          {{ form.username.label(class_="form-label") }}
+          {% for error in form.username.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.username (class_="form-control", value=current_user.username) }}
+        </div>
+        <!-- First Name -->
+        <div class="mb-3">
+          {{ form.fName.label(class_="form-label") }}
+          {% for error in form.fName.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.fName (class_="form-control", value=current_user.fName) }}
+        </div>
+        <!-- Last Name -->
+        <div class="mb-3">
+          {{ form.lName.label(class_="form-label") }}
+          {% for error in form.lName.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.lName (class_="form-control", value=current_user.lName) }}
+        </div>
+        <!-- Email Address -->
+        <div class="mb-3">
+          {{ form.email.label(class_="form-label") }}
+          {% for error in form.email.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.email (class_="form-control", value=current_user.email) }}
+        </div>
+        <!-- Phone Number -->
+        {% if current_user.mobile %}
+        <div class="mb-3">
+          {{ form.mobile.label(class_="form-label") }}
+          {% for error in form.mobile.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.mobile (class_="form-control", value=current_user.mobile) }}
+        </div>
+        {% endif %}
+        <!-- Account Status -->
+        <div class="mb-3">
+          {{ form.activated.label(class_="form-label") }}
+          {% for error in form.mobile.errors %}
+          <br>
+          <span class="validation-message">{{ error }}</span>
+          {% endfor %}
+          {{ form.activated (class_="form-control", value=current_user.activated) }}
+        </div>
+        {{ form.submit(class_="btn btn-primary w-100 mt-3") }}
+      </form>
+      <a class="btn btn-secondary w-100" href="{{ url_for('home.edit_profile') }}">Cancel</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
