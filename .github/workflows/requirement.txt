@@ -1,6 +1,6 @@
 flask
 flask-sqlalchemy
-flask-wtf
+flask-wtf==0.15.1
 flask-login
 email-validator
 flask-admin
