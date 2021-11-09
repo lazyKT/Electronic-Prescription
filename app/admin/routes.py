@@ -47,12 +47,13 @@ class AdminUserView(MyAdminView):
                     # Create new doctor
                     new_doctor = Doctor(
                         username = form.username.data,
-                        email = form.email.data,
                         role = 'doctor',
-                        fName = form.fName.data,
-                        lName = form.lName.data,
-                        mobile = form.mobile.data,
-                        gender = form.gender.data
+                        fName=form.fName.data,
+                        lName=form.lName.data,
+                        mobile=form.mobile.data,
+                        email = form.email.data,
+                        dob=form.dob.data,
+                        gender=form.gender.data
                     )
                     new_doctor.set_password(form.password.data)
                     new_doctor.save()
@@ -64,12 +65,13 @@ class AdminUserView(MyAdminView):
                     # Create new doctor
                     new_pharmacist = Pharmacist(
                         username = form.username.data,
-                        email = form.email.data,
                         role = 'pharmacist',
-                        fName = form.fName.data,
-                        lName = form.lName.data,
-                        mobile = form.mobile.data,
-                        gender = form.gender.data
+                        fName=form.fName.data,
+                        lName=form.lName.data,
+                        mobile=form.mobile.data,
+                        email = form.email.data,
+                        dob=form.dob.data,
+                        gender=form.gender.data,
                     )
                     new_pharmacist.set_password(form.password.data)
                     new_pharmacist.save()
@@ -81,10 +83,13 @@ class AdminUserView(MyAdminView):
                     # create new admin
                     new_admin = Admin(
                         username = form.username.data,
-                        email = form.email.data,
                         role = 'admin',
-                        fName = form.fName.data,
-                        lName = form.lName.data
+                        fName=form.fName.data,
+                        lName=form.lName.data,
+                        mobile=form.mobile.data,
+                        email = form.email.data,
+                        dob=form.dob.data,
+                        gender=form.gender.data
                     )
                     new_admin.set_password(form.password.data)
                     new_admin.save()

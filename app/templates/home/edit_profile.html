@@ -59,6 +59,7 @@
           {{ form.mobile (class_="form-control", value=current_user.mobile) }}
         </div>
         {% endif %}
+        {% if current_user.get_role() == 'admin' %}
         <!-- Account Status -->
         <div class="mb-3">
           {{ form.activated.label(class_="form-label") }}
@@ -68,9 +69,10 @@
           {% endfor %}
           {{ form.activated (class_="form-control", value=current_user.activated) }}
         </div>
+        {% endif %}
         {{ form.submit(class_="btn btn-primary w-100 mt-3") }}
       </form>
-      <a class="btn btn-secondary w-100" href="{{ url_for('home.edit_profile') }}">Cancel</a>
+      <a class="btn btn-secondary w-100" href="/profile">Cancel</a>
     </div>
   </div>
 </div>
