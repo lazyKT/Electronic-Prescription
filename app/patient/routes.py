@@ -29,3 +29,17 @@ def filter_user(q):
 def get_all_patients():
     patients = Patient.get_all_patients()
     return {'patients': [p() for p in patients]}, 200
+
+
+@bp.route('/patients')
+def search_patients():
+    q = request.args.get('filter')
+    if q and q != '':
+        print ('search param', q)
+        patients = Patient.filter_patient(q)
+        if len(patients) == 0:
+            return jsonify({'message' : 'Not Found'}), 404
+        return jsonify([patient() for patient in patients]), 200
+    else:
+        patients = Patient.get_all_patients()
+        return {'patients': [p() for p in patients]}, 200

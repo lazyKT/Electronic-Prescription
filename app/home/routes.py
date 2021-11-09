@@ -69,7 +69,7 @@ def edit_user(id):
 @login_required
 def edit_profile():
     try:
-        form = AdminEditUserForm()
+        form = AdminEditUserForm(activated=current_user.activated)
         if form.validate_on_submit():
             data = form_data_to_dict (form.username.data, form.email.data, form.fName.data, form.lName.data, form.activated.data)
             if validate_request(data):
