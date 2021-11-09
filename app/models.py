@@ -4,7 +4,7 @@
 from datetime import datetime
 from app import db, login
 from flask_login import UserMixin
-from sqlalchemy import extract
+from sqlalchemy import extract, or_
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -189,12 +189,17 @@ class Patient (User):
         """
         # Filter Users by search query
         """
-        return cls.query.filter(
-            cls.fName.contains(q),
-            cls.lName.contains(q),
-            cls.username.contains(q),
-            cls.email.contains(q)
+        print(q)
+        patients = cls.query.filter(
+            or_(
+                cls.username.contains(q),
+                cls.email.contains(q),
+                cls.fName.contains(q),
+                cls.lName.contains(q)
+            )
         ).all()
+        print(patients)
+        return patients
 
 
     @classmethod
