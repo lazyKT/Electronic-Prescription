@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r ./Electronic-Prescription/requirement.txt; 
+        pip install -r /Electronic-Prescription/requirement.txt; 
     - name: Test with unittest
       run: |
         python -m unittest
