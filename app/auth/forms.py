@@ -105,8 +105,8 @@ class AdminEditUserForm (FlaskForm):
     ])
     mobile = TelField ("Phone Number (8-digits without country code)")
     activated = SelectField ("Status", choices=[
-        ('Active'),
-        ('Inactive')
+        (True, 'Active'),
+        (False, 'Inactive')
     ])
     submit = SubmitField ("Save Changes")
 

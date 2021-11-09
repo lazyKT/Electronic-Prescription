@@ -41,7 +41,7 @@ class User (UserMixin, db.Model):
         : Hash Password and Store in DB
         """
         self.password = generate_password_hash (pwd)
-    
+
     def check_password(self, pwd: str) -> bool:
         """
         : check and compare passwords
@@ -68,15 +68,6 @@ class User (UserMixin, db.Model):
         self.activated = True if updated_user['status'] == 'active' else False
         db.session.commit()
 
-    @classmethod
-    def delete_user_by_id(cls, id):
-        try:
-            cls.query.filter_by(id=id).delete()
-            # db.session.delete(user)
-            db.session.commit()
-        except Exception as e:
-            raise(e)
-
 
     def delete_user(self):
         db.session.delete(self)
@@ -88,11 +79,29 @@ class User (UserMixin, db.Model):
 
 
     @classmethod
+    def delete_user_by_id(cls, id):
+        try:
+            cls.query.filter_by(id=id).delete()
+            # db.session.delete(user)
+            db.session.commit()
+        except Exception as e:
+            raise(e)
+
+
+    @classmethod
     def get_user_by_username (cls, username: str) -> object:
         """
         # Get User Object by username
         """
-        return cls.query.filter_by(username=username).frist()
+        return cls.query.filter_by(username=username).first()
+
+
+    @classmethod
+    def get_user_by_email (cls, email: str) -> object:
+        """
+        # Get User Object by email address
+        """
+        return cls.query.filter_by(email=email).first()
 
 
     @classmethod
@@ -180,7 +189,12 @@ class Patient (User):
         """
         # Filter Users by search query
         """
-        return cls.query.filter(cls.fName.contains(q)).all()
+        return cls.query.filter(
+            cls.fName.contains(q),
+            cls.lName.contains(q),
+            cls.username.contains(q),
+            cls.email.contains(q)
+        ).all()
 
 
     @classmethod
@@ -467,7 +481,7 @@ class Prescription (db.Model):
     def __call__ (self):
         meds_count = len( self.medication.split(',') )
         if datetime.now() < self.to_date:
-            status = self.status 
+            status = self.status
         else:
             status='Expired'
             db.session.commit()

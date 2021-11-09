@@ -43,7 +43,15 @@ class AdminUserView(MyAdminView):
             # Create New User
             """
             try:
+                user = User.get_user_by_username (form.username.data)
+                if user:
+                    error = 'User already exists with username, {}'.format(form.username.data)
+                    return self.render('admin/user_regis_form.html', form=form, error=error)
+
                 if form.user_role.data == 'Doctor':
+                    if self.email_taken('doctor', form.email.data):
+                        error = 'User already exists with email, {}'.format(form.email.data)
+                        return self.render('admin/user_regis_form.html', form=form, error=error)
                     # Create new doctor
                     new_doctor = Doctor(
                         username = form.username.data,
@@ -61,7 +69,10 @@ class AdminUserView(MyAdminView):
                     return redirect(url_for('user.index'))
 
                 elif form.user_role.data == 'Pharmacist':
-                    # Create new doctor
+                    if self.email_taken('pharmacist', form.email.data):
+                        error = 'User already exists with email, {}'.format(form.email.data)
+                        return self.render('admin/user_regis_form.html', form=form, error=error)
+                    # Create new pharmacist
                     new_pharmacist = Pharmacist(
                         username = form.username.data,
                         email = form.email.data,
@@ -78,6 +89,9 @@ class AdminUserView(MyAdminView):
                     return redirect(url_for('user.index'))
 
                 elif form.user_role.data == 'Admin':
+                    if self.email_taken('admin', form.email.data):
+                        error = 'User already exists with email, {}'.format(form.email.data)
+                        return self.render('admin/user_regis_form.html', form=form, error=error)
                     # create new admin
                     new_admin = Admin(
                         username = form.username.data,
@@ -167,7 +181,7 @@ class AdminUserView(MyAdminView):
             flash ("You can't update other admin profiles. If you want to edit your profile, go to edit profile page.")
             return redirect(url_for('user.index'))
         else:
-            form = AdminEditUserForm()
+            form = AdminEditUserForm(activated=user.activated)
             try:
                 if form.validate_on_submit():
                     data = self.to_user_dict(form.username.data, form.email.data, form.fName.data, form.lName.data, form.mobile.data, form.activated.data)
@@ -259,6 +273,20 @@ class AdminUserView(MyAdminView):
         elif role == 'pharmacist':
             return Pharmacist.update_pharmacist(id, data)
         raise Exception('Unkown User Role')
+
+
+    def email_taken (self, role: str, email: str) -> bool:
+        """
+        # Check if the user with same email is already registered
+        """
+        if role == 'admin':
+            return Admin.get_user_by_email(email) is not None
+        elif role == 'doctor':
+            return Doctor.get_user_by_email(email) is not None
+        elif role == 'pharmacist':
+            return Pharmacist.get_user_by_email(email) is not None
+        raise Exception('Unkown User Role')
+
 
 # admin.add_view(AdminIndexView(name="E Prescription", endpoint="index"))
 admin.add_view(AdminUserView(User, db.session, endpoint='user'))
