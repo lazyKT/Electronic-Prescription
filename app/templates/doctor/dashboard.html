@@ -46,6 +46,14 @@
 
       <h5 class="my-2">
         <small class="text-muted">Prescriptions Status</small>
+        <div class="d-flex justify-content-between mt-2 mb-4">
+          <input type="text"
+            class="form-control w-75" id="search-patients"
+            placeholder="Search Patients"/>
+          <div class="d-flex justify-content-end mx-1">
+            <button class="btn btn-outline-primary">Search</button>
+          </div>
+        </div>
       </h5>
 
       {% for p in issued_prescriptions %}

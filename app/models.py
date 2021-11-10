@@ -489,6 +489,7 @@ class Prescription (db.Model):
             status = self.status
         else:
             status='Expired'
+            self.status='Expired'
             db.session.commit()
         patient_name = Patient.get_user_by_id(self.pat_id).fName
         return {

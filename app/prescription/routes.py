@@ -19,8 +19,8 @@ def create_get_prescriptions():
         if request.method == 'POST':
             data = request.get_json()
             if not validate_prescription(data):
-                flash ('Missing Required Data')
-                return render_template('prescription/create_prescriptions.html')
+                error='Missing Required Data!'
+                return jsonify({'message' : error})
             prescription = Prescription(
                 identifier=data['identifier'],
                 medication=data['medication'],
@@ -39,20 +39,20 @@ def create_get_prescriptions():
 
     except ValueError as ke:
         print(ke)
-        flash ('Internal Server Error [ValueErorr], {}'.format(str(ve)))
-        return render_template('prescription/create_prescriptions.html')
+        error = 'Internal Server Error [ValueErorr], {}'.format(str(ve))
+        return jsonify({'message' : error})
     except KeyError as ke:
         print(ke)
-        flash ('Internal Server Error [KeyErorr], {}'.format(str(ke)))
-        return render_template('prescription/create_prescriptions.html')
+        error = 'Internal Server Error [KeyErorr], {}'.format(str(ke))
+        return jsonify({'message' : error})
     except AttributeError as ae:
         print(ae)
-        flash ('Internal Server Error [AttributeErorr], {}'.format(str(ae)))
-        return render_template('prescription/create_prescriptions.html')
+        error = 'Internal Server Error [AttributeErorr], {}'.format(str(ae))
+        return jsonify({'message' : error})
     except Exception as e:
         print(e)
-        flash ('Internal Server Error [Error], {}'.format(str(e)))
-        return render_template('prescription/create_prescriptions.html')
+        error = 'Internal Server Error [Error], {}'.format(str(e))
+        return jsonify({'message' : error})
 
 
 @bp.route('/prescriptions')
@@ -60,14 +60,14 @@ def create_get_prescriptions():
 def get_all_prescriptions():
     prescriptions = Prescription.get_all_prescriptions()
     return jsonify([p() for p in prescriptions]), 200
-    
+
 @bp.route('/prescription/<id>', methods=['POST', 'GET'])
 def get_prescription_by_id(id):
     try:
         p = Prescription.query.filter_by(pres_id=id).first()
         if request.method == "POST":
             p.status='Active'
-            p.collected='Y'  
+            p.collected='Y'
             try:
                 db.session.commit()
                 flash ('Prescription Dispensed')

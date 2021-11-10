@@ -43,7 +43,6 @@ window.onload = () => {
   const errorMessageBoxPresc = document.getElementById('error-message-presc');
   const modalContainer = document.getElementById("modal-container");
   const patientInput = document.getElementById("patient");
-  const pharmacistInput = document.getElementById("pharmacist");
   const searchBtn = document.getElementById("search-btn");
   const medsList = document.getElementById("meds-list");
   const closeModalBtn = document.getElementById("dismiss-modal");
@@ -65,14 +64,6 @@ window.onload = () => {
     document.getElementById("search-input").setAttribute('placeholder', 'Search Patients');
     document.getElementById("modal-title").innerHTML = "Search Patients";
     searchData = 'patient';
-  });
-
-  pharmacistInput.addEventListener("focus", () => {
-    openModal(modalContainer);
-    document.getElementById("search-input").focus();
-    document.getElementById("search-input").setAttribute('placeholder', 'Search Pharmacists');
-    document.getElementById("modal-title").innerHTML = "Search Pharmacist";
-    searchData = 'pharmacist';
   });
 
   // search patient
@@ -106,11 +97,12 @@ window.onload = () => {
   addMedtoList.addEventListener("click", (e) => {
     const medName = document.getElementById("med-input")?.value;
     const medFreq = document.getElementById("med-freq")?.value;
+    const medQty = document.getElementById("med-qty")?.value;
     const extraNote = document.getElementById("extra-note-meds")?.value;
 
-    if (!medName || medName === "" || !medFreq || medFreq === "") return;
+    if (!medName || medName === "" || !medFreq || medFreq === "" || !medQty || medQty === 0) return;
 
-    addMedToMedicationList({ medName, medFreq, extraNote }, medicationList);
+    addMedToMedicationList({ medName, medFreq, medQty, extraNote }, medicationList);
 
     closeModal(medModal);
   });
@@ -119,7 +111,6 @@ window.onload = () => {
   createPrescriptionButton.addEventListener('click', async e => {
     try {
       const patient = patientInput.dataset.patientId;
-      const pharmacist = pharmacistInput.dataset.pharmacistId;
       const fromDate = document.getElementById('from_date').value;
       const toDate = document.getElementById('to_date').value;
       e.preventDefault();
@@ -127,7 +118,7 @@ window.onload = () => {
       e.target.setAttribute('disabled', true); // Disable the button, so that the user don't press again while loading
       console.log(fromDate, toDate);
 
-      if (!pharmacist || pharmacist === '' || !patient || patient === '' || !fromDate || fromDate === '' || !toDate || toDate === '')
+      if (!patient || patient === '' || !fromDate || fromDate === '' || !toDate || toDate === '')
       {
         e.target.innerHTML = 'Create Prescription';
         e.target.removeAttribute('disabled');
@@ -138,27 +129,19 @@ window.onload = () => {
       if (medicationList.childNodes.length <= 1)
         return;
 
-      /* formated medication string: seperate each by comma */
-      let medStr = "";
-      for (let i = 0; i < medicationList.childElementCount; i++) {
-        const medName = `med-name-${i+1}`;
-        const medFreq = `med-freq-${i+1}`;
-        const delimeter = i === 0 ? '' : ', ';
-        // console.log(medName, medFreq);
-        medStr += `${delimeter} ${document.getElementById(medName).innerHTML} ${document.getElementById(medFreq).innerHTML}`;
-      }
+      const medStr = medicationString(medicationList);
 
-      // console.log(medStr)
-      const response = await createPrescriptionRequest({ patient, pharmacist, medStr, fromDate, toDate});
+      const response = await createPrescriptionRequest({ patient, medStr, fromDate, toDate});
 
-      if (response.ok) {
+      if (response && response.ok) {
         window.location = '/doctor/dashboard';
-        // const json = await response.json();
-        // console.log(json); //DEBUG
       }
       else {
-        const json = await response.json();
-        console.log(json); //DEBUG
+        const { message } = await response.json();
+        if (message)
+          errorMessageBoxPresc.innerHTML = message;
+        else
+          errorMessageBoxPresc.innerHTML = 'Network Connection Error!';
       }
 
     }
@@ -173,14 +156,6 @@ window.onload = () => {
   });
 
 };
-
-function openModal(modal) {
-  modal.style.display = "flex";
-}
-
-function closeModal(modal) {
-  modal.style.display = "none";
-}
 
 function appendResults(results) {
 
@@ -247,31 +222,62 @@ function populateMedsList(medsList) {
 function addMedToMedicationList(medication, parent) {
   const div = document.createElement("div");
   const row = document.createElement("div");
-  row.setAttribute("class", "d-flex justify-content-between px-2 my-1");
-  const { medName, medFreq, extraNote } = medication;
+  row.setAttribute("class", "row px-2 mb-2");
+  const { medName, medFreq, extraNote, medQty } = medication;
 
   const medNameDOM = document.createElement("h6");
-  medNameDOM.setAttribute("class", "text-muted");
-  
+  medNameDOM.setAttribute("class", "col text-muted");
   medNameDOM.setAttribute("id", `med-name-${parent.childNodes.length}`);
   medNameDOM.innerHTML = medName;
 
+  const medQtyDOM = document.createElement("label");
+  medQtyDOM.setAttribute("class", "col text-muted");
+  medQtyDOM.setAttribute("id", `med-qty-${parent.childNodes.length}`);
+  medQtyDOM.innerHTML = `x ${medQty}`;
+
   const medFreqDOM = document.createElement("span");
-  medFreqDOM.setAttribute("class", "text-secondary");
+  medFreqDOM.setAttribute("class", "col text-secondary mx-1 text-end");
   medFreqDOM.setAttribute("id", `med-freq-${parent.childNodes.length}`);
   medFreqDOM.innerHTML = `@${medFreq}x time(s) a day`;
 
   row.appendChild(medNameDOM);
+  row.appendChild(medQtyDOM);
   row.appendChild(medFreqDOM);
 
-  const note = document.createElement("span");
-  note.setAttribute("class", "text-danger mx-2");
-  note.innerHTML = `* ${extraNote}`;
+  const note = document.createElement("div");
+  note.setAttribute("class", "alert alert-info mx-1 mt-1");
+  note.setAttribute("role", "alert");
+  note.innerHTML = "Take 2 tablets after every meal";
 
   div.appendChild(row);
   div.appendChild(note);
   div.appendChild(document.createElement("hr"));
   parent.appendChild(div);
+}
+
+
+function openModal (modal) {
+  modal.style.display = "flex";
+}
+
+function closeModal (modal) {
+  modal.style.display = "none";
+}
+
+
+function medicationString (medicationList) {
+  /* formated medication string: seperate each by comma */
+  let medStr = "";
+  for (let i = 0; i < medicationList.childElementCount; i++) {
+    const medName = `med-name-${i+1}`;
+    const medQty = `med-qty-${i+1}`;
+    const medFreq = `med-freq-${i+1}`;
+    const delimeter = i === 0 ? '' : ', ';
+    // console.log(medName, medFreq);
+    medStr += `${delimeter} ${document.getElementById(medName).innerHTML} ${document.getElementById(medQty).innerHTML} ${document.getElementById(medFreq).innerHTML}`;
+  }
+
+  return medStr;
 }
 
 
@@ -311,7 +317,8 @@ async function createPrescriptionRequest(pres) {
       medication : medStr,
       from_date: fromDate,
       to_date: toDate,
-      patient, pharmacist
+      patient,
+      pharmacist: 'NA'
     }
 
     const response = await fetch('/create-prescriptions', {
