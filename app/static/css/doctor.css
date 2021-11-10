@@ -8,13 +8,12 @@
 }
 
 .modal-container {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   position: absolute;
   top: 0;
   display: none;
   justify-content: center;
-  align-items: center;
   background: rgba(0, 0, 0, 0.5);
 }
 
@@ -22,6 +21,7 @@
   width: 700px;
   background: #f9f9f9;
   padding: 20px;
+  margin-top: 50px;
   position: relative;
 }
 

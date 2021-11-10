@@ -48,38 +48,32 @@
         <small class="text-muted">Prescriptions Status</small>
       </h5>
 
-      {% for p in issued_prescriptions %}
-
-      <div class="card my-2">
-        <div class="card-body card-btn d-flex justify-content-between align-items-center"
-          onclick="viewPrescription(this)"
-          data-pres-id="{{ p['pres_id'] }}">
-          <div>
-            <strong class="text-secondary">{{ p["p_name"] }}</strong><br>
-            <small>prescribed from {{ p["from_date"] }}</small>
-          </div>
-          <div>
-            <small class="text-muted">{{ p['meds_count'] }} medicines</small>
-          </div>
-          <div class="">
-            {% if p['status'] == 'Active' %}
-              <span class="badge bg-success">{{ p['status'] }}</span>
-            {% elif p['status'] == 'Pending' %}
-              <span class="badge bg-secondary">{{ p['status'] }}</span>
-            {% elif p['status'] == 'Expired' %}
-              <span class="badge bg-danger">{{ p['status'] }}</span>
-            {% endif %}
+      <div id="prescription-data-container">
+        {% for p in issued_prescriptions %}
+        <div class="card my-2">
+          <div class="card-body card-btn d-flex justify-content-between align-items-center"
+            onclick="viewPrescription(this)"
+            data-pres-id="{{ p['pres_id'] }}">
+            <div>
+              <strong class="text-secondary">{{ p["p_name"] }}</strong><br>
+              <small>prescribed from {{ p["from_date"] }}</small>
+            </div>
+            <div>
+              <small class="text-muted">{{ p['meds_count'] }} medicines</small>
+            </div>
+            <div class="">
+              {% if p['status'] == 'Active' %}
+                <span class="badge bg-success">{{ p['status'] }}</span>
+              {% elif p['status'] == 'Pending' %}
+                <span class="badge bg-secondary">{{ p['status'] }}</span>
+              {% elif p['status'] == 'Expired' %}
+                <span class="badge bg-danger">{{ p['status'] }}</span>
+              {% endif %}
+            </div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      <script type="text/javascript">
-        function viewPrescription(node) {
-          const pres_id = node.dataset.presId;
-          window.location = `/prescription/${pres_id}`
-        }
-      </script>
-
-      {% endfor %}
 
     </div>
     <!-- 2nd column -->
@@ -88,6 +82,9 @@
         <div
           class="card-body d-flex flex-column justify-content-center p-2"
         >
+          <a class="btn btn-success mx-auto my-2 w-50" href="{{ url_for('doctor.search_patients') }}">
+            Search Patient
+          </a>
           <a class="btn btn-danger mx-auto my-2 w-50" href="{{ url_for('prescription.create_get_prescriptions') }}">
             Create Prescription
           </a>
@@ -99,4 +96,6 @@
     </div>
   </div>
 </div>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/doctorDashboard.js') }}">
+</script>
 {% endblock %}

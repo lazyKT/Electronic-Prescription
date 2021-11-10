@@ -20,16 +20,10 @@ def index():
     )
 
 
-@bp.route ('/user/<id>', methods=['GET', 'DELETE'])
-def test_route(id):
-    try:
-        user = User.get_user_by_id(id)
-        if request.method == 'DELETE':
-            Patient.delete_patient(id)
-            return "Deletion Done", 204
-    except Exception as e:
-        return str(e), 500
-    return jsonify(user())
+@bp.route ('/doctor/search-patients')
+@login_required
+def search_patients():
+    return render_template ('doctor/search_patient.html')
 
 
 @bp.route ('/doctor/filter/<q>')

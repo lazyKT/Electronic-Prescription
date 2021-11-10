@@ -16,21 +16,31 @@ def index():
         expired_prescriptions=expired_prescriptions
     )
 
+# API
 @bp.route('/patient/filter/<q>')
 def filter_user(q):
-    print('query', q)
-    patients = Patient.filter_patient(q)
-    if len(patients) == 0:
-        return "Not Found", 404
-    return jsonify([patient() for patient in patients]), 200
+    try:
+        patients = Patient.filter_patient(q)
+        return jsonify([patient() for patient in patients]), 200
 
+    except ValueError as ke:
+        print(ke)
+        error = 'Internal Server Error [ValueErorr], {}'.format(str(ve))
+        return jsonify({'message' : error})
+    except KeyError as ke:
+        print(ke)
+        error = 'Internal Server Error [KeyErorr], {}'.format(str(ke))
+        return jsonify({'message' : error})
+    except AttributeError as ae:
+        print(ae)
+        error = 'Internal Server Error [AttributeErorr], {}'.format(str(ae))
+        return jsonify({'message' : error})
+    except Exception as e:
+        print(e)
+        error = 'Internal Server Error [Error], {}'.format(str(e))
+        return jsonify({'message' : error})
 
-@bp.route('/patient/all')
-def get_all_patients():
-    patients = Patient.get_all_patients()
-    return {'patients': [p() for p in patients]}, 200
-
-
+# Tempalte and API
 @bp.route('/patients')
 def search_patients():
     q = request.args.get('filter')
@@ -43,3 +53,9 @@ def search_patients():
     else:
         patients = Patient.get_all_patients()
         return {'patients': [p() for p in patients]}, 200
+
+
+@bp.route('/patient/all')
+def get_all_patients():
+    patients = Patient.get_all_patients()
+    return {'patients': [p() for p in patients]}, 200
