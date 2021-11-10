@@ -6,34 +6,6 @@ const medicines = [
   "Biogesic",
   "Konidin",
   "Strapcils",
-  "Panadol",
-  "Dicogin",
-  "Dolphinal",
-  "Fluza",
-  "Biogesic",
-  "Konidin",
-  "Strapcils",
-  "Panadol",
-  "Dicogin",
-  "Dolphinal",
-  "Fluza",
-  "Biogesic",
-  "Konidin",
-  "Strapcils",
-  "Panadol",
-  "Dicogin",
-  "Dolphinal",
-  "Fluza",
-  "Biogesic",
-  "Konidin",
-  "Strapcils",
-  "Panadol",
-  "Dicogin",
-  "Dolphinal",
-  "Fluza",
-  "Biogesic",
-  "Konidin",
-  "Strapcils"
 ];
 
 let searchData
@@ -75,9 +47,21 @@ window.onload = () => {
 
       clearResults();
 
-      const results = await filterRequest(searchKeyWord);
+      const response = await filterRequest(searchKeyWord);
 
-      appendResults(results);
+      if (response && response.ok) {
+        const results = await response.json();
+
+        if (results.length === 0)
+          showEmptyMessage(searchKeyWord);
+        else
+          appendResults(results);
+      }
+      else {
+        const { message } = await response.json();
+        const errMessage = message ? message : 'Network Connection Error!';
+        showErrorMessage(errMessage);
+      }
     }
     catch (error) {
       console.log(`Error fetching ${searchData} filtered request`, error);
@@ -88,10 +72,15 @@ window.onload = () => {
   addMedicineButton.addEventListener("click", (e) => openModal(medModal));
 
   // close patient/pharmacy modals
-  closeModalBtn.addEventListener("click", (e) => closeModal(modalContainer));
+  closeModalBtn.addEventListener("click", (e) => {
+    closeModal(modalContainer);
+  });
 
   // close medication modal
-  closeMedicationModal.addEventListener("click", (e) => closeModal(medModal));
+  closeMedicationModal.addEventListener("click", (e) => {
+    clearMedicationForm();
+    closeModal(medModal);
+  });
 
   /* add medication to the medication list */
   addMedtoList.addEventListener("click", (e) => {
@@ -103,6 +92,8 @@ window.onload = () => {
     if (!medName || medName === "" || !medFreq || medFreq === "" || !medQty || medQty === 0) return;
 
     addMedToMedicationList({ medName, medFreq, medQty, extraNote }, medicationList);
+
+    clearMedicationForm();
 
     closeModal(medModal);
   });
@@ -116,7 +107,6 @@ window.onload = () => {
       e.preventDefault();
       e.target.innerHTML = 'Loading..'
       e.target.setAttribute('disabled', true); // Disable the button, so that the user don't press again while loading
-      console.log(fromDate, toDate);
 
       if (!patient || patient === '' || !fromDate || fromDate === '' || !toDate || toDate === '')
       {
@@ -201,11 +191,22 @@ function appendResults(results) {
 
 
 /* clear search results */
-function clearResults() {
+function clearResults () {
   const resultContainer = document.getElementById("result-container");
   while (resultContainer.lastChild) {
     resultContainer.removeChild(resultContainer.lastChild);
   }
+}
+
+
+/* clear medication form */
+function clearMedicationForm () {
+  const medInput = document.getElementById("med-input");
+  const medQty = document.getElementById("med-qty");
+  const medFreq = document.getElementById("med-freq");
+  medInput.value = "";
+  medQty.value = "";
+  medFreq.value = "";
 }
 
 
@@ -256,6 +257,35 @@ function addMedToMedicationList(medication, parent) {
 }
 
 
+/**
+# Show Empty Message if the search results return nothing
+**/
+function showEmptyMessage (q) {
+  const resultContainer = document.getElementById("result-container");
+  const emptyMessageBox = document.createElement("div");
+  emptyMessageBox.setAttribute("class", "alert alert-info");
+  emptyMessageBox.setAttribute("id", "empty-msg-box");
+  emptyMessageBox.setAttribute("role", "alert");
+  emptyMessageBox.innerHTML = `No search Result(s) related to ${q}`;
+  emptyMessageBox.style.display = "block";
+  resultContainer.appendChild(emptyMessageBox);
+}
+
+/**
+# Show Error Message if any error encounter during search
+**/
+function showErrorMessage (message) {
+  const resultContainer = document.getElementById("result-container");
+  const errorMessageBox = document.createElement("div");
+  errorMessageBox.setAttribute("class", "alert alert-danger");
+  errorMessageBox.setAttribute("id", "error-msg-box");
+  errorMessageBox.setAttribute("role", "alert");
+  errorMessageBox.innerHTML = message;
+  errorMessageBox.style.display = "block";
+  resultContainer.appendChild(errorMessageBox);
+}
+
+
 function openModal (modal) {
   modal.style.display = "flex";
 }
@@ -273,7 +303,7 @@ function medicationString (medicationList) {
     const medQty = `med-qty-${i+1}`;
     const medFreq = `med-freq-${i+1}`;
     const delimeter = i === 0 ? '' : ', ';
-    // console.log(medName, medFreq);
+
     medStr += `${delimeter} ${document.getElementById(medName).innerHTML} ${document.getElementById(medQty).innerHTML} ${document.getElementById(medFreq).innerHTML}`;
   }
 
@@ -294,9 +324,7 @@ async function filterRequest(q) {
       }
     });
 
-    const results = await response.json()
-
-    return results;
+    return response;
   }
   catch (error) {
     console.log(`Error filtering ${searchData}`, error);
