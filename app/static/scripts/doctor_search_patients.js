@@ -4,10 +4,15 @@
 
 // Search Patients on Enter Key Pressed
 async function searchPatientsInputOnKey (e) {
-  e.preventDefault();
+  try {
+    e.preventDefault();
 
-  if (e.key === "Enter" && e.target.value !== '') {
-    await searchPatients(e.target.value);
+    if (e.key === "Enter" && e.target.value !== '') {
+      await searchPatients(e.target.value);
+    }
+  }
+  catch (error) {
+    showErrorMessage(error.toString());
   }
 }
 
@@ -15,6 +20,8 @@ async function searchPatientsInputOnKey (e) {
 // Search Patients on Search Button Clicked
 async function searchPatientsButtOnPressed (e) {
   try {
+    e.preventDefault();
+
     const searchQuery = document.getElementById("doctor-search-patients-input");
 
     if (!searchQuery  || (searchQuery.value) === '') {
@@ -26,7 +33,7 @@ async function searchPatientsButtOnPressed (e) {
     await searchPatients(searchQuery.value);
   }
   catch (error) {
-    e.preventDefault();
+    showErrorMessage(error.toString());
   }
 }
 
@@ -39,30 +46,39 @@ async function searchPatients (q) {
     if (response && response.ok) {
       const patients = await response.json();
 
-      preateToDisplaySearchPatientResults (patients);
+      preateToDisplaySearchPatientResults (patients, q);
     }
     else {
       const { message } = await response.json();
 
       const errorMessage = message ? message : `Network Connection Error`;
       console.log(errorMessage);
+      showErrorMessage(errorMessage);
     }
   }
   catch (error) {
     console.error (error);
+    showErrorMessage("Something Went Wrong. Try Again!");
   }
 }
 
 
+function resetSearchResultsOnClicked (event) {
+  event.preventDefault();
+  const resultContainer = document.getElementById("doctor-search-patients-results");
+  clearResultContainer(resultContainer);
+}
+
+
 // show search results
-function preateToDisplaySearchPatientResults (patients) {
+function preateToDisplaySearchPatientResults (patients, q) {
 
   const resultContainer = document.getElementById("doctor-search-patients-results");
 
   // clear the existing data
   clearResultContainer(resultContainer);
 
-  displayResults(resultContainer, patients);
+  displayResults(resultContainer, patients, q);
 }
 
 
@@ -76,9 +92,10 @@ function clearResultContainer (container) {
 
 
 // display search results
-function displayResults (container, patients) {
+function displayResults (container, patients, q) {
   if (patients.length === 0) {
     // if no results were found
+    showEmptyResult(container, q);
   }
   else {
     patients.forEach (
@@ -192,6 +209,36 @@ function hoverCard (card, event) {
 
 function viewPatientPrescriptions (id) {
   window.location = `http://127.0.0.1:5000/patients/prescriptions/${id}`;
+}
+
+
+function showEmptyResult(resultContainer, q) {
+  const emptyMessageBox = document.createElement("div");
+  emptyMessageBox.setAttribute("class", "alert alert-info");
+  emptyMessageBox.setAttribute("id", "empty-msg-box");
+  emptyMessageBox.setAttribute("role", "alert");
+  emptyMessageBox.innerHTML = `No search Result(s) related to ${q}`;
+  emptyMessageBox.style.display = "block";
+  resultContainer.appendChild(emptyMessageBox);
+}
+
+
+function showErrorMessage(message) {
+  removeErrorMessage();
+  const errorContainer = document.getElementById("error-div-search-patients");
+  const errorMessageBox = document.createElement("div");
+  errorMessageBox.setAttribute("class", "alert alert-danger");
+  errorMessageBox.setAttribute("id", "error-msg-box");
+  errorMessageBox.setAttribute("role", "alert");
+  errorMessageBox.innerHTML = message;
+  errorContainer.appendChild(errorMessageBox);
+}
+
+
+function removeErrorMessage() {
+  const errorMessage = document.getElementById("error-msg-box");
+  if (errorMessage)
+    errorMessage.remove();
 }
 
 

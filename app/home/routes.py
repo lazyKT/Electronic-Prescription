@@ -9,8 +9,31 @@ from app.auth.forms import AdminEditUserForm
 
 @bp.before_app_first_request
 def before_app():
-    print("Before App First Request")
     db.create_all()
+    create_master_admin_if_not_exist()
+
+
+def create_master_admin_if_not_exist():
+
+    user = User.get_user_by_username('admin')
+    if user:
+        return
+
+    user = Admin.get_user_by_email('admin@site.com')
+    if user:
+        return
+
+    admin = Admin(
+      username='admin',
+      email = 'admin@site.com',
+      fName='Admin',
+      lName='Admin',
+      role='admin'
+    )
+
+    admin.set_password('admin')
+    db.session.add(admin)
+    db.session.commit()
 
 
 @bp.route ('/')
@@ -69,7 +92,7 @@ def edit_user(id):
 @login_required
 def edit_profile():
     try:
-        form = AdminEditUserForm(activated=current_user.activated)
+        form = AdminEditUserForm(activated='Active' if current_user.activated else 'Inactive')
         if form.validate_on_submit():
             data = form_data_to_dict (form.username.data, form.email.data, form.fName.data, form.lName.data, form.activated.data)
             if validate_request(data):

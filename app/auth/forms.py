@@ -104,9 +104,9 @@ class AdminEditUserForm (FlaskForm):
         validators.Length(min=4, max=50)
     ])
     mobile = TelField ("Phone Number (8-digits without country code)")
-    activated = SelectField ("Status", choices=[
-        (True, 'Active'),
-        (False, 'Inactive')
+    activated = SelectField ("Active Account", choices=[
+        ('Active', 'Active'),
+        ('Inactive', 'Inactive')
     ])
     submit = SubmitField ("Save Changes")
 

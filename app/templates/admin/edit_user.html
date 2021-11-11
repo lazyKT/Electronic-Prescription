@@ -60,7 +60,7 @@
         <!-- Account Status -->
         <div class="mb-3">
           {{ form.activated.label(class_="form-label") }}
-          {% for error in form.mobile.errors %}
+          {% for error in form.activated.errors %}
           <br>
           <span class="validation-message">{{ error }}</span>
           {% endfor %}

@@ -181,9 +181,10 @@ class AdminUserView(MyAdminView):
             flash ("You can't update other admin profiles. If you want to edit your profile, go to edit profile page.")
             return redirect(url_for('user.index'))
         else:
-            form = AdminEditUserForm(activated=user.activated)
+            form = AdminEditUserForm(activated='Active' if user.activated else 'Inactive')
             try:
                 if form.validate_on_submit():
+                    print('active account?', form.activated.data)
                     data = self.to_user_dict(form.username.data, form.email.data, form.fName.data, form.lName.data, form.mobile.data, form.activated.data)
 
                     updated_user = self.update_user_by_role(role, id, data)
@@ -235,6 +236,7 @@ class AdminUserView(MyAdminView):
         """
         # Converts form data to python dictionary
         """
+        print('typeof', activated, type(activated))
         return {
             'username'   : username,
             'email'     : email,

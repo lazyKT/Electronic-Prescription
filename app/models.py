@@ -17,7 +17,7 @@ class User (UserMixin, db.Model):
     username = db.Column (db.String(20), unique=True, nullable=False)
     password = db.Column (db.String(50), nullable=False)
     role = db.Column (db.String(10))
-    activated = db.Column (db.Boolean, default=False)
+    activated = db.Column (db.Boolean, default=True)
 
     __mapper_args__ = {
         'polymorphic_identity' : 'user',
