@@ -1,0 +1,46 @@
+<!-- patients prescription past/current -->
+
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container my-3">
+  <h5 class="text-muted mt-2">Patient Prescriptions</h5>
+  <h6 class="text-muted mb-3">Patient : {{ p_name }}</h6>
+
+  {% for p in prescriptions %}
+  <div class="card my-2">
+    <div class="card-body card-btn d-flex justify-content-between align-items-center"
+      onclick="viewPrescription(this)"
+      data-pres-id="{{ p['pres_id'] }}">
+      <div class="w-50">
+        <strong class="text-secondary">{{ p["p_name"] }}</strong><br>
+        <div class="row w-100">
+          <small class="col">Start From: {{ p["from_date"] }}</small>
+          <small class="col">To: {{ p["to_date"] }}</small>
+        </div>
+      </div>
+      <div>
+        <small class="text-muted">{{ p['meds_count'] }} medicines</small>
+      </div>
+      <div class="">
+        {% if p['status'] == 'Active' %}
+          <span class="badge bg-success">{{ p['status'] }}</span>
+        {% elif p['status'] == 'Pending' %}
+          <span class="badge bg-secondary">{{ p['status'] }}</span>
+        {% elif p['status'] == 'Expired' %}
+          <span class="badge bg-danger">{{ p['status'] }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function viewPrescription (node) {
+      const pres_id = node.dataset.presId;
+      window.location = `/prescription/${pres_id}`
+    }
+  </script>
+  {% endfor %}
+
+</div>
+{% endblock %}

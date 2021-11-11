@@ -503,8 +503,8 @@ class Prescription (db.Model):
             'patient': self.pat_id,
             'p_name': patient_name,
             'phar_id': self.phar_id,
-            'from_data': self.from_date,
-            'to_date': self.to_date,
+            'from_date': datetime.strftime(self.from_date, '%Y-%m-%d'),
+            'to_date': datetime.strftime(self.to_date, '%Y-%m-%d'),
             'status': status,
             'collected': self.collected
         }
@@ -522,6 +522,10 @@ class Prescription (db.Model):
     @classmethod
     def get_prescriptions_by_doctor(cls, doc_id):
         return cls.query.filter_by(doc_id=doc_id).order_by(cls.pres_id.desc()).all()
+
+    @classmethod
+    def get_all_prescriptions_by_patient (cls, pat_id):
+        return cls.query.filter_by(pat_id=pat_id).order_by(cls.pres_id.desc()).all()
 
     @classmethod
     def get_active_prescriptions_by_patient(cls, pat_id):
