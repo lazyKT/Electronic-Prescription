@@ -25,6 +25,6 @@ jobs:
         python -m pip install --upgrade pip
         echo $PWD
         pip install -r requirement.txt; 
-    - name: Test with unittest
+    - name: Test with PyTest
       run: |
         pytest 
