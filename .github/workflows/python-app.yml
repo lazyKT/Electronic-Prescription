@@ -27,4 +27,4 @@ jobs:
         pip install -r requirement.txt; 
     - name: Test with unittest
       run: |
-        python -m unittest
+        pytest 
