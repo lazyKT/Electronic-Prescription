@@ -57,7 +57,7 @@
         <hr class="horizontal-line"><br>
         <div class="mb-1">
           <h6>Date of Birth</h6>
-          {{ current_user.dob }}
+          {{ current_user.dob.strftime('%Y-%m-%d') }}
         </div>
         <hr class="horizontal-line"><br>
         <div class="mb-1">
