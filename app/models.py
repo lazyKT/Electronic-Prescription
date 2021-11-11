@@ -17,7 +17,7 @@ class User (UserMixin, db.Model):
     username = db.Column (db.String(20), unique=True, nullable=False)
     password = db.Column (db.String(50), nullable=False)
     role = db.Column (db.String(10))
-    activated = db.Column (db.Boolean, default=False)
+    activated = db.Column (db.Boolean, default=True)
 
     __mapper_args__ = {
         'polymorphic_identity' : 'user',
@@ -152,7 +152,9 @@ class Patient (User):
             'fName': self.fName,
             'lName': self.lName,
             'email': self.email,
-            'username': self.username
+            'username': self.username,
+            'gender' : self.gender,
+            'dob' : self.dob
         }
 
 
@@ -501,8 +503,8 @@ class Prescription (db.Model):
             'patient': self.pat_id,
             'p_name': patient_name,
             'phar_id': self.phar_id,
-            'from_data': self.from_date,
-            'to_date': self.to_date,
+            'from_date': datetime.strftime(self.from_date, '%Y-%m-%d'),
+            'to_date': datetime.strftime(self.to_date, '%Y-%m-%d'),
             'status': status,
             'collected': self.collected
         }
@@ -520,6 +522,10 @@ class Prescription (db.Model):
     @classmethod
     def get_prescriptions_by_doctor(cls, doc_id):
         return cls.query.filter_by(doc_id=doc_id).order_by(cls.pres_id.desc()).all()
+
+    @classmethod
+    def get_all_prescriptions_by_patient (cls, pat_id):
+        return cls.query.filter_by(pat_id=pat_id).order_by(cls.pres_id.desc()).all()
 
     @classmethod
     def get_active_prescriptions_by_patient(cls, pat_id):
