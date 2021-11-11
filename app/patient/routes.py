@@ -59,3 +59,9 @@ def search_patients():
 def get_all_patients():
     patients = Patient.get_all_patients()
     return {'patients': [p() for p in patients]}, 200
+
+
+
+@bp.route('/patient/prescriptions/<id>')
+def get_patient_prescriptions(id):
+    return render_template ('patient/prescriptions.html')

@@ -152,7 +152,9 @@ class Patient (User):
             'fName': self.fName,
             'lName': self.lName,
             'email': self.email,
-            'username': self.username
+            'username': self.username,
+            'gender' : self.gender,
+            'dob' : self.dob
         }
 
 

@@ -1,13 +1,33 @@
+<!-- Doctor Search Patients to view profile and patients' past prescriptions -->
 {% extends 'base.html' %}
 
 {% block content %}
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/doctor_search_patients.js') }}">
+
+</script>
 <div class="container-fluid py-3">
   <div class="d-flex justify-content-between mt-3">
-    <input type="text" class="form-control w-75" placeholder="Search Patients"/>
+    <input
+      type="text" class="form-control w-75" id="doctor-search-patients-input"
+      placeholder="Search Patients" onkeyup="searchPatientsInputOnKey(event)"/>
     <div class="d-flex justify-content-end mx-1">
-      <button class="btn btn-outline-primary mx-1">Search</button>
-      <button class="btn btn-outline-secondary mx-1">Cancel</button>
+      <button
+        class="btn btn-outline-primary mx-1"
+        onclick="searchPatientsButtOnPressed(event)">
+        Search
+      </button>
+      <button
+        class="btn btn-outline-secondary mx-1"
+        onclick="resetSearchResultsOnClicked(event)">
+        Cancel
+      </button>
     </div>
   </div>
+
+  <!-- search results -->
+  <div class="mt-3" id="doctor-search-patients-results">
+
+  </div>
+
 </div>
 {% endblock %}
