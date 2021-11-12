@@ -8,7 +8,7 @@ from flask_login import login_required, current_user
 
 from app.prescription import bp
 from app.models import Doctor, Patient, Pharmacist, Prescription
-from app.utilities import validate_prescription
+from app.utilities import validate_prescription, prepare_new_prescription_email
 from app import db
 
 
@@ -33,6 +33,13 @@ def create_get_prescriptions():
                 to_date=datetime.now() if 'to_date' not in data else datetime.strptime(data['to_date'], '%Y-%m-%d')
             )
             prescription.save()
+            patient = Patient.get_patient_by_acc_id(data['patient'])
+
+            if not patient:
+                error='Invalid Patient Data'
+                return jsonify({'message' : error})
+
+            prepare_new_prescription_email(patient, prescription.pres_id)
             flash ('New Prescription Created!')
             return redirect(url_for('doctor.index'))
         return render_template('prescription/create_prescriptions.html')

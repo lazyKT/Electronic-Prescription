@@ -8,3 +8,4 @@ dev_db
 app/templates/.DS_Store
 app/.DS_Store
 db/usertbl.sql
+sendgrid.txt

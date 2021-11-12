@@ -5,3 +5,4 @@ flask-login
 email-validator
 flask-admin
 flask-qrcode
+flask-mail

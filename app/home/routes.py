@@ -1,10 +1,12 @@
-from app.home import bp
-from app import db
 from flask import render_template, redirect, url_for, request, jsonify, flash
 from flask_login import login_required, current_user
 
+from app import db
+from app.home import bp
+from app.email import send_prescription_email
 from app.models import User, Patient, Doctor, Pharmacist, Admin
 from app.auth.forms import AdminEditUserForm
+
 
 
 @bp.before_app_first_request
@@ -130,7 +132,16 @@ def edit_profile():
         return render_template ('home/edit_profile.html', form=form, error='Internal Server Error: {}'.format(str(e)))
 
 
+@bp.route('/test/email', methods=['POST'])
+def test_email():
+    json_data = request.get_json()
+    recipient = json_data['recipient']
+    subject = json_data['subject']
+    body = json_data['body']
+    send_prescription_email (subject, recipient, body)
+    return "Test Email Sent. Please check your inbox"
 
+# convert form data to dictionary
 def form_data_to_dict (username, email, fName, lName, activated):
     return {
         'username'   : username,
