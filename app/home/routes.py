@@ -110,14 +110,13 @@ def edit_profile():
                 elif current_user.get_role() == 'pharmacist':
                     data['mobile'] = form.mobile.data
                     pharmacist = Pharmacist.update_pharmacist(current_user.id, data)
-
-                flash('Profile Updated Successfully');
-                return redirect(url_for('home.profile'))
+                flash('Profile Updated Successfully')
+                return redirect(url_for('home.index'))
 
             error = "Data Validation Failed"
-            return render_template ('home/edit_profile.html', form=form, error=error)
+            return render_template ('home/profile.html', form=form, error=error)
 
-        return render_template ('home/edit_profile.html', form=form)
+        return render_template ('home/profile.html', form=form)
 
     except KeyError as ke:
         print('Exception occured during profile update. Key Error: {}'.format(str(ke)))
