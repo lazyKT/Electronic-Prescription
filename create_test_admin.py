@@ -1,4 +1,5 @@
 from app import db, init_app
+from datetime import datetime
 from app.models import Admin
 
 
@@ -13,7 +14,10 @@ with app.app_context():
     email = 'admin@site.com',
     fName='Admin',
     lName='Admin',
-    role='admin'
+    role='admin',
+    gender='Male',
+    mobile='12345678',
+    dob=datetime(1994, 10, 20, 10, 10, 10)
   )
 
   admin.set_password('admin')

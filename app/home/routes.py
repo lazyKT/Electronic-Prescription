@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, request, jsonify, flash
 from flask_login import login_required, current_user
+from datetime import datetime
 
 from app import db
 from app.home import bp
@@ -30,7 +31,10 @@ def create_master_admin_if_not_exist():
       email = 'admin@site.com',
       fName='Admin',
       lName='Admin',
-      role='admin'
+      role='admin',
+      mobile='83210054',
+      gender='Male',
+      dob=datetime.strptime('1996-12-09', '%Y-%m-%d')
     )
 
     admin.set_password('admin')
@@ -112,12 +116,11 @@ def edit_profile():
                 elif current_user.get_role() == 'pharmacist':
                     data['mobile'] = form.mobile.data
                     pharmacist = Pharmacist.update_pharmacist(current_user.id, data)
-
-                flash('Profile Updated Successfully');
+                flash('Profile Updated Successfully')
                 return redirect(url_for('home.profile'))
 
             error = "Data Validation Failed"
-            return render_template ('home/edit_profile.html', form=form, error=error)
+            return render_template ('home/profile.html', form=form, error=error)
 
         return render_template ('home/edit_profile.html', form=form)
 
