@@ -28,12 +28,14 @@
 - .\venv\Scripts\activate.exxe
 - set FLASK_APP=wsgi.py
 - set FLASK_ENV=development
+- set E_PRESC_SENDGRID_API_KEY=<api-key>
 - flask run
 ### For Unix Systems
 - cd E_Prescription
 - source venv/bin/activate
 - export FLASK_APP=wsgi.py
 - export FLASK_ENV=development
+- export E_PRESC_SENDGRID_API_KEY=<api-key>
 - flask run
 
 *Then run, http://127.0.0.1:5000 on browser*

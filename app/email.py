@@ -8,7 +8,9 @@ API_KEY = os.environ.get('E_PRESC_SENDGRID_API_KEY')
 
 # send email to user
 def send_prescription_email (subject, recipient, body):
-    print('API_KEY', API_KEY)
+    """
+    # Send new prescription email and link to patient
+    """
     sg = sendgrid.SendGridAPIClient(api_key=API_KEY)
     from_email = Email('ktl141@uowmail.edu.au')
     to_email = To(recipient)
