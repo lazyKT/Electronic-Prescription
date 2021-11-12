@@ -107,6 +107,7 @@ window.onload = () => {
       e.preventDefault();
       e.target.innerHTML = 'Loading..'
       e.target.setAttribute('disabled', true); // Disable the button, so that the user don't press again while loading
+      createPrescriptionButton.innerHTML = "Loading ...";
 
       if (!patient || patient === '' || !fromDate || fromDate === '' || !toDate || toDate === '')
       {
@@ -142,6 +143,9 @@ window.onload = () => {
         errorMessageBoxPresc.innerHTML = error;
       else
         errorMessageBoxPresc.innerHTML = "Internal Server Error!";
+    }
+    finally {
+      createPrescriptionButton.innerHTML = "Create Prescription";
     }
   });
 

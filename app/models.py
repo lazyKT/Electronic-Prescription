@@ -257,9 +257,12 @@ class Admin (User):
     """
     __tablename__ = 'admin'
     adm_id = db.Column (db.Integer, primary_key=True)
-    fName = db.Column (db.String(100), nullable=False)
-    lName = db.Column (db.String(100), nullable=False)
+    fName = db.Column (db.String(100))
+    lName = db.Column (db.String(100))
+    mobile = db.Column (db.String(16), nullable=False)
+    gender = db.Column (db.String(8))
     email = db.Column (db.String(100), unique=True)
+    dob = db.Column (db.DateTime, nullable=False)
     # account = db.relationship (User, backref=db.backref('admin_account', cascade="all,delete"), uselist=False)
     acc_id = db.Column (db.ForeignKey(User.id, ondelete='CASCADE'))
 
@@ -304,11 +307,12 @@ class Doctor (User):
     """
     __tablename__ = 'doctor'
     doc_id = db.Column (db.Integer, primary_key=True)
-    fName = db.Column (db.String(100), nullable=False)
-    lName = db.Column (db.String(100), nullable=False)
+    fName = db.Column (db.String(100))
+    lName = db.Column (db.String(100))
     mobile = db.Column (db.String(16), nullable=False)
     gender = db.Column (db.String(8))
     email = db.Column (db.String(100), unique=True)
+    dob = db.Column (db.DateTime, nullable=False)
     # account = db.relationship (User, backref=db.backref('doctor_account', cascade="all,delete"), uselist=False)
     acc_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'))
 
@@ -385,11 +389,12 @@ class Pharmacist (User):
     """
     __tablename__ = 'pharmacist'
     phar_id = db.Column (db.Integer, primary_key=True)
-    fName = db.Column (db.String(100), nullable=False)
-    lName = db.Column (db.String(100), nullable=False)
+    fName = db.Column (db.String(100))
+    lName = db.Column (db.String(100))
     mobile = db.Column (db.String(16), nullable=False)
     gender = db.Column (db.String(8))
     email = db.Column (db.String(100), unique=True)
+    dob = db.Column (db.DateTime, nullable=False)
     # account = db.relationship (User, backref=db.backref('pharmacist_account', cascade="all,delete"), uselist=False)
     acc_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'))
 

@@ -3,12 +3,10 @@ from flask_admin import Admin, AdminIndexView, expose
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from flask_qrcode import QRcode
-from flask_mail import Mail
 
 
 db = SQLAlchemy ()
 qr = QRcode ()
-# mail = Mail()
 login = LoginManager ()
 login.login_view = 'auth.login'
 
@@ -57,7 +55,6 @@ def init_app ():
     login.init_app (app)
     admin.init_app (app)
     qr.init_app (app)
-    # mail.init_app (app)
 
     with app.app_context ():
         # import routes
