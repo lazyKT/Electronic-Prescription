@@ -1,7 +1,6 @@
 from app.pharmacist import bp
 from flask import render_template, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
-from flask_paginate import Pagination, get_page_parameter
 from app.models import Prescription, Pharmacist, Medicine
 from app.auth.forms import TokenIDForm
 
