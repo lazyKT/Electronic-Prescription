@@ -3,6 +3,8 @@ import tempfile
 
 import pytest
 
+from flask import url_for, request
+from flask_login import login_required, current_user
 from app import init_app, init_db
 from datetime import datetime
 
@@ -19,6 +21,24 @@ def client():
     os.close(db_fd)
     os.unlink(db_path)
 
-def test_hello(client):
-    response = client.get('/')
-    assert response.status_code == 200
+def test_doctor_login_logout(client):
+    formdata = {'username': 'doctor1', 'password': 'password123', 'remember_me': False}
+    client.post('/login', data=formdata, follow_redirects=True)
+    assert current_user.role == 'doctor'
+    assert request.path == url_for('doctor.index')
+    client.post('/logout')
+
+def test_pharmacist_login_logout(client):
+    formdata = {'username': 'pharmacist1', 'password': 'password123', 'remember_me': False}
+    client.post('/login', data=formdata, follow_redirects=True)
+    assert current_user.role == 'pharmacist'
+    assert request.path == url_for('pharmacist.index')
+    client.post('/logout')
+
+def test_patient_login_logout(client):
+    formdata = {'username': 'patient1', 'password': 'password123', 'remember_me': False}
+    client.post('/login', data=formdata, follow_redirects=True)
+    assert current_user.role == 'patient'
+    assert request.path == url_for('patient_bp.index')
+    client.post('/logout')
+

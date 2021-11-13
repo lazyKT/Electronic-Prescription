@@ -228,29 +228,6 @@ class Patient (User):
         """
         return Patient.query.filter_by (email=email)
 
-
-class Allergy (db.Model):
-    """
-    : Patient_Allergy Model and Schema
-    """
-    __tablename__ = 'allergy'
-    allergy_id = db.Column (db.Integer, primary_key=True)
-    allergy = db.Column (db.String(100))
-    pat_id = db.Column (db.ForeignKey(Patient.pat_id))
-    patient = db.relationship (Patient, backref=db.backref('patient_allergy'), uselist=False)
-
-
-class MedHistory (db.Model):
-    """
-    : Patient_Mediacation_History Model and Schema
-    """
-    __tablename__ = 'medhistory'
-    medHist_id = db.Column (db.Integer, primary_key=True)
-    medHistory = db.Column (db.String(256))
-    pat_id = db.Column (db.ForeignKey(Patient.pat_id))
-    patient = db.relationship (Patient, backref=db.backref('patient_med_history'), uselist=False)
-
-
 class Admin (User):
     """
     : Admin Model and Schema
@@ -472,6 +449,9 @@ class Medicine (db.Model):
     instructions = db.Column (db.String(256))
     quantity = db.Column (db.Integer, default=0)
 
+    @classmethod
+    def get_medicine(cls):
+        return cls.query.all()
 
 class Prescription (db.Model):
     """
