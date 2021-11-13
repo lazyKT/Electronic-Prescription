@@ -8,6 +8,7 @@ from flask_login import login_required, current_user
 
 from app.prescription import bp
 from app.models import Doctor, Patient, Pharmacist, Prescription
+from app.auth.forms import TokenIDForm
 from app.utilities import validate_prescription, prepare_new_prescription_email
 from app import db
 
@@ -80,7 +81,8 @@ def get_prescription_by_id(id):
             try:
                 db.session.commit()
                 flash ('Prescription Dispensed')
-                return render_template('pharmacist/dashboard.html')
+                form = TokenIDForm()
+                return render_template('pharmacist/dashboard.html', form=form)
             except Exception as e:
                 flash ('Error Encountered Viewing Prescription, {}'.format(str(e)))
                 return redirect(url_for('pharmacist.index'))
@@ -120,8 +122,9 @@ def get_prescription_from_qr (id):
             p.collected='Y'
             try:
                 db.session.commit()
+                form = TokenIDForm()
                 flash ('Prescription Dispensed')
-                return render_template('pharmacist/dashboard.html')
+                return render_template('pharmacist/dashboard.html', form=form)
             except Exception as e:
                 flash ('Error Encountered Viewing Prescription, {}'.format(str(e)))
                 return redirect(url_for('pharmacist.index'))

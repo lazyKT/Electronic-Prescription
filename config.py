@@ -18,3 +18,4 @@ class Config:
   MAIL_USERNAME='lwin'
   MAIL_PASSWORD=os.environ.get('E_PRESC_SENDGRID_API_KEY')
   MAIL_DEFAULT_SENDER='ktl141@uowmail.edu.au'
+  WTF_CSRF_ENABLED = False

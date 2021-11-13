@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mb-4">
   <div class="row">
-    <div>
+    <div class="col-8" id="contents">
       <div id="greeting" class="alert alert-primary my-2" role="alert">
         <p>
           <big>
@@ -12,17 +12,72 @@
         </p>
       </div>
     </div>
-    <div class="row" align="center">
-      <div class="col" align="right">
-        <a class="btn btn-primary mx-auto my-2 w-50" data-bs-toggle="modal" data-bs-target="#dispenseModal">
-          Dispense Prescription
-        </a>
+    <!-- 2nd column -->
+    <div class="col-4">
+      <div class="card m-3">
+        <div class="card-body d-flex flex-column justify-content-center p-2">
+          <a class="btn btn-primary mx-auto my-2 w-50" data-bs-toggle="modal" data-bs-target="#dispenseModal">
+            Dispense Prescription
+          </a>
+        </div>
       </div>
-      <div class="col" align="left">
-        <a href="{{url_for('pharmacist.view_stock')}}" class="btn btn-primary mx-auto my-2 w-50">
-          Manage medical stock
-        </a>
+    </div>
+    <div class="container">
+      <div class="d-flex justify-content-between pt-2">
+        <h4>Medicine Stock</h4>
       </div>
+      <!-- search bar -->
+      <div class="card mt-4">
+        <div class="card-body py-3 d-flex justify-content-center">
+          <input class="px-2 w-75" type="text" name="" value="" placeholder="Search Medication">
+          <div class="w-25 d-flex justify-content-center">
+            <button class="btn btn-primary">Search</button>
+          </div>
+        </div>
+      </div>
+      <!-- end of search bar -->
+  
+      <!-- table -->
+      <div class="card mt-4">
+        <div class="card-body mx-1">
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Medicine Name</th>
+                <th scope="col">Expiry Date</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for medicine in medList %}
+              <tr>
+                <td>{{ medicine.med_id }}</span></td>
+                <td>{{ medicine.medName }}</span></td>
+                <td>{{ medicine.expDate.strftime('%Y-%m-%d') }}</span></td>
+                <td>{{ medicine.price }}</span></td>
+                <td>{{ medicine.quantity }}</span></td>
+                <td>
+                  <div class="d-flex justify-content-start">
+                    <!-- edit button -->
+                    <button
+                      type="button" data-mode="edit"
+                      data-id="{{ medicine.med_id }}"
+                      class="btn btn-primary mx-1"
+                      onclick="openEditViewModal(this)">
+                      <i class="fas fa-pen"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- end of table -->
     </div>
   </div>
 </div>
