@@ -19,7 +19,7 @@
 - cd E_Prescription
 - `git clone https://github.com/lazyKT/Electronic-Prescription.git`
 - python3 -m venv venv
-- source venv\bin\activate
+- source venv/bin/activate
 - pip install -r requirement.txt
 
 ## How to start development server
