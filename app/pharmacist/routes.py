@@ -1,8 +1,7 @@
 from app.pharmacist import bp
 from flask import render_template, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
-
-from app.models import Prescription, Pharmacist
+from app.models import Prescription, Pharmacist, Medicine
 from app.auth.forms import TokenIDForm
 
 @bp.route('/pharmacist/dashboard', methods=['GET', 'POST'])
@@ -12,12 +11,8 @@ def index():
     if form.validate_on_submit():
         tokenid = Prescription.query.filter_by (identifier=form.tokenid.data).first()
         return redirect(url_for('prescription.get_prescription_by_id', id=tokenid.pres_id))
-    return render_template('pharmacist/dashboard.html', form=form)
-
-@bp.route('/pharmacist/stock')
-@login_required
-def view_stock():
-    return render_template('pharmacist/stock.html')
+    medList = Medicine.get_medicine()
+    return render_template('pharmacist/dashboard.html', form=form, medList=medList)
 
 @bp.route('/pharmacist/filter/<q>')
 def filter_pharmacists(q):
