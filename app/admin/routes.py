@@ -15,7 +15,6 @@ class MyAdminView(ModelView):
         return self.render('admin/user.html')
 
     def is_accessible(self):
-        print(current_user.is_authenticated)
         if current_user.is_authenticated:
             return current_user.get_role() == 'admin'
         return False
@@ -28,7 +27,6 @@ class AdminUserView(MyAdminView):
         # Admin User Pannel to manage users
         """
         users = User.get_all_users()
-        print('users', users)
         # return "users"
         # return {'users': [user() for user in users]}
         return self.render('admin/user.html', users=users)
@@ -136,7 +134,6 @@ class AdminUserView(MyAdminView):
                     return jsonify("User Not Found!"), 200
                 if user.activated:
                     return jsonify("Cannot delete active user"), 200
-                print('Ok to delete user', id, user.role)
 
                 if user.role == 'patient':
                     print('deleting patient')
@@ -189,7 +186,15 @@ class AdminUserView(MyAdminView):
             form = AdminEditUserForm(activated='Active' if user.activated else 'Inactive')
             try:
                 if form.validate_on_submit():
-                    print('active account?', form.activated.data)
+
+                    if not self.valid_username_on_edit(user, form.username.data):
+                        error = "Username, {}, is already taken by other user.".format(form.username.data)
+                        return self.render('admin/edit_user.html', form=form, user=user_with_role, error=error)
+
+                    if not self.valid_email_on_edit(user_with_role, form.email.data):
+                        error = "Email Address, {}, is already registered with other user.".format(form.email.data)
+                        return self.render('admin/edit_user.html', form=form, user=user_with_role, error=error)
+
                     data = self.to_user_dict(form.username.data, form.email.data, form.fName.data, form.lName.data, form.mobile.data, form.activated.data)
 
                     updated_user = self.update_user_by_role(role, id, data)
@@ -241,7 +246,6 @@ class AdminUserView(MyAdminView):
         """
         # Converts form data to python dictionary
         """
-        print('typeof', activated, type(activated))
         return {
             'username'   : username,
             'email'     : email,
@@ -282,17 +286,40 @@ class AdminUserView(MyAdminView):
         raise Exception('Unkown User Role')
 
 
+    def valid_username_on_edit (self, editingUser: object, new_username: str):
+        """
+        # Check if the new username has been taken by other users
+        """
+        if editingUser.username != new_username:
+            user = User.get_user_by_username(new_username)
+            return user is None
+
+        return True
+
+
+    def valid_email_on_edit (self, editingUser: object, new_email: str):
+        """
+        # Check if the new email address is taken by other users
+        """
+        if editingUser.email != new_email:
+            return self.email_taken(editingUser.role, new_email) == False
+        return True
+
+
     def email_taken (self, role: str, email: str) -> bool:
         """
         # Check if the user with same email is already registered
         """
-        if role == 'admin':
-            return Admin.get_user_by_email(email) is not None
-        elif role == 'doctor':
-            return Doctor.get_user_by_email(email) is not None
-        elif role == 'pharmacist':
-            return Pharmacist.get_user_by_email(email) is not None
-        raise Exception('Unkown User Role')
+        if Admin.get_user_by_email(email) is not None:
+            return True
+        elif Doctor.get_user_by_email(email) is not None:
+            return True
+        elif Patient.get_user_by_email(email) is not None:
+            return True
+        elif Pharmacist.get_user_by_email(email) is not None:
+            return True
+        else:
+            return False
 
 
 # admin.add_view(AdminIndexView(name="E Prescription", endpoint="index"))
