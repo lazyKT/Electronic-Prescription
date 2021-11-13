@@ -3,7 +3,6 @@ from flask_admin import Admin, AdminIndexView, expose
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from flask_qrcode import QRcode
-from flask_mail import Mail
 
 
 db = SQLAlchemy ()
@@ -55,7 +54,7 @@ def init_app ():
 
     db.init_app (app)
     login.init_app (app)
-    admin.init_app (app)
+    # admin.init_app (app)
     qr.init_app (app)
     # mail.init_app (app)
 
