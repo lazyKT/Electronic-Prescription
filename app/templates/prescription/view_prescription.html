@@ -71,6 +71,12 @@
           <input type="date" class="form-control" id="to_date" value="{{ to_date }}" readonly>
         </div>
       {% if current_user.get_role() == 'pharmacist' %}
+      <div class="mb-3">
+        <label for="total_price" class="form-label">
+          Total Price (SGD):
+        </label>
+        <input type="text" class="form-control" id="total_price" value="{{ total_price }}" readonly>
+      </div>
       <form action="/prescription/{{pres_id}}" method="post">
         <input type="submit" value="Dispense" class="btn btn-primary">
       </form>

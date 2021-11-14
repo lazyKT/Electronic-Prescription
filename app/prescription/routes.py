@@ -114,7 +114,8 @@ def get_prescription_by_id(id):
             from_date=from_date_str,
             to_date=to_date_str,
             qr_link=qr_link,
-            pres_id=p.pres_id
+            pres_id=p.pres_id,
+            total_price=p.total_price
         )
     except Exception as e:
         flash ('Error Encountered Viewing Prescription, {}'.format(str(e)))
@@ -156,7 +157,8 @@ def get_prescription_from_qr (id):
             from_date=from_date_str,
             to_date=to_date_str,
             qr_link=qr_link,
-            pres_id=p.pres_id
+            pres_id=p.pres_id,
+            total_price=p.total_price
         )
 
     except Exception as e:

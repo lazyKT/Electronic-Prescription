@@ -257,8 +257,6 @@ function calculatePrice (medName, medQty) {
   const chosenMed = medicines.filter (m => m.medName === medName);
 
   totalPrice += (parseInt(chosenMed[0].price) * parseInt(medQty));
-
-  console.log('totalPrice', totalPrice);
 }
 
 
@@ -277,7 +275,7 @@ function addMedToMedicationList(medication, parent) {
   const medQtyDOM = document.createElement("label");
   medQtyDOM.setAttribute("class", "col text-muted");
   medQtyDOM.setAttribute("id", `med-qty-${parent.childNodes.length}`);
-  medQtyDOM.innerHTML = `x ${medQty}`;
+  medQtyDOM.innerHTML = `x${medQty}`;
 
   const medFreqDOM = document.createElement("span");
   medFreqDOM.setAttribute("class", "col text-secondary mx-1 text-end");
