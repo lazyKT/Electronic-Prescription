@@ -53,7 +53,6 @@ def init_app ():
     db.init_app (app)
     login.init_app (app)
     qr.init_app (app)
-
     admin.init_app (app)
 
     with app.app_context ():

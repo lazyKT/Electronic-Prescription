@@ -13,31 +13,32 @@
     <div class="card-body">
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label"
-            >From Doctor:</label
+            >Doctor Name:</label
           >
           <input
             type="text"
             class="form-control"
-            value="Dr.{{ doctor }}"
+            value="Dr. {{ doctor }}"
             id="doctor"
             readonly
           />
         </div>
         <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label"
-            >To Patient:</label
+          <label for="PatientName" class="form-label"
+            >For Patient:</label
           >
           <input
             type="text"
             class="form-control"
-            value="{{ prescription['p_name'] }}"
+            value="{{ prescription['p_fname'] }} {{ prescription['p_lname'] }}"
             readonly
           />
         </div>
+        {% if current_user.get_role() == 'patient' %}
         <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label"
-            >Via Pharmacy:</label
-          >
+          <label for="PharmacistName" class="form-label">
+          Dispensed By:
+        </label>
           <input
             type="text"
             class="form-control"
@@ -46,6 +47,7 @@
             readonly
           />
         </div>
+        {% endif %}
         <div class="mb-3">
           <label for="medication" class="form-label">
             Medication:

@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, validators
 from wtforms.fields.html5 import TelField, DateField
 
-from app.models import User
+from app.models import User, Prescription
 
 
 class AdminCreateUserForm (FlaskForm):
@@ -199,3 +199,4 @@ class TokenIDForm (FlaskForm):
         validators.Length(max=20)
     ])
     submit = SubmitField ("Search Prescription")
+

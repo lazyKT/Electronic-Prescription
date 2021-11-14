@@ -82,20 +82,6 @@
   </div>
 </div>
 </div>
-
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="my-message-box">
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  <button class="btn close-message-box" onclick="closeMessageBox()"><i class="fa fa-times" id="menu-icon"></i></button>
-</div>
-{% endif %}
-{% endwith %}
-
 <div class="modal fade" id="dispenseModal" tabindex="-1" aria-labelledby="dispenseModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
