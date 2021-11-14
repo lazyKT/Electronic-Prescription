@@ -1,6 +1,6 @@
 from app.pharmacist import bp
 from flask import render_template, request, jsonify, flash, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import login_required
 from app.models import Prescription, Pharmacist, Medicine
 from app.auth.forms import TokenIDForm
 from app import db
@@ -41,28 +41,23 @@ def get_pharmacist(id):
     pharmacist = Pharmacist.get_pharmacist_by_acc_id(id)
     return jsonify(pharmacist()), 200
 
-@bp.route('/pharmacist/medicine/<id>', methods=['GET', 'POST'])
+@bp.route('/medicine/<id>', methods=['GET', 'POST'])
 def manage_stock(id):
     medicine = Medicine.get_medicine_by_id(id)
     if request.method == "POST":
-        update_stock(id)
+        if request.form['price'] != "" and request.form['quantity'] != "":
+            medicine.price=request.form['price']
+            medicine.quantity=request.form['quantity']
+        else:
+            flash ('Invalid Input')
+        try:
+            db.session.commit()
+            flash ('Stocks Updated')
+            return redirect(url_for('pharmacist.index'))
+        except Exception as e:
+            flash ('Error Encountered Updating Stock, {}'.format(str(e)))
+            return redirect(url_for('pharmacist.index'))
     return render_template(
             'pharmacist/manage-stock.html',
             medicine=medicine()
         )
-
-def update_stock(id):
-    form = TokenIDForm()
-    medicine = Medicine.get_medicine_by_id(id)
-    if request.form['price'] != "" and request.form['quantity'] != "":
-        medicine.price=request.form['price']
-        medicine.quantity=request.form['quantity']
-    else:
-        flash ('Invalid Input')
-    try:
-        db.session.commit()
-        flash ('Stocks Updated')
-        return redirect(url_for('pharmacist.index', form=form))
-    except Exception as e:
-        flash ('Error Encountered Viewing Prescription, {}'.format(str(e)))
-        return redirect(url_for('pharmacist.index', form=form))
