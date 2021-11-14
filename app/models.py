@@ -492,7 +492,8 @@ class Prescription (db.Model):
             status='Expired'
             self.status='Expired'
             db.session.commit()
-        patient_name = Patient.get_user_by_id(self.pat_id).fName
+        patient_fname = Patient.get_user_by_id(self.pat_id).fName
+        patient_lname = Patient.get_user_by_id(self.pat_id).lName
         return {
             'pres_id' : self.pres_id,
             'id' : self.identifier,
@@ -500,7 +501,8 @@ class Prescription (db.Model):
             'meds_count': meds_count,
             'doctor': self.doc_id,
             'patient': self.pat_id,
-            'p_name': patient_name,
+            'p_fname': patient_fname,
+            'p_lname': patient_lname,
             'phar_id': self.phar_id,
             'from_date': datetime.strftime(self.from_date, '%Y-%m-%d'),
             'to_date': datetime.strftime(self.to_date, '%Y-%m-%d'),

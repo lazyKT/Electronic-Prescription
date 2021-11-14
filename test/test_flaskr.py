@@ -4,15 +4,16 @@ import tempfile
 import pytest
 
 from flask import url_for, request
-from flask_login import login_required, current_user
-from app import init_app, init_db
+from flask_login import current_user
+from app import init_app, init_db, admin
+from app.models import Admin
 from datetime import datetime
+
+app = init_app()
 
 @pytest.fixture
 def client():
     db_fd, db_path = tempfile.mkstemp()
-    app = init_app()
-
     with app.test_client() as client:
         with app.app_context():
             init_db()
@@ -22,12 +23,12 @@ def client():
     os.unlink(db_path)
 
 
-# def test_admin_login_logout (client):
-#     formdata = {'username' : 'admin', 'password': 'admin', 'remember_me': False}
-#     client.post('/login', data=formdata, follow_redirects=True)
-#     assert current_user.role == 'admin'
-#     assert request.path == url_for('admin.index')
-#     client.post('/logout')
+def test_admin_login_logout (client):
+    formdata = {'username' : 'admin', 'password': 'admin', 'remember_me': False}
+    client.post('/login', data=formdata, follow_redirects=True)
+    assert current_user.role == 'admin'
+    assert request.path == url_for('admin.index')
+    client.post('/logout')
 
 
 def test_doctor_login_logout(client):

@@ -8,10 +8,19 @@ from app.auth.forms import TokenIDForm
 @login_required
 def index():
     form = TokenIDForm()
-    if form.validate_on_submit():
-        tokenid = Prescription.query.filter_by (identifier=form.tokenid.data).first()
-        return redirect(url_for('prescription.get_prescription_by_id', id=tokenid.pres_id))
     medList = Medicine.get_medicine()
+    if form.validate_on_submit():
+        try:
+            tokenid = Prescription.query.filter_by (identifier=form.tokenid.data).first()
+            if tokenid.collected == "Y" or tokenid.status =="Active":
+                flash('Prescription already dispensed')
+            elif tokenid.status== "Expired":
+                flash('Prescription is expired')
+            else:
+                return redirect(url_for('prescription.get_prescription_by_id', id=tokenid.pres_id))
+        except AttributeError:
+            flash('Prescription does not exist')
+            return render_template('pharmacist/dashboard.html', form=form, medList=medList)
     return render_template('pharmacist/dashboard.html', form=form, medList=medList)
 
 @bp.route('/pharmacist/filter/<q>')
