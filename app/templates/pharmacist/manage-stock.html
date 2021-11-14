@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        <div class="mb-3">
+          <label for="MedicineName" class="form-label">
+            Medicine:
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            value="{{ medicine['medName'] }}"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label for="Price" class="form-label">
+            Price:
+            </label>
+          <input
+            type="text"
+            class="form-control"
+            value="{{ medicine['price'] }}"
+            name="price"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="Quantity" class="form-label">
+            Quantity Left:
+            </label>
+          <input
+            type="text"
+            class="form-control"
+            value="{{ medicine['quantity'] }}"
+            name="quantity"
+          />
+        </div>
+        <input type="submit" value="Update Stock" class="btn btn-primary" >
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

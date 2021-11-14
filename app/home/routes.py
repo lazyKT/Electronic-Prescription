@@ -77,19 +77,19 @@ def edit_user(id):
             return "Missing Required Data", 400
         if user.get_role() == 'patient':
             # update patient
-            patient = Patient.update_patient(id, data)
+            patient = Patient.update_patient_profile(id, data)
             return jsonify(patient()), 201
         if user.get_role() == 'admin':
             # update admin
-            admin = Admin.update_admin(id, data)
+            admin = Admin.update_admin_profile(id, data)
             return jsonify(admin()), 201
         if user.get_role() == 'pharmacist':
             # update pharmacist
-            pharmacist = Pharmacist.update_pharmacist(id, data)
+            pharmacist = Pharmacist.update_pharmacist_profile(id, data)
             return jsonify(pharmacist()), 201
         if user.get_role() == 'doctor':
             # update doctor
-            doctor = Doctor.update_doctor(id, data)
+            doctor = Doctor.update_doctor_profile(id, data)
             return jsonify(doctor()), 201
         return "Invalid user role", 400
 
