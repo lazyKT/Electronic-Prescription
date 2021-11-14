@@ -1,21 +1,13 @@
-const medicines = [
-  "Panadol",
-  "Dicogin",
-  "Dolphinal",
-  "Fluza",
-  "Biogesic",
-  "Konidin",
-  "Strapcils",
-];
+let searchData, medicines;
+let totalPrice = 0;
 
-let searchData
-
-window.onload = () => {
+window.onload = async () => {
   // DOM Nodes
   const errorMessageBoxPresc = document.getElementById('error-message-presc');
   const modalContainer = document.getElementById("modal-container");
   const patientInput = document.getElementById("patient");
   const searchBtn = document.getElementById("search-btn");
+  const medInput = document.getElementById("med-input");
   const medsList = document.getElementById("meds-list");
   const closeModalBtn = document.getElementById("dismiss-modal");
   const medModal = document.getElementById("med-modal-container");
@@ -26,7 +18,7 @@ window.onload = () => {
   const createPrescriptionButton = document.getElementById("create-prescription"); // submit
 
   // add medicines in medicine list
-  populateMedsList(medsList);
+  await populateMedsList(medsList);
   errorMessageBoxPresc.style.display = 'none';
 
   // choose patient
@@ -82,16 +74,29 @@ window.onload = () => {
     closeModal(medModal);
   });
 
+
+  /** auto render medication instruction upon med-input onChange event **/
+  medInput.addEventListener("change", e => {
+    const chosenMed = getMedicationInstructions(e.target.value);
+    const instructions = document.getElementById("med-freq");
+    instructions.value = chosenMed.instructions;
+    const descriptions = document.getElementById("meds-description");
+    descriptions.value = chosenMed.description
+  });
+
+
   /* add medication to the medication list */
   addMedtoList.addEventListener("click", (e) => {
     const medName = document.getElementById("med-input")?.value;
-    const medFreq = document.getElementById("med-freq")?.value;
+    const instructions = document.getElementById("med-freq")?.value;
     const medQty = document.getElementById("med-qty")?.value;
-    const extraNote = document.getElementById("extra-note-meds")?.value;
+    const descriptions = document.getElementById("meds-description")?.value;
 
-    if (!medName || medName === "" || !medFreq || medFreq === "" || !medQty || medQty === 0) return;
+    if (!medName || medName === "" || !instructions || instructions === "" || !medQty || medQty === 0) return;
 
-    addMedToMedicationList({ medName, medFreq, medQty, extraNote }, medicationList);
+    addMedToMedicationList({ medName, instructions, medQty, descriptions }, medicationList);
+
+    calculatePrice(medName, medQty);
 
     clearMedicationForm();
 
@@ -130,22 +135,19 @@ window.onload = () => {
       else {
         const { message } = await response.json();
         if (message)
-          errorMessageBoxPresc.innerHTML = message;
+          showErrorMessageBoxPresc(message);
         else
-          errorMessageBoxPresc.innerHTML = 'Network Connection Error!';
+          showErrorMessageBoxPresc('Network Connection Error!');
       }
 
     }
     catch (error) {
       console.log('Error fetching create prescriptions request', error);
-      errorMessageBoxPresc.style.display = 'block';
-      if (error)
-        errorMessageBoxPresc.innerHTML = error;
-      else
-        errorMessageBoxPresc.innerHTML = "Internal Server Error!";
+      showErrorMessageBoxPresc("Something went wrong");
     }
     finally {
       createPrescriptionButton.innerHTML = "Create Prescription";
+      createPrescriptionButton.removeAttribute("disabled");
     }
   });
 
@@ -215,20 +217,57 @@ function clearMedicationForm () {
 
 
 /* add medicine list in search category */
-function populateMedsList(medsList) {
-  medicines.forEach((f) => {
-    const option = document.createElement("option");
-    option.setAttribute("value", f);
-    medsList.appendChild(option);
-  });
+async function populateMedsList(medsList) {
+  try {
+    const response = await fetchAllMedicines();
+
+    if (response && response.ok) {
+      medicines = await response.json();
+      // console.log(medicines);
+      medicines.forEach((med) => {
+        const option = document.createElement("option");
+        option.setAttribute("value", med.medName);
+        option.setAttribute("data-med-id", med.med_id);
+        medsList.appendChild(option);
+      });
+    }
+    else {
+      const { message } = await response.json();
+    }
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+
+  }
 }
+
+
+/** get medication instructions from medicine name **/
+function getMedicationInstructions (medName) {
+
+  const chosenMed = medicines.filter (m => m.medName === medName);
+
+  return chosenMed[0];
+}
+
+
+function calculatePrice (medName, medQty) {
+  const chosenMed = medicines.filter (m => m.medName === medName);
+
+  totalPrice += (parseInt(chosenMed[0].price) * parseInt(medQty));
+
+  console.log('totalPrice', totalPrice);
+}
+
 
 /* add medicines to medications list */
 function addMedToMedicationList(medication, parent) {
   const div = document.createElement("div");
   const row = document.createElement("div");
   row.setAttribute("class", "row px-2 mb-2");
-  const { medName, medFreq, extraNote, medQty } = medication;
+  const { medName, instructions, descriptions, medQty } = medication;
 
   const medNameDOM = document.createElement("h6");
   medNameDOM.setAttribute("class", "col text-muted");
@@ -243,7 +282,7 @@ function addMedToMedicationList(medication, parent) {
   const medFreqDOM = document.createElement("span");
   medFreqDOM.setAttribute("class", "col text-secondary mx-1 text-end");
   medFreqDOM.setAttribute("id", `med-freq-${parent.childNodes.length}`);
-  medFreqDOM.innerHTML = `@${medFreq}x time(s) a day`;
+  medFreqDOM.innerHTML = instructions;
 
   row.appendChild(medNameDOM);
   row.appendChild(medQtyDOM);
@@ -252,7 +291,7 @@ function addMedToMedicationList(medication, parent) {
   const note = document.createElement("div");
   note.setAttribute("class", "alert alert-info mx-1 mt-1");
   note.setAttribute("role", "alert");
-  note.innerHTML = "Take 2 tablets after every meal";
+  note.innerHTML = descriptions;
 
   div.appendChild(row);
   div.appendChild(note);
@@ -287,6 +326,15 @@ function showErrorMessage (message) {
   errorMessageBox.innerHTML = message;
   errorMessageBox.style.display = "block";
   resultContainer.appendChild(errorMessageBox);
+}
+
+
+function showErrorMessageBoxPresc (message) {
+  const errorMessageBoxPresc = document.getElementById('error-message-presc');
+
+  errorMessageBoxPresc.style.display = "block";
+
+  errorMessageBoxPresc.innerHTML = message;
 }
 
 
@@ -350,7 +398,8 @@ async function createPrescriptionRequest(pres) {
       from_date: fromDate,
       to_date: toDate,
       patient,
-      pharmacist: 'NA'
+      pharmacist: 'NA',
+      totalPrice
     }
 
     const response = await fetch('/create-prescriptions', {
@@ -368,3 +417,30 @@ async function createPrescriptionRequest(pres) {
     console.log("Error Creating Prescriptions", error);
   }
 }
+
+
+/**
+# Fetch available Medicines
+**/
+async function fetchAllMedicines () {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/medicines", {
+      method: "GET",
+      headers: {
+        "Content-Type" : "application/json",
+        "Accept" : "application/json"
+      }
+    });
+
+    return response;
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+
+//
+//
+//
+//

@@ -21,6 +21,15 @@ def client():
     os.close(db_fd)
     os.unlink(db_path)
 
+
+# def test_admin_login_logout (client):
+#     formdata = {'username' : 'admin', 'password': 'admin', 'remember_me': False}
+#     client.post('/login', data=formdata, follow_redirects=True)
+#     assert current_user.role == 'admin'
+#     assert request.path == url_for('admin.index')
+#     client.post('/logout')
+
+
 def test_doctor_login_logout(client):
     formdata = {'username': 'doctor1', 'password': 'password123', 'remember_me': False}
     client.post('/login', data=formdata, follow_redirects=True)
@@ -41,4 +50,3 @@ def test_patient_login_logout(client):
     assert current_user.role == 'patient'
     assert request.path == url_for('patient_bp.index')
     client.post('/logout')
-
