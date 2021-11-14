@@ -7,7 +7,7 @@ from flask import render_template, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
 
 from app.prescription import bp
-from app.models import Doctor, Patient, Pharmacist, Prescription
+from app.models import Doctor, Patient, Pharmacist, Prescription, Medicine
 from app.auth.forms import TokenIDForm
 from app.utilities import validate_prescription, prepare_new_prescription_email
 from app import db
@@ -30,6 +30,7 @@ def create_get_prescriptions():
                 pat_id=data['patient'],
                 phar_id=data['pharmacist'],
                 collected='N',
+                total_price=data['totalPrice'],
                 from_date=datetime.now() if 'from_date' not in data else datetime.strptime(data['from_date'], '%Y-%m-%d'),
                 to_date=datetime.now() if 'to_date' not in data else datetime.strptime(data['to_date'], '%Y-%m-%d')
             )
@@ -40,34 +41,44 @@ def create_get_prescriptions():
                 error='Invalid Patient Data'
                 return jsonify({'message' : error})
 
-            prepare_new_prescription_email(patient, prescription.pres_id)
+            # prepare_new_prescription_email(patient, prescription.pres_id)
             flash ('New Prescription Created!')
             return redirect(url_for('doctor.index'))
         return render_template('prescription/create_prescriptions.html')
 
     except ValueError as ke:
-        print(ke)
         error = 'Internal Server Error [ValueErorr], {}'.format(str(ve))
-        return jsonify({'message' : error})
+        print(error)
+        return jsonify({'message' : error}), 500
     except KeyError as ke:
         print(ke)
         error = 'Internal Server Error [KeyErorr], {}'.format(str(ke))
-        return jsonify({'message' : error})
+        print(error)
+        return jsonify({'message' : error}), 500
     except AttributeError as ae:
         print(ae)
         error = 'Internal Server Error [AttributeErorr], {}'.format(str(ae))
-        return jsonify({'message' : error})
+        print(error)
+        return jsonify({'message' : error}), 500
     except Exception as e:
         print(e)
         error = 'Internal Server Error [Error], {}'.format(str(e))
-        return jsonify({'message' : error})
+        print(error)
+        return jsonify({'message' : error}), 500
 
 
 @bp.route('/prescriptions')
-@login_required
+# @login_required
 def get_all_prescriptions():
     prescriptions = Prescription.get_all_prescriptions()
     return jsonify([p() for p in prescriptions]), 200
+
+
+@bp.route('/medicines')
+@login_required
+def get_medicines():
+    medicines = Medicine.get_medicine()
+    return jsonify([med() for med in medicines]), 200
 
 
 @bp.route('/prescription/<id>', methods=['POST', 'GET'])
@@ -103,7 +114,8 @@ def get_prescription_by_id(id):
             from_date=from_date_str,
             to_date=to_date_str,
             qr_link=qr_link,
-            pres_id=p.pres_id
+            pres_id=p.pres_id,
+            total_price=p.total_price
         )
     except Exception as e:
         flash ('Error Encountered Viewing Prescription, {}'.format(str(e)))
@@ -145,7 +157,8 @@ def get_prescription_from_qr (id):
             from_date=from_date_str,
             to_date=to_date_str,
             qr_link=qr_link,
-            pres_id=p.pres_id
+            pres_id=p.pres_id,
+            total_price=p.total_price
         )
 
     except Exception as e:

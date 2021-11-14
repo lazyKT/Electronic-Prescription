@@ -449,6 +449,19 @@ class Medicine (db.Model):
     instructions = db.Column (db.String(256))
     quantity = db.Column (db.Integer, default=0)
 
+
+    def __call__(self):
+        return {
+            'med_id' : self.med_id,
+            'medName' : self.medName,
+            'expDate' : datetime.strftime(self.expDate, '%Y-%m-%d'),
+            'price' : self.price,
+            'description' : self.description,
+            'instructions' : self.instructions,
+            'quantity' : self.quantity
+        }
+
+
     @classmethod
     def get_medicine(cls):
         return cls.query.all()
@@ -461,6 +474,7 @@ class Prescription (db.Model):
     pres_id = db.Column (db.Integer, primary_key=True)
     identifier = db.Column (db.String(16))
     medication = db.Column (db.String(256))
+    total_price = db.Column (db.Integer)
     status = db.Column (db.String(20))
     collected = db.Column (db.String(1))
     from_date = db.Column (db.DateTime, default=datetime.now())

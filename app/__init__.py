@@ -27,8 +27,6 @@ class MyAdminIndexView(AdminIndexView):
             return current_user.get_role() == 'admin'
         return False
 
-
-# admin = Admin(name='e_prescription')
 admin = Admin(name='e_prescription', index_view=MyAdminIndexView(
         name='Home',
         template='admin/index.html',
@@ -54,9 +52,9 @@ def init_app ():
 
     db.init_app (app)
     login.init_app (app)
-    # admin.init_app (app)
     qr.init_app (app)
-    # mail.init_app (app)
+
+    admin.init_app (app)
 
     with app.app_context ():
         # import routes

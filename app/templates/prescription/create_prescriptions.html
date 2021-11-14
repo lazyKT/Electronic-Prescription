@@ -120,18 +120,8 @@
         <!-- dosage options -->
         <div class="row mb-3">
           <div class="col">
-            <label for="med-frequency" class="form-label">Frequency:</label>
-            <select
-              class="form-select"
-              aria-label="Default select example"
-              id="med-freq"
-              required
-            >
-              <option selected>Choose medication frequency per day</option>
-              <option value="1">One time a day</option>
-              <option value="2">Two times a day</option>
-              <option value="3">Three times a day</option>
-            </select>
+            <label for="med-frequency" class="form-label">Instruction:</label>
+            <input class="form-data" id="med-freq" readonly/>
           </div>
           <div class="col">
             <label for="med-qty" class="form-label">Quantity</label>
@@ -144,7 +134,7 @@
           <label for="extra-note" class="form-label">Description:</label>
           <textarea
             class="form-control"
-            id="extra-note-meds"
+            id="meds-description"
             rows="3"
             placeholder="Notes"
             readonly

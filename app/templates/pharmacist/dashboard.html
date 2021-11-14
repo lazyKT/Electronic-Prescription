@@ -36,7 +36,7 @@
         </div>
       </div>
       <!-- end of search bar -->
-  
+
       <!-- table -->
       <div class="card mt-4">
         <div class="card-body mx-1">
@@ -54,11 +54,11 @@
             <tbody>
               {% for medicine in medList %}
               <tr>
-                <td>{{ medicine.med_id }}</span></td>
-                <td>{{ medicine.medName }}</span></td>
-                <td>{{ medicine.expDate.strftime('%Y-%m-%d') }}</span></td>
-                <td>{{ medicine.price }}</span></td>
-                <td>{{ medicine.quantity }}</span></td>
+                <td><span>{{ medicine.med_id }}</span></td>
+                <td><span>{{ medicine.medName }}</span></td>
+                <td><span>{{ medicine.expDate.strftime('%Y-%m-%d') }}</span></td>
+                <td><span>{{ medicine.price }}</span></td>
+                <td><span>{{ medicine.quantity }}</span></td>
                 <td>
                   <div class="d-flex justify-content-start">
                     <!-- edit button -->
