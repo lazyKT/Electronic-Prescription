@@ -107,5 +107,5 @@ def patient_register_info ():
 
 @bp.route ("/logout")
 def logout ():
-    logout_user()
+    User.logout()
     return redirect(url_for('home.index'))

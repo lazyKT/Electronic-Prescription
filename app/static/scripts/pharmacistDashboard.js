@@ -83,7 +83,7 @@ function displayMedSearchResults (meds) {
       createTableCell(tr, (new Date(med.expDate)).toLocaleDateString());
       createTableCell(tr, med.price);
       createTableCell(tr, med.quantity);
-
+      createActionTableCell(tr, med.med_id)
       medSearchResultTbody.appendChild (tr);
     }
   );
@@ -101,7 +101,6 @@ function createTableCell (tr, value) {
 
 
 function createActionTableCell (tr, id) {
-  const td = document.createElement("td");
   const div = document.createElement("div");
   div.setAttribute("class", "d-flex justify-content-start");
 
@@ -110,8 +109,12 @@ function createActionTableCell (tr, id) {
   editButton.innerHTML = '<i class="fas fa-pen"></i>';
 
   editButton.addEventListener("click", event => {
-    window.location = `/medicines${id}`;
+    (document.getElementById("search-med-input")).value = '';
+    window.location = `/medicine/${id}`;
   });
+
+  div.appendChild(editButton);
+  tr.appendChild(div);
 }
 
 

@@ -70,14 +70,9 @@
                 <td>
                   <div class="d-flex justify-content-start">
                     <!-- edit button -->
-                    <!-- <a href=""></a> -->
-                    <button
-                      type="button" data-mode="edit"
-                      data-id="{{ medicine.med_id }}"
-                      class="btn btn-primary mx-1"
-                      onclick="openEditViewModal(this)">
+                    <a class="btn btn-primary mx-auto my-2 w-50" href="{{ url_for('pharmacist.manage_stock', id=medicine.med_id) }}">
                       <i class="fas fa-pen"></i>
-                    </button>
+                    </a>
                   </div>
                 </td>
               </tr>
@@ -99,20 +94,6 @@
   </div>
 </div>
 </div>
-
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="my-message-box">
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  <button class="btn close-message-box" onclick="closeMessageBox()"><i class="fa fa-times" id="menu-icon"></i></button>
-</div>
-{% endif %}
-{% endwith %}
-
 <div class="modal fade" id="dispenseModal" tabindex="-1" aria-labelledby="dispenseModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

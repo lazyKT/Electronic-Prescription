@@ -9,7 +9,7 @@ from flask_login import login_required, current_user
 from app.prescription import bp
 from app.models import Doctor, Patient, Pharmacist, Prescription, Medicine
 from app.auth.forms import TokenIDForm
-from app.utilities import validate_prescription, prepare_new_prescription_email
+from app.utilities import validate_prescription
 from app import db
 
 
@@ -86,25 +86,16 @@ def get_medicines():
 def get_prescription_by_id(id):
     try:
         p = Prescription.query.filter_by(pres_id=id).first()
-        if request.method == "POST":
-            p.status='Active'
-            p.collected='Y'
-            try:
-                db.session.commit()
-                flash ('Prescription Dispensed')
-                form = TokenIDForm()
-                return render_template('pharmacist/dashboard.html', form=form)
-            except Exception as e:
-                flash ('Error Encountered Viewing Prescription, {}'.format(str(e)))
-                return redirect(url_for('pharmacist.index'))
         doctor = Doctor.get_doctor_by_acc_id(p.doc_id)
         pharmacist = Pharmacist.get_pharmacist_by_acc_id(p.phar_id)
-        doctor_name = doctor.fName if doctor else 'NA' # if the doctor is not in the system anymore (acc deleted), show NA as doctor name
-        pharmacist_name = pharmacist.fName if pharmacist else 'NA' # if the pharmacist is not in the system anymore (acc deleted), show NA as pharmacist name
+        doctor_name = doctor.fName + " " + doctor.lName if doctor else 'NA' # if the doctor is not in the system anymore (acc deleted), show NA as doctor name
+        pharmacist_name = pharmacist.fName + " " + pharmacist.lName if pharmacist else 'NA' # if the pharmacist is not in the system anymore (acc deleted), show NA as pharmacist name
         medications = p.get_medication_list()
         from_date_str = datetime.strftime(p.from_date, '%Y-%m-%d')
         to_date_str = datetime.strftime(p.to_date, '%Y-%m-%d')
         qr_link = 'http://127.0.0.1:5000/prescription/{}'.format(id)
+        if request.method == "POST":
+            dispense_prescription(id)
         return render_template(
             'prescription/view_prescription.html',
             prescription=p(),
@@ -129,17 +120,6 @@ def get_prescription_by_id(id):
 def get_prescription_from_qr (id):
     try:
         p = Prescription.query.filter_by(pres_id=id).first()
-        if request.method == "POST":
-            p.status='Active'
-            p.collected='Y'
-            try:
-                db.session.commit()
-                form = TokenIDForm()
-                flash ('Prescription Dispensed')
-                return render_template('pharmacist/dashboard.html', form=form)
-            except Exception as e:
-                flash ('Error Encountered Viewing Prescription, {}'.format(str(e)))
-                return redirect(url_for('pharmacist.index'))
         doctor = Doctor.get_doctor_by_acc_id(p.doc_id)
         pharmacist = Pharmacist.get_pharmacist_by_acc_id(p.phar_id)
         doctor_name = doctor.fName if doctor else 'NA' # if the doctor is not in the system anymore (acc deleted), show NA as doctor name
@@ -148,6 +128,8 @@ def get_prescription_from_qr (id):
         from_date_str = datetime.strftime(p.from_date, '%Y-%m-%d')
         to_date_str = datetime.strftime(p.to_date, '%Y-%m-%d')
         qr_link = 'http://127.0.0.1:5000/prescription-qr/{}'.format(id)
+        if request.method == "POST":
+            dispense_prescription(id)
         return render_template(
             'prescription/view_prescription_via_qr.html',
             prescription=p(),
@@ -167,3 +149,17 @@ def get_prescription_from_qr (id):
             return redirect(url_for('doctor.index'))
         elif current_user.role == "pharmacist":
             return redirect(url_for('pharmacist.index'))
+
+def dispense_prescription(id):
+    form = TokenIDForm()
+    p = Prescription.query.filter_by(pres_id=id).first()
+    p.status='Active'
+    p.collected='Y'
+    p.phar_id = current_user.id
+    try:
+        db.session.commit()
+        flash ('Prescription Dispensed')
+        return redirect(url_for('pharmacist.index', form=form))
+    except Exception as e:
+        flash ('Error Encountered Viewing Prescription, {}'.format(str(e)))
+        return redirect(url_for('pharmacist.index', form=form))

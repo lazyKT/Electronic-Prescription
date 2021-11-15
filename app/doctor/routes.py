@@ -9,13 +9,11 @@ from app.models import Prescription, Doctor, Patient, Pharmacist, User
 @login_required
 def index():
     issued_prescriptions = [p() for p in Prescription.get_prescriptions_by_doctor(current_user.id)]
-    monthly_issued_prescs = Doctor.get_monthly_issued_presc(month=10, doc_id=current_user.id)
     active_presc = Doctor.get_active_prescriptions(current_user.id)
     return render_template(
         'doctor/dashboard.html',
         issued_prescriptions=issued_prescriptions,
         total_issued=len(issued_prescriptions),
-        monthly_issued=len(monthly_issued_prescs),
         active_presc=len(active_presc)
     )
 
