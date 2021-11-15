@@ -15,11 +15,16 @@ window.onload = async () => {
   const addMedtoList = document.getElementById("add-med");
   const addMedicineButton = document.getElementById("add-med-button");
   const medicationList = document.getElementById("medication");
+  const fromDate = document.getElementById("from_date");
+  const toDate = document.getElementById("to_date");
   const createPrescriptionButton = document.getElementById("create-prescription"); // submit
 
   // add medicines in medicine list
   await populateMedsList(medsList);
   errorMessageBoxPresc.style.display = 'none';
+
+  setMinDate(fromDate);
+  setMinDate(toDate);
 
   // choose patient
   patientInput.addEventListener("focus", () => {
@@ -28,6 +33,11 @@ window.onload = async () => {
     document.getElementById("search-input").setAttribute('placeholder', 'Search Patients');
     document.getElementById("modal-title").innerHTML = "Search Patients";
     searchData = 'patient';
+  });
+
+
+  fromDate.addEventListener("change", e => {
+    setMinDate(toDate, e.target.value, "end");
   });
 
   // search patient
@@ -96,7 +106,7 @@ window.onload = async () => {
 
     addMedToMedicationList({ medName, instructions, medQty, descriptions }, medicationList);
 
-    calculatePrice(medName, medQty);
+    calculatePrice(medName, medQty, mode="add");
 
     clearMedicationForm();
 
@@ -122,8 +132,19 @@ window.onload = async () => {
         return;
       }
 
-      if (medicationList.childNodes.length <= 1)
+      if ((new Date(fromDate)) > (new Date(toDate))) {
+        e.target.innerHTML = 'Create Prescription';
+        e.target.removeAttribute('disabled');
+        throw new Error('Invalid Prescription End Date!')
         return;
+      }
+
+      if (medicationList.childElementCount < 1) {
+        e.target.innerHTML = 'Create Prescription';
+        e.target.removeAttribute('disabled');
+        throw new Error('Empty Medication List')
+        return;
+      }
 
       const medStr = medicationString(medicationList);
 
@@ -143,7 +164,7 @@ window.onload = async () => {
     }
     catch (error) {
       console.log('Error fetching create prescriptions request', error);
-      showErrorMessageBoxPresc("Something went wrong");
+      showErrorMessageBoxPresc(error);
     }
     finally {
       createPrescriptionButton.innerHTML = "Create Prescription";
@@ -152,6 +173,24 @@ window.onload = async () => {
   });
 
 };
+
+
+function setMinDate (dateInput, startDate, type) {
+
+  const day = type === "end" ? new Date(startDate) : new Date();
+  const dd = day.getDate();
+  const mm = day.getMonth() + 1;
+  const yyyy = day.getFullYear();
+  if (dd < 10)
+    dd = "0" + dd;
+
+  if (mm < 10)
+    mm = "0" + mm;
+
+  const dayStr = `${yyyy}-${mm}-${dd}`;
+
+  dateInput.setAttribute("min", dayStr);
+}
 
 function appendResults(results) {
 
@@ -253,16 +292,23 @@ function getMedicationInstructions (medName) {
 }
 
 
-function calculatePrice (medName, medQty) {
+function calculatePrice (medName, medQty, mode) {
   const chosenMed = medicines.filter (m => m.medName === medName);
 
-  totalPrice += (parseInt(chosenMed[0].price) * parseInt(medQty));
+  if (mode === "add") {
+    totalPrice += (parseInt(chosenMed[0].price) * parseInt(medQty));
+  }
+  else if (mode === "remove") {
+    totalPrice -= (parseInt(chosenMed[0].price) * parseInt(medQty));
+  }
 }
 
 
 /* add medicines to medications list */
 function addMedToMedicationList(medication, parent) {
   const div = document.createElement("div");
+  div.setAttribute("id", `med-div-${parent.childElementCount}`);
+
   const row = document.createElement("div");
   row.setAttribute("class", "row px-2 mb-2");
   const { medName, instructions, descriptions, medQty } = medication;
@@ -282,9 +328,23 @@ function addMedToMedicationList(medication, parent) {
   medFreqDOM.setAttribute("id", `med-freq-${parent.childNodes.length}`);
   medFreqDOM.innerHTML = instructions;
 
+  const actionDiv = document.createElement("div");
+  actionDiv.setAttribute("class", " col d-flex justify-content-end mx-1");
+
+  const removeMedicationButton = document.createElement("button");
+  removeMedicationButton.setAttribute("class", "btn btn-danger mx-1");
+  removeMedicationButton.innerHTML = '<i class="fas fa-window-close"></i>';
+  actionDiv.appendChild(removeMedicationButton);
+
   row.appendChild(medNameDOM);
   row.appendChild(medQtyDOM);
   row.appendChild(medFreqDOM);
+  row.appendChild(actionDiv);
+
+  removeMedicationButton.addEventListener("click", e => {
+    e.preventDefault();
+    removeMedication(medName, medQty, div.getAttribute("id"));
+  });
 
   const note = document.createElement("div");
   note.setAttribute("class", "alert alert-info mx-1 mt-1");
@@ -295,6 +355,14 @@ function addMedToMedicationList(medication, parent) {
   div.appendChild(note);
   div.appendChild(document.createElement("hr"));
   parent.appendChild(div);
+}
+
+
+function removeMedication(medName, medQty, nodeID) {
+  const removeMedicationDiv = document.getElementById(nodeID);
+
+  removeMedicationDiv.remove();
+  calculatePrice(medName, medQty, mode="remove");
 }
 
 
