@@ -330,7 +330,7 @@ class Doctor (User):
         """
         # get all active Prescriptions by doctor id
         """
-        return db.session.query(Prescription).filter_by(doc_id=doc_id).filter(Prescription.to_date > datetime.now()).all()
+        return db.session.query(Prescription).filter_by(doc_id=doc_id).filter(Prescription.status=='Active').all()
 
 
     @classmethod

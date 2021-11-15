@@ -41,7 +41,7 @@ def create_get_prescriptions():
                 error='Invalid Patient Data'
                 return jsonify({'message' : error})
 
-            # prepare_new_prescription_email(patient, prescription.pres_id)
+            prepare_new_prescription_email(patient, prescription.pres_id)
             flash ('New Prescription Created!')
             return redirect(url_for('doctor.index'))
         return render_template('prescription/create_prescriptions.html')

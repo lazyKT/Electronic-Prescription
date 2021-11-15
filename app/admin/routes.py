@@ -1,6 +1,6 @@
 from flask import request, flash, redirect, url_for, jsonify
 from flask_admin.contrib.sqla import ModelView
-from flask_admin import expose, BaseView
+from flask_admin import expose, BaseView, AdminIndexView
 from flask_login import current_user
 
 
@@ -19,7 +19,7 @@ class MyAdminView(ModelView):
             return current_user.get_role() == 'admin'
         return False
 
-class AdminUserView(MyAdminView):
+class AdminUserView(MyAdminView, AdminIndexView):
 
     @expose('/')
     def index(self):
