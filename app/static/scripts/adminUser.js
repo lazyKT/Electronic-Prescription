@@ -5,6 +5,9 @@ window.onload = () => {
   if (alertMessage) alertMessage.style.display = 'none';
   const deleteUserError = document.getElementById('delete-user-error');
   if (deleteUserError) deleteUserError.style.display = 'none';
+
+  const clearSearch = document.getElementById("clear-search");
+  clearSearch.style.display = "none";
 }
 
 // create new User
@@ -52,6 +55,9 @@ async function searchUsersByUsername (event) {
       const users = await response.json();
 
       displaySearchResults(users);
+
+      const clearSearch = document.getElementById("clear-search");
+      clearSearch.style.display = "block";
     }
     else {
       const { message } = await response.json();
@@ -79,6 +85,11 @@ function toggleAllUsersTable (show) {
 
 function displaySearchResults (users) {
   const searchResultsTbody = document.getElementById("search-user");
+
+  while(searchResultsTbody.lastChild) {
+    searchResultsTbody.removeChild(searchResultsTbody.lastChild);
+  }
+
   users.forEach(
     user => {
       const tr = document.createElement("tr");
