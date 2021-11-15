@@ -29,9 +29,15 @@
       <!-- search bar -->
       <div class="card mt-4">
         <div class="card-body py-3 d-flex justify-content-center">
-          <input class="px-2 w-75" type="text" name="" value="" placeholder="Search Medication">
+          <input
+            class="px-2 w-75" type="text" id="search-med-input"
+            placeholder="Search Medication with medicine name, descriptions, instrutions and id">
           <div class="w-25 d-flex justify-content-center">
-            <button class="btn btn-primary">Search</button>
+            <button class="btn btn-primary mx-1" id="search-med-button">Search</button>
+            <a href="/pharmacist/dashboard"
+              class="btn btn-secondary mx-1" id="reset-med-filter-button">
+              Clear
+            </a>
           </div>
         </div>
       </div>
@@ -51,7 +57,9 @@
                 <th scope="col">Actions</th>
               </tr>
             </thead>
-            <tbody>
+
+            <!-- all medicines tbody -->
+            <tbody id="all-meds-tbody">
               {% for medicine in medList %}
               <tr>
                 <td><span>{{ medicine.med_id }}</span></td>
@@ -62,6 +70,7 @@
                 <td>
                   <div class="d-flex justify-content-start">
                     <!-- edit button -->
+                    <!-- <a href=""></a> -->
                     <button
                       type="button" data-mode="edit"
                       data-id="{{ medicine.med_id }}"
@@ -74,7 +83,15 @@
               </tr>
               {% endfor %}
             </tbody>
+
+            <tbody id="search-meds">
+
+            </tbody>
+
           </table>
+          <div class="alert alert-danger" id="error-alert-med">
+
+          </div>
         </div>
       </div>
       <!-- end of table -->
@@ -121,5 +138,8 @@
     </div>
   </div>
 </div>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/pharmacistDashboard.js') }}">
+
+</script>
 </body>
 {% endblock %}

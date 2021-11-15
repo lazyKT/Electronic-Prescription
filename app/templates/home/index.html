@@ -16,6 +16,6 @@
       </div>
     {% elif current_user.is_authenticated %}
       {% set template=current_user.get_role() + '/dashboard.html' %} {% include template %}
-    {% endif %} -->
+    {% endif %}
   </div>
 {% endblock %}

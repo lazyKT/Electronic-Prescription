@@ -31,3 +31,15 @@ def get_pharmacist(id):
     pharmacist = Pharmacist.get_pharmacist_by_acc_id(id)
     return jsonify(pharmacist()), 200
 
+
+@bp.route('/medicines/search')
+def search_medicines():
+    """
+    # Search Medicines by name, id, instructions, descriptions
+    """
+    try:
+        q = request.args.get('q')
+        meds = Medicine.search_medicines(q)
+        return jsonify([med() for med in meds]), 200
+    except Exception as e:
+        return jsonify({'message' : str(e)}), 500

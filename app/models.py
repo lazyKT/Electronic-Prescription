@@ -472,6 +472,21 @@ class Medicine (db.Model):
     def get_medicine(cls):
         return cls.query.all()
 
+    @classmethod
+    def search_medicines(cls, q):
+        try:
+            medicines =  cls.query.filter(
+                or_(
+                    cls.medName.contains(q),
+                    cls.med_id.contains(q),
+                    cls.description.contains(q),
+                    cls.instructions.contains(q)
+                )
+            )
+            return medicines
+        except Exception as e:
+            raise(e)
+
 class Prescription (db.Model):
     """
     : Prescription Model and Schema
