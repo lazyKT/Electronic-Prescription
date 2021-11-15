@@ -11,7 +11,26 @@ login = LoginManager ()
 login.login_view = 'auth.login'
 
 
-admin = Admin(name='e_prescription')
+class MyAdminIndexView(AdminIndexView):
+    """
+    # Overriding Flask AdminIndexView
+    # This is the entry point to the admin pannel or Admin Home Page
+    """
+
+    @expose('/')
+    def index(self):
+        return self.render('admin/index.html')
+
+    def is_accessible(self):
+        if current_user.is_authenticated:
+            return current_user.get_role() == 'admin'
+        return False
+
+admin = Admin(name='e_prescription', index_view=MyAdminIndexView(
+        name='Home',
+        template='admin/index.html',
+        url='/admin'
+    ))
 
 
 def init_db():
