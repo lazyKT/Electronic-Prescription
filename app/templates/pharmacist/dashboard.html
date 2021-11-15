@@ -26,16 +26,6 @@
       <div class="d-flex justify-content-between pt-2">
         <h4>Medicine Stock</h4>
       </div>
-      <!-- search bar -->
-      <div class="card mt-4">
-        <div class="card-body py-3 d-flex justify-content-center">
-          <input class="px-2 w-75" type="text" name="" value="" placeholder="Search Medication">
-          <div class="w-25 d-flex justify-content-center">
-            <button class="btn btn-primary">Search</button>
-          </div>
-        </div>
-      </div>
-      <!-- end of search bar -->
 
       <!-- table -->
       <div class="card mt-4">
@@ -62,13 +52,9 @@
                 <td>
                   <div class="d-flex justify-content-start">
                     <!-- edit button -->
-                    <button
-                      type="button" data-mode="edit"
-                      data-id="{{ medicine.med_id }}"
-                      class="btn btn-primary mx-1"
-                      onclick="openEditViewModal(this)">
+                    <a class="btn btn-primary mx-auto my-2 w-50" href="{{ url_for('pharmacist.manage_stock', id=medicine.med_id) }}">
                       <i class="fas fa-pen"></i>
-                    </button>
+                    </a>
                   </div>
                 </td>
               </tr>
