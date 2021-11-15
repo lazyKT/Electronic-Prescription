@@ -9,7 +9,7 @@ from flask_login import login_required, current_user
 from app.prescription import bp
 from app.models import Doctor, Patient, Pharmacist, Prescription, Medicine
 from app.auth.forms import TokenIDForm
-from app.utilities import validate_prescription
+from app.utilities import validate_prescription, prepare_new_prescription_email
 from app import db
 
 
