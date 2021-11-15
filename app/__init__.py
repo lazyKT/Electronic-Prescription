@@ -7,38 +7,38 @@ from flask_qrcode import QRcode
 
 db = SQLAlchemy ()
 qr = QRcode ()
-# mail = Mail()
 login = LoginManager ()
 login.login_view = 'auth.login'
 
 
-class MyAdminIndexView(AdminIndexView):
-    """
-    # Overriding Flask AdminIndexView
-    # This is the entry point to the admin pannel or Admin Home Page
-    """
+# class MyAdminIndexView(AdminIndexView):
+#     """
+#     # Overriding Flask AdminIndexView
+#     # This is the entry point to the admin pannel or Admin Home Page
+#     """
+#
+#     @expose('/')
+#     def index(self):
+#         return self.render('admin/index.html')
+#
+#     def is_accessible(self):
+#         if current_user.is_authenticated:
+#             return current_user.get_role() == 'admin'
+#         return False
 
-    @expose('/')
-    def index(self):
-        return self.render('admin/index.html')
+# admin = Admin(name='e_prescription', index_view=MyAdminIndexView(
+#         name='Home',
+#         template='admin/index.html',
+#         url='/admin'
+#     ))
 
-    def is_accessible(self):
-        if current_user.is_authenticated:
-            return current_user.get_role() == 'admin'
-        return False
-
-admin = Admin(name='e_prescription', index_view=MyAdminIndexView(
-        name='Home',
-        template='admin/index.html',
-        url='/admin'
-    ))
+admin = Admin(name='e_prescription')
 
 
 def init_db():
     """
     : Create and Initialize Database and Tables before the very first request comesin
     """
-    print ("Creating Database ...")
     db.create_all()
 
 

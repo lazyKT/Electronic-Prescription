@@ -79,6 +79,14 @@ class User (UserMixin, db.Model):
 
 
     @classmethod
+    def search_user_by_username(cls, q):
+        try:
+            return cls.query.filter(cls.username.contains(q)).all()
+        except Exception as e:
+            raise (e)
+
+
+    @classmethod
     def delete_user_by_id(cls, id):
         try:
             cls.query.filter_by(id=id).delete()
@@ -191,7 +199,6 @@ class Patient (User):
         """
         # Filter Users by search query
         """
-        print(q)
         patients = cls.query.filter(
             or_(
                 cls.username.contains(q),
@@ -200,7 +207,6 @@ class Patient (User):
                 cls.lName.contains(q)
             )
         ).all()
-        print(patients)
         return patients
 
 
