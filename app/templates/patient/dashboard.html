@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mb-4">
- 
+
     <div id="greeting" class="alert alert-primary my-2" role="alert">
       <p>
         <big>
@@ -19,7 +19,7 @@
         onclick="viewPrescription(this)"
         data-pres-id="{{ p['pres_id'] }}">
         <div>
-          <strong class="text-secondary">{{ p["p_name"] }}</strong><br>
+          <strong class="text-secondary">{{ p["p_fname"] }}</strong><br>
           <small>prescribed from {{ p["from_date"] }}</small>
         </div>
         <div>

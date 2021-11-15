@@ -2,9 +2,9 @@
 
 window.onload = () => {
   const alertMessage = document.getElementById('admin-user-alert');
-  if (alertMessage !== null) alertMessage.style.display = 'none';
+  if (alertMessage) alertMessage.style.display = 'none';
   const deleteUserError = document.getElementById('delete-user-error');
-  if (deleteUserError !== null) deleteUserError.style.display = 'none';
+  if (deleteUserError) deleteUserError.style.display = 'none';
 }
 
 // create new User
@@ -24,6 +24,123 @@ function openDeleteUserModal(dom) {
   const deleteButton = document.getElementById("delete-user-confirm");
   deleteButton.setAttribute('data-id', userId);
 }
+
+
+// search users by username
+async function searchUsersByUsername (event) {
+  try {
+    event.preventDefault();
+    event.target.innerHTML = "Loading ...";
+    const keyword = document.getElementById("search-input");
+
+    if (!keyword || keyword.value === '') {
+      event.target.innerHTML = "Search";
+      return;
+    }
+
+    toggleAllUsersTable(show=false);
+
+    const response = await fetch(`http://127.0.0.1:5000/admin/user/search?q=${keyword.value}`, {
+      method: "GET",
+      headers: {
+        "Content-Type" : "application/json",
+        "Accept" : "application/json"
+      }
+    });
+
+    if (response && response.ok) {
+      const users = await response.json();
+
+      displaySearchResults(users);
+    }
+    else {
+      const { message } = await response.json();
+
+      console.log(message);
+    }
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    event.target.innerHTML = "Search";
+  }
+}
+
+
+function toggleAllUsersTable (show) {
+  const allUsersRows = document.getElementById("all-users-tbody");
+  if (show)
+    allUsersRows.style.display = "block";
+  else
+    allUsersRows.style.display = "none";
+}
+
+
+function displaySearchResults (users) {
+  const searchResultsTbody = document.getElementById("search-user");
+  users.forEach(
+    user => {
+      const tr = document.createElement("tr");
+      createTableCell(tr, "id", "pk", user.id, user.id);
+      createTableCell(tr, "username", "input", user.id, user.username);
+      createTableCell(tr, "email", "input", user.id, user.email);
+      createTableCell(tr, "role", "select", user.id, user.role);
+      createTableCell(tr, "status", "select", user.id, user.status ? "Active" : "Inactive");
+      createActionTableCell(tr, user.id);
+      searchResultsTbody.appendChild(tr);
+    }
+  );
+
+}
+
+
+function createTableCell (tr, fieldname, fieldtype, id, value) {
+  const td = document.createElement("td");
+  td.setAttribute("data-user-key", id);
+  const span = document.createElement("span");
+  span.setAttribute("data-key", fieldname);
+  span.setAttribute("data-field-type", fieldtype);
+  span.innerHTML = value;
+  td.appendChild(span);
+  tr.appendChild(td);
+}
+
+function createActionTableCell (tr, id) {
+  const div = document.createElement("div");
+  div.setAttribute("class", "d-flex justify-content-start");
+
+  const viewBtn = document.createElement("button");
+  viewBtn.setAttribute("class", "btn btn-info mx-1");
+  viewBtn.innerHTML = '<i class="fas fa-eye text-white"></i>';
+  div.appendChild(viewBtn);
+
+  const editBtn = document.createElement("button");
+  editBtn.setAttribute("class", "btn btn-primary mx-1");
+  editBtn.innerHTML = '<i class="fas fa-pen"></i>';
+  div.appendChild(editBtn);
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.setAttribute("class", "btn btn-danger mx-1");
+  deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+  div.appendChild(deleteBtn);
+
+  viewBtn.addEventListener("click", e => {
+    window.location = `/admin/user/view/${id}`;
+  });
+
+  editBtn.addEventListener("click", e => {
+    window.location = `/admin/user/edit/${id}`;
+  });
+
+  deleteBtn.addEventListener("click", e => {
+    openDeleteUserModal(e.target);
+  });
+
+  tr.appendChild(div);
+}
+
+
 
 // dismiss delete user confirmation modal
 function dismissDeleteModal() {

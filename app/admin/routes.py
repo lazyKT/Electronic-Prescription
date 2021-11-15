@@ -225,21 +225,33 @@ class AdminUserView(MyAdminView):
                 return "User Not Found", 404
 
             role = user.get_role()
-            if role == 'admin':
-                form = EditAdminForm()
-            else:
-                # I am using the edit form but in this page, all the fields are readonly
-                form = AdminEditUserForm()
-                # get user type instance based on user role --> doctor, patient, pharmacist
-                user_with_role = self.get_user_type_instance(role, id)
-                status = 'Active' if user.activated else 'Inactive'
-                return self.render('admin/view_user.html', form=form, user=user_with_role, status=status)
+            # if role == 'admin':
+            #     form = EditAdminForm()
+            # else:
+            # I am using the edit form but in this page, all the fields are readonly
+            form = AdminEditUserForm()
+            # get user type instance based on user role --> doctor, patient, pharmacist
+            user_with_role = self.get_user_type_instance(role, id)
+            status = 'Active' if user.activated else 'Inactive'
+            return self.render('admin/view_user.html', form=form, user=user_with_role, status=status)
 
         except Exception as e:
             print('Exception occured during edit user. Error: {}'.format(str(e)))
             flash ('Internal Server Error [Error], {}'.format(str(e)))
             return redirect(url_for('user.index'))
 
+
+    @expose('search')
+    def search_user(self):
+        """
+        # Search User by Username
+        """
+        try:
+            q = request.args.get('q')
+            results = User.search_user_by_username(q)
+            return jsonify([r() for r in results]), 200
+        except Exception as e:
+            return jsonify({'message' : str(e)}), 500
 
 
     def to_user_dict (self, username, email, fName, lName, mobile, activated):

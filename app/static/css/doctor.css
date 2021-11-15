@@ -19,6 +19,7 @@
 
 .my-modal {
   width: 700px;
+  height: fit-content;
   background: #f9f9f9;
   padding: 20px;
   margin-top: 50px;

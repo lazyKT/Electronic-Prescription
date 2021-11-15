@@ -3,7 +3,7 @@
 """
 from datetime import datetime
 from app import db, login
-from flask_login import UserMixin
+from flask_login import UserMixin, logout_user
 from sqlalchemy import extract, or_
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -36,6 +36,10 @@ class User (UserMixin, db.Model):
             'status': self.activated
         }
 
+    def logout():
+        return logout_user()
+
+
     def set_password(self, pwd: str):
         """
         : Hash Password and Store in DB
@@ -61,14 +65,6 @@ class User (UserMixin, db.Model):
     def get_role (self):
         return self.role
 
-
-    def update_user(self, updated_user):
-        self.username = updated_user['username']
-        self.email = updated_user['email']
-        self.activated = True if updated_user['status'] == 'active' else False
-        db.session.commit()
-
-
     def delete_user(self):
         db.session.delete(self)
         db.session.commit()
@@ -76,6 +72,14 @@ class User (UserMixin, db.Model):
 
     def get_account_status(self):
         return 'active' if self.activated else 'inactive'
+
+
+    @classmethod
+    def search_user_by_username(cls, q):
+        try:
+            return cls.query.filter(cls.username.contains(q)).all()
+        except Exception as e:
+            raise (e)
 
 
     @classmethod
@@ -164,7 +168,7 @@ class Patient (User):
 
 
     @classmethod
-    def update_patient(cls, acc_id, data):
+    def update_patient_profile(cls, acc_id, data):
         try:
             patient = cls.query.filter_by(acc_id=acc_id).first()
             print(data)
@@ -191,7 +195,6 @@ class Patient (User):
         """
         # Filter Users by search query
         """
-        print(q)
         patients = cls.query.filter(
             or_(
                 cls.username.contains(q),
@@ -200,7 +203,6 @@ class Patient (User):
                 cls.lName.contains(q)
             )
         ).all()
-        print(patients)
         return patients
 
 
@@ -257,7 +259,7 @@ class Admin (User):
 
 
     @classmethod
-    def update_admin(cls, acc_id, data):
+    def update_admin_profile(cls, acc_id, data):
         admin = cls.query.filter_by(acc_id=acc_id).first()
         admin.username = data['username']
         admin.email = data['email']
@@ -328,7 +330,7 @@ class Doctor (User):
         """
         # get all active Prescriptions by doctor id
         """
-        return db.session.query(Prescription).filter_by(doc_id=doc_id).filter(Prescription.to_date > datetime.now()).all()
+        return db.session.query(Prescription).filter_by(doc_id=doc_id).filter(Prescription.status=='Active').all()
 
 
     @classmethod
@@ -337,7 +339,7 @@ class Doctor (User):
 
 
     @classmethod
-    def update_doctor(cls, acc_id, data):
+    def update_doctor_profile(cls, acc_id, data):
         doctor = cls.query.filter_by(acc_id=acc_id).first()
         doctor.username = data['username']
         doctor.email = data['email']
@@ -414,7 +416,7 @@ class Pharmacist (User):
 
 
     @classmethod
-    def update_pharmacist(cls, acc_id, data):
+    def update_pharmacist_profile(cls, acc_id, data):
         pharmacist = cls.query.filter_by(acc_id=acc_id).first()
         pharmacist.username = data['username']
         pharmacist.email = data['email']
@@ -466,6 +468,26 @@ class Medicine (db.Model):
     def get_medicine(cls):
         return cls.query.all()
 
+
+    @classmethod
+    def search_medicines(cls, q):
+        try:
+            medicines =  cls.query.filter(
+                or_(
+                    cls.medName.contains(q),
+                    cls.med_id.contains(q),
+                    cls.description.contains(q),
+                    cls.instructions.contains(q)
+                )
+            )
+            return medicines
+        except Exception as e:
+            raise(e)
+
+    @classmethod
+    def get_medicine_by_id(cls, med_id):
+        return cls.query.filter_by(med_id=med_id).first()
+
 class Prescription (db.Model):
     """
     : Prescription Model and Schema
@@ -474,7 +496,7 @@ class Prescription (db.Model):
     pres_id = db.Column (db.Integer, primary_key=True)
     identifier = db.Column (db.String(16))
     medication = db.Column (db.String(256))
-    total_price = db.Column (db.Integer)
+    total_price = db.Column (db.Float)
     status = db.Column (db.String(20))
     collected = db.Column (db.String(1))
     from_date = db.Column (db.DateTime, default=datetime.now())
@@ -492,7 +514,8 @@ class Prescription (db.Model):
             status='Expired'
             self.status='Expired'
             db.session.commit()
-        patient_name = Patient.get_user_by_id(self.pat_id).fName
+        patient_fname = Patient.get_user_by_id(self.pat_id).fName
+        patient_lname = Patient.get_user_by_id(self.pat_id).lName
         return {
             'pres_id' : self.pres_id,
             'id' : self.identifier,
@@ -500,7 +523,8 @@ class Prescription (db.Model):
             'meds_count': meds_count,
             'doctor': self.doc_id,
             'patient': self.pat_id,
-            'p_name': patient_name,
+            'p_fname': patient_fname,
+            'p_lname': patient_lname,
             'phar_id': self.phar_id,
             'from_date': datetime.strftime(self.from_date, '%Y-%m-%d'),
             'to_date': datetime.strftime(self.to_date, '%Y-%m-%d'),

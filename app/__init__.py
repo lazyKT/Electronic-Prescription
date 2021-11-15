@@ -7,7 +7,6 @@ from flask_qrcode import QRcode
 
 db = SQLAlchemy ()
 qr = QRcode ()
-# mail = Mail()
 login = LoginManager ()
 login.login_view = 'auth.login'
 
@@ -38,7 +37,6 @@ def init_db():
     """
     : Create and Initialize Database and Tables before the very first request comesin
     """
-    print ("Creating Database ...")
     db.create_all()
 
 
@@ -53,7 +51,6 @@ def init_app ():
     db.init_app (app)
     login.init_app (app)
     qr.init_app (app)
-
     admin.init_app (app)
 
     with app.app_context ():
